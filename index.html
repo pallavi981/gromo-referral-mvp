@@ -1,0 +1,2973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Referrals MVP</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #15202b;
+      --muted: #667788;
+      --line: #e6ebf0;
+      --bg: #f2f5f8;
+      --card: #fff;
+      --blue: #1f6feb;
+      --blue-hover: #1558c0;
+      --blue-soft: #eef4fc;
+      --ok: #14804a;
+      /* One amber family for month pill / scratch / code / copy */
+      --amber: #c98500;
+      --amber-text: #8a4b00;
+      --amber-soft: #fff8e6;
+      --amber-border: #f0d48a;
+      --radius: 14px;
+      --radius-sm: 10px;
+      --pad: 14px;
+      --stack: 12px;
+      /* App default = Figtree (matches Android appFontFamily) */
+      --font: "Figtree", system-ui, sans-serif;
+    }
+    body.font-dm {
+      --font: "DM Sans", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      background: #dce3ea;
+      color: var(--ink);
+      padding: 16px 12px 40px;
+    }
+    .mvp-shell {
+      width: min(920px, 100%);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .mvp-header h1 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+      text-align: center;
+    }
+    .mvp-main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .mvp-panel {
+      width: min(390px, 100%);
+      background: #fff;
+      border: 1px solid #d7e0ea;
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 8px 24px rgba(21, 32, 43, .06);
+    }
+    .mvp-panel .panel-title {
+      margin: 0 0 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .tabs .tab-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .tabs .tab-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 2px;
+    }
+    .tabs button {
+      border: 1px solid #e1e8f0;
+      background: #f7f9fb;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--ink);
+      text-align: left;
+      width: 100%;
+      transition: background .12s, border-color .12s, color .12s;
+    }
+    .tabs button:hover { background: #eef3f8; border-color: #c9d4e0; }
+    .tabs button.active {
+      background: #1f6feb;
+      border-color: #1f6feb;
+      color: #fff;
+    }
+
+    .phone {
+      width: min(390px, 100%);
+      height: min(820px, calc(100vh - 40px));
+      min-height: 680px;
+      border-radius: 28px;
+      background: #111;
+      padding: 10px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.22);
+      flex-shrink: 0;
+    }
+
+    /* Full browser: phone first (center-left), controls on the right */
+    @media (min-width: 860px) {
+      body {
+        padding: 28px 32px 40px;
+        display: flex;
+        align-items: center;
+      }
+      .mvp-shell {
+        width: min(780px, 100%);
+        gap: 18px;
+      }
+      .mvp-header h1 { text-align: left; }
+      .mvp-main {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 20px;
+      }
+      .phone {
+        order: 1;
+        height: min(780px, calc(100vh - 88px));
+        min-height: 640px;
+      }
+      .mvp-panel {
+        order: 2;
+        width: 240px;
+        position: sticky;
+        top: 28px;
+        max-height: calc(100vh - 56px);
+        overflow: auto;
+        padding: 12px;
+      }
+      .tabs button { font-size: 12px; padding: 8px 10px; }
+    }
+    .screen-wrap {
+      height: 100%;
+      border-radius: 22px;
+      overflow: hidden;
+      background: var(--bg);
+      position: relative;
+    }
+    .status {
+      position: absolute; top: 0; left: 0; right: 0; z-index: 4;
+      height: 26px; display: flex; justify-content: space-between; align-items: center;
+      padding: 0 16px; font-size: 11px; font-weight: 600; color: #fff;
+      text-shadow: 0 1px 2px rgba(0,0,0,.4); pointer-events: none;
+    }
+    .screen {
+      position: absolute; inset: 0; display: none; flex-direction: column; background: var(--bg);
+    }
+    .screen.active { display: flex; }
+
+    /* Full hero — image not cropped */
+    .hero {
+      position: relative;
+      width: 100%;
+      background: #9ec9f5;
+      flex-shrink: 0;
+    }
+    .hero-img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 961 / 481;
+      object-fit: contain;
+      object-position: center top;
+      background: #9ec9f5;
+    }
+    .hero-bar {
+      position: absolute; top: 28px; left: 10px; right: 10px;
+      display: flex; justify-content: space-between; z-index: 2;
+    }
+    .icon-btn {
+      width: 34px; height: 34px; border: 0; border-radius: 50%;
+      background: rgba(0,0,0,.25); color: #fff; font-size: 16px; cursor: pointer;
+    }
+
+    .sheet {
+      margin-top: -14px;
+      flex: 1;
+      overflow: auto;
+      background: #fff;
+      border-radius: 18px 18px 0 0;
+      padding: 14px 12px 28px;
+      position: relative;
+      z-index: 1;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+      gap: var(--stack);
+    }
+    /* Home stack: shared card chrome */
+    .sheet > .label { margin-bottom: -4px; }
+    .sheet .progress-card,
+    .sheet .scratch-strip,
+    .sheet .how-block,
+    .sheet .home-contacts,
+    .sheet .code {
+      margin-bottom: 0;
+      margin-top: 0;
+      border-radius: var(--radius);
+      box-sizing: border-box;
+    }
+    .label {
+      font-size: 11px; font-weight: 700; letter-spacing: .05em;
+      text-transform: uppercase; color: var(--muted); margin: 0 2px;
+    }
+    .card {
+      border: 1px solid var(--line); border-radius: var(--radius);
+      padding: var(--pad); margin-bottom: var(--stack); background: #fff;
+    }
+    .card.tap { cursor: pointer; }
+    .progress-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: var(--pad);
+      margin-bottom: 0;
+      background: #fff;
+      transition: border-color .15s, box-shadow .15s, background .2s;
+    }
+    .progress-card:hover {
+      border-color: #c5d4e6;
+      box-shadow: 0 2px 10px rgba(31, 111, 235, .08);
+    }
+    /* Case 3 — never referred: exciting gold empty */
+    .progress-card.is-new-empty {
+      border-color: rgba(212, 175, 55, .35);
+      background:
+        radial-gradient(ellipse 90% 80% at 100% 0%, rgba(245, 230, 166, .55), transparent 55%),
+        radial-gradient(ellipse 70% 60% at 0% 100%, rgba(31, 111, 235, .08), transparent 50%),
+        linear-gradient(165deg, #fffef8 0%, #fff 55%, #f7faff 100%);
+      box-shadow: 0 6px 20px rgba(184, 134, 11, .08);
+    }
+    .progress-card.is-new-empty:hover {
+      border-color: rgba(212, 175, 55, .5);
+      box-shadow: 0 8px 24px rgba(184, 134, 11, .12);
+    }
+    .progress-card.is-new-empty .pc-chevron { display: none; }
+    /* Case 2 — past yes, this month empty: quiet white card (keep chevron) */
+    .progress-card.is-month-empty {
+      background: #fff;
+      border-color: var(--line);
+      box-shadow: none;
+    }
+    .pc-empty-quiet {
+      margin: 0;
+      padding: 0 0 0 8px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.35;
+      text-align: left;
+    }
+    .pc-empty-quiet[hidden] { display: none !important; }
+    .pc-empty-new {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      padding: 8px 0 2px;
+      text-align: left;
+    }
+    .pc-empty-new[hidden] { display: none !important; }
+    .pc-empty-badge {
+      display: inline-flex;
+      align-self: flex-start;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--amber-text);
+      background: var(--amber-soft);
+      border: 1px solid var(--amber-border);
+      border-radius: 999px;
+      padding: 4px 10px;
+    }
+    .pc-empty-hero {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .pc-empty-reward {
+      flex-shrink: 0;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 32% 28%, #fffef6, #fff1c2 42%, #f0d078 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.75),
+        0 0 0 3px rgba(255, 243, 214, .9),
+        0 8px 18px rgba(184, 134, 11, .28);
+      animation: rewardPulse 2.8s ease-in-out infinite;
+    }
+    .pc-empty-reward svg {
+      width: 34px;
+      height: 34px;
+      display: block;
+      margin-top: 1px;
+    }
+    @keyframes rewardPulse {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-2px) scale(1.03); }
+    }
+    .pc-empty-copy { min-width: 0; }
+    .pc-empty-title {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--ink);
+    }
+    .pc-empty-sub {
+      margin: 4px 0 0;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+    .progress-card.is-new-empty .hint {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #1f6feb, #1558c0);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .progress-card.is-new-empty .hint:hover { color: #fff; filter: brightness(1.05); }
+    .pc-main {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .pc-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    .pc-top-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .pc-chevron {
+      color: #8a9aab;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1;
+    }
+    .pc-body {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    /* Keep [hidden] winning over display:flex / block rules */
+    .pc-body[hidden],
+    .pc-empty-quiet[hidden],
+    .pc-empty-new[hidden],
+    .joined[hidden] {
+      display: none !important;
+    }
+    .title { font-size: 15px; font-weight: 700; margin: 0; }
+    .sub { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--amber-text);
+      background: var(--amber-soft);
+      border: 1px solid var(--amber-border);
+      border-radius: 999px;
+      padding: 3px 8px;
+      margin: 0;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .joined {
+      font-size: 12px; color: var(--muted); white-space: nowrap;
+    }
+    .joined b { color: var(--ink); font-weight: 700; }
+    .amt { font-size: 22px; font-weight: 700; color: var(--blue); }
+    .bar {
+      height: 8px; background: var(--blue-soft); border-radius: 999px;
+      overflow: hidden;
+      /* Same left inset as month / X/30 text — don’t let the track stick out past copy */
+      margin: 0 0 0 8px;
+      width: calc(100% - 8px);
+      box-sizing: border-box;
+    }
+    .bar > i {
+      display: block; height: 100%; width: 23%;
+      background: var(--blue); border-radius: 999px;
+      transition: width .2s ease;
+    }
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      width: 100%;
+      margin: 0;
+      /* 8px = .pill padding-left so “4/30 first sales” lines up with month text */
+      padding: 0 0 0 8px;
+      font-size: 12px;
+      color: var(--muted);
+      box-sizing: border-box;
+    }
+    .meta > span { white-space: nowrap; }
+    .meta b { color: var(--ink); }
+    .hint {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      margin: 10px 0 0;
+      /* top divider + same 8px left inset as month text */
+      padding: 10px 0 0 8px;
+      border: 0;
+      border-top: 1px solid #eef2f6;
+      background: transparent;
+      text-align: left;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--blue);
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .hint:hover { color: var(--blue-hover); }
+    .legend {
+      margin: 0 0 12px;
+      border: 1px solid #e6ebf0;
+      border-radius: 10px;
+      background: #f7f9fb;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .legend summary {
+      cursor: pointer;
+      padding: 8px 10px;
+      font-weight: 700;
+      color: var(--ink);
+      list-style: none;
+    }
+    .legend summary::-webkit-details-marker { display: none; }
+    .legend summary::after {
+      content: ' ›';
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .legend[open] summary::after { content: ' ˅'; }
+    .legend .legend-body { padding: 0 10px 10px; }
+    .legend b { color: var(--ink); }
+    .legend ul { margin: 4px 0 0; padding-left: 16px; }
+    .legend li { margin: 3px 0; }
+
+    .scratch-strip {
+      display: flex; align-items: center; gap: 12px;
+      border: 1px solid var(--amber-border);
+      background: var(--amber-soft);
+      border-radius: var(--radius);
+      padding: var(--pad);
+      cursor: pointer; text-align: left; width: 100%;
+      font: inherit; color: inherit;
+    }
+    .scratch-strip.hidden { display: none; }
+    .scratch-ico {
+      width: 40px; height: 40px; border-radius: var(--radius-sm); flex-shrink: 0;
+      background: linear-gradient(135deg, #d4af37, #f5e6a6 45%, #b8860b);
+    }
+    .scratch-strip strong { font-size: 14px; font-weight: 700; display: block; }
+    .scratch-strip .sub { margin: 2px 0 0; font-size: 12px; }
+    .scratch-strip .cta {
+      margin-left: auto; font-size: 13px; font-weight: 700;
+      color: var(--amber); white-space: nowrap;
+    }
+
+    .rule {
+      display: flex; align-items: center; gap: 8px;
+      margin: 14px 0 10px; color: var(--muted);
+      font-size: 11px; font-weight: 700; letter-spacing: .04em;
+    }
+    .rule::before, .rule::after {
+      content: ""; flex: 1; height: 1px; background: var(--line);
+    }
+    .how-block {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      overflow: hidden;
+    }
+    .how-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: var(--pad);
+      border: 0;
+      background: #fff;
+      cursor: pointer;
+      font: inherit;
+      color: var(--ink);
+      min-height: 52px;
+    }
+    .how-toggle-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .how-toggle-chevron {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1;
+      transition: transform .2s ease;
+    }
+    .how-block:not(.open) .how-toggle-chevron {
+      transform: rotate(180deg);
+    }
+    .how-panel {
+      display: none;
+      padding: 0 var(--pad) var(--pad);
+      border-top: 1px solid var(--line);
+    }
+    .how-block.open .how-panel { display: block; }
+    .how-img {
+      width: 100%; border-radius: var(--radius-sm); display: block;
+      aspect-ratio: 78/41; object-fit: cover; cursor: pointer;
+      margin-top: 12px;
+    }
+    /* Home: secondary path — same card chrome as How it works */
+    .home-contacts {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      padding: var(--pad);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      min-height: 68px;
+    }
+    .home-contacts:active { background: #f7f9fb; }
+    .home-contacts[hidden] { display: none !important; }
+    .home-contacts .ico {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background: var(--blue-soft);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .home-contacts .ico svg { width: 18px; height: 18px; display: block; }
+    .home-contacts .ico svg path { fill: var(--blue); }
+    .home-contacts .copy { flex: 1; min-width: 0; }
+    .home-contacts .copy b { display: block; font-size: 14px; font-weight: 700; }
+    .home-contacts .copy span {
+      display: block;
+      margin-top: 2px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .home-contacts .chev { color: var(--muted); font-size: 18px; font-weight: 500; }
+    .ghost {
+      display: block; margin: 10px auto 0;
+      border: 1px solid var(--line); background: var(--blue-soft); color: var(--blue);
+      border-radius: var(--radius); padding: 10px 16px; font: inherit;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .primary {
+      width: 100%; border: 0; border-radius: var(--radius); background: var(--blue);
+      color: #fff; font: inherit; font-size: 15px; font-weight: 700;
+      padding: 14px; cursor: pointer; margin: 0;
+      min-height: 52px;
+    }
+    .primary:active { background: var(--blue-hover); }
+    .secondary {
+      width: 100%; border: 1px solid var(--line); border-radius: var(--radius);
+      background: #fff; color: var(--ink); font: inherit; font-size: 14px;
+      font-weight: 700; padding: 12px var(--pad); cursor: pointer; margin-top: 8px;
+    }
+    .or {
+      text-align: center; font-size: 12px; color: var(--muted);
+      margin: 0; font-weight: 500;
+    }
+    .code {
+      border: 1px solid var(--amber-border);
+      border-radius: var(--radius);
+      padding: var(--pad);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--amber-soft);
+      min-height: 52px;
+    }
+    .code b { font-size: 15px; font-weight: 700; color: var(--ink); }
+    .code button {
+      border: 0; background: transparent; color: var(--amber);
+      font-weight: 700; font: inherit; font-size: 13px; cursor: pointer;
+      padding: 0;
+    }
+    .tc { text-align: center; margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+
+    .topbar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 34px 12px 10px; background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar h2 { margin: 0; font-size: 17px; flex: 1; }
+    .topbar .earned { font-size: 13px; font-weight: 700; color: var(--ok); }
+    .back {
+      width: 34px; height: 34px; border: 0; border-radius: 50%;
+      background: var(--bg); cursor: pointer; font-size: 16px;
+    }
+    .body { flex: 1; overflow: auto; padding: 12px; }
+
+    .month-select-wrap {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 12px;
+    }
+    .month-select-wrap label {
+      font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap;
+    }
+    .month-select {
+      flex: 1;
+      appearance: none;
+      border: 1px solid #c9d4e0;
+      background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23667788' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") right 12px center no-repeat;
+      border-radius: 12px;
+      padding: 11px 36px 11px 12px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .filters {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      padding-bottom: 4px; margin-bottom: 8px;
+    }
+    #amountFilters { margin-bottom: 12px; }
+    #amountFilters[hidden] { display: none !important; }
+    .filters button {
+      flex: 0 0 auto; border: 1px solid #c9d4e0; background: #fff;
+      border-radius: 999px; padding: 7px 10px; font: inherit;
+      font-size: 11px; font-weight: 700; cursor: pointer; color: var(--ink);
+      white-space: nowrap;
+    }
+    .filters button.active {
+      background: #1f6feb; border-color: #1f6feb; color: #fff;
+    }
+    .filters button .n { opacity: .75; font-weight: 600; }
+    /* Amount chips slightly quieter under Completed */
+    #amountFilters button {
+      font-size: 11px;
+      font-weight: 600;
+      background: #f7f9fb;
+    }
+    #amountFilters button.active {
+      background: #1f6feb;
+      font-weight: 700;
+    }
+
+    .friend {
+      width: 100%; display: grid; grid-template-columns: 40px 1fr auto;
+      gap: 10px; align-items: center; padding: 12px 0; border: 0;
+      border-bottom: 1px solid var(--line); background: transparent;
+      text-align: left; font: inherit; cursor: pointer; color: inherit;
+    }
+    .friend:last-child { border-bottom: 0; }
+    .friend.disabled { cursor: default; }
+    .avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: grid; place-items: center; color: #fff; font-weight: 700; background: #5b8def;
+    }
+    .avatar.b { background: #6a5acd; }
+    .avatar.c { background: #2a9d8f; }
+    .avatar.d { background: #d97706; }
+    .name { font-size: 14px; font-weight: 700; }
+    .detail { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .earn { font-size: 13px; font-weight: 700; color: var(--ok); text-align: right; }
+    .earn .st {
+      display: block; margin-top: 2px; font-size: 11px; font-weight: 600; color: var(--amber);
+    }
+    .earn .st.done { color: var(--muted); }
+    .earn.zero { color: var(--muted); }
+    /* Days left — same amber / red urgency as before */
+    .detail .timer { font-weight: 700; }
+    .detail .timer.warn { color: #cc9900; }
+    .detail .timer.urgent { color: #d92d20; }
+    .friend-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    .ref-btns { display: flex; gap: 6px; }
+    .wa-pill, .sms-pill {
+      border: 0;
+      border-radius: 8px;
+      padding: 7px 10px;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .wa-pill { background: #e8f8ee; color: #14804a; }
+    .sms-pill { background: #e8f1fc; color: #1f6feb; }
+    .empty { text-align: center; padding: 28px 12px; color: var(--muted); font-size: 13px; }
+
+    .scratch-body {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: flex-start; padding: 48px 16px 18px;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212, 175, 55, .28), transparent 55%),
+        linear-gradient(165deg, #1a1208 0%, #0c1b33 42%, #071018 100%);
+      color: #fff; text-align: center;
+      overflow: auto;
+    }
+    /* Persistent tier chrome (foil + unlock UI stay the same family) */
+    .scratch-body.theme-100 {
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(197, 204, 214, .35), transparent 55%),
+        linear-gradient(165deg, #1a1f26 0%, #0c1520 42%, #071018 100%);
+    }
+    .scratch-body.theme-100 .scratch-pill {
+      color: #15202b;
+      background: linear-gradient(135deg, #e8ecf1, #9aa3b2);
+    }
+    .scratch-body.theme-100 .scratch-progress-track > i {
+      background: linear-gradient(90deg, #7b8494, #c5ccd6);
+    }
+    .scratch-body.theme-100 .scratch-actions .primary {
+      background: linear-gradient(135deg, #e8ecf1, #9aa3b2);
+      color: #15202b;
+    }
+    .scratch-body.theme-100 .scratch-nav {
+      border-color: rgba(197, 204, 214, .45);
+      color: #c5ccd6;
+    }
+    .scratch-body.theme-100 .scratch-dot.active {
+      background: linear-gradient(90deg, #7b8494, #c5ccd6);
+    }
+    .scratch-body.theme-1000 {
+      background:
+        radial-gradient(ellipse 70% 42% at 50% 0%, rgba(212, 175, 55, .16), transparent 58%),
+        linear-gradient(168deg, #12141a 0%, #0a0b10 50%, #07080c 100%);
+    }
+    .scratch-body.theme-1000 .scratch-pill {
+      color: #1a1208;
+      background: linear-gradient(135deg, #e8c76a, #d4af37);
+      border: 0;
+    }
+    .scratch-body.theme-1000 .scratch-progress-track > i {
+      background: linear-gradient(90deg, #a8841c, #e8c76a);
+    }
+    .scratch-body.theme-1000 .scratch-actions .primary {
+      background: linear-gradient(135deg, #e8c76a, #d4af37 55%, #b8860b);
+      color: #1a1208;
+      border: 0;
+    }
+    .scratch-body.theme-1000 .scratch-nav {
+      border-color: rgba(212, 175, 55, .35);
+      color: #e8c76a;
+    }
+    .scratch-body.theme-1000 .scratch-dot.active {
+      background: linear-gradient(90deg, #b8860b, #e8c76a);
+    }
+    .scratch-top-meta {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 8px;
+      min-height: 22px;
+    }
+    .scratch-pill {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      color: #1a1208;
+      background: linear-gradient(135deg, #f5e6a6, #d4af37);
+      border-radius: 999px;
+      padding: 4px 10px;
+    }
+    .scratch-body h3 {
+      margin: 0 0 2px;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    .scratch-body .sub {
+      color: rgba(255,255,255,.62);
+      margin: 0 0 10px;
+      font-size: 13px;
+    }
+    .scratch-progress {
+      width: min(260px, 100%);
+      margin: 0 auto 12px;
+    }
+    .scratch-progress-track {
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      overflow: hidden;
+    }
+    .scratch-progress-track > i {
+      display: block;
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #c9a227, #f5e6a6);
+      transition: width .25s ease;
+    }
+    .scratch-progress-label {
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,.55);
+    }
+    .scratch-deck {
+      position: relative;
+      width: min(250px, 100%);
+      margin: 0 auto 10px;
+      padding-bottom: 12px;
+    }
+    .scratch-deck::before,
+    .scratch-deck::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      border-radius: 20px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(245, 230, 166, .18);
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .scratch-deck::before {
+      width: 92%;
+      height: 100%;
+      top: 10px;
+      z-index: 0;
+    }
+    .scratch-deck::after {
+      width: 96%;
+      height: 100%;
+      top: 5px;
+      z-index: 1;
+      background: rgba(255,255,255,.11);
+    }
+    .scratch-stage {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      max-height: min(340px, 42vh);
+      border-radius: 20px;
+      overflow: hidden;
+      touch-action: none;
+      background:
+        radial-gradient(circle at 30% 20%, #fff8dc, transparent 40%),
+        linear-gradient(145deg, #f7e7a1 0%, #e0c35a 35%, #b8860b 70%, #8a6a12 100%);
+      box-shadow:
+        0 0 0 1px rgba(255, 236, 170, .55),
+        0 18px 40px rgba(0,0,0,.45),
+        0 0 48px rgba(212, 175, 55, .22);
+    }
+    .scratch-stage-frame {
+      position: absolute;
+      inset: 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.35);
+      pointer-events: none;
+      z-index: 3;
+    }
+    .scratch-empty {
+      display: none;
+      padding: 48px 20px;
+      color: rgba(255,255,255,.8);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+    .scratch-empty.show { display: block; }
+    .scratch-prize {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; color: var(--ink);
+      padding: 16px;
+      background: linear-gradient(180deg, #fffef8, #fff);
+    }
+    .scratch-prize .big {
+      font-size: 48px; font-weight: 700;
+      background: linear-gradient(135deg, #b8860b, #1f6feb);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .scratch-prize .label {
+      color: var(--muted); letter-spacing: .04em; text-transform: uppercase;
+      font-size: 11px; font-weight: 700; margin: 8px 0 0;
+    }
+    .scratch-prize .from { margin-top: 10px; font-size: 14px; color: var(--ink); font-weight: 600; }
+    /* Revealed card themes (match foil tiers) */
+    .scratch-prize.tier-100 {
+      background: linear-gradient(180deg, #f4f6f8, #e8ecf1 55%, #fff);
+    }
+    .scratch-prize.tier-100 .big {
+      background: linear-gradient(135deg, #9aa3b2, #5c6570 40%, #c5ccd6);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    .scratch-prize.tier-100 .label { color: #7b8494; }
+    .scratch-prize.tier-400 {
+      background: linear-gradient(180deg, #fffef8, #fff);
+    }
+    .scratch-prize.tier-400 .big {
+      background: linear-gradient(135deg, #b8860b, #d4af37 45%, #1f6feb);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    .scratch-prize.tier-1000 {
+      background:
+        radial-gradient(circle at 50% 20%, rgba(232, 199, 106, .22), transparent 55%),
+        linear-gradient(180deg, #1a1c24 0%, #0e1016 55%, #08090c 100%);
+      color: #e8c76a;
+      box-shadow: inset 0 0 0 1px rgba(212, 175, 55, .4);
+    }
+    .scratch-prize.tier-1000 .big {
+      background: linear-gradient(180deg, #f5e6a6, #e8c76a 45%, #d4af37);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+    .scratch-prize.tier-1000 .label {
+      color: rgba(232, 199, 106, .55);
+      letter-spacing: .12em;
+    }
+    .scratch-prize.tier-1000 .from { color: #e8c76a; }
+    #scratchCanvas {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      cursor: crosshair; z-index: 2;
+    }
+    .scratch-controls {
+      width: min(270px, 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 0 auto 10px;
+    }
+    .scratch-nav {
+      min-width: 88px;
+      height: 40px;
+      border: 1px solid rgba(245, 230, 166, .35);
+      background: rgba(255,255,255,.06);
+      color: #f5e6a6;
+      border-radius: 999px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0 14px;
+    }
+    .scratch-nav:disabled {
+      opacity: .3; cursor: default;
+    }
+    .scratch-hint {
+      font-size: 12px;
+      color: rgba(255,255,255,.5);
+      margin: 4px 0 0;
+    }
+    .scratch-dots {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 260px;
+      margin: 0 auto 8px;
+    }
+    .scratch-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      border: 0;
+      padding: 0;
+      background: rgba(255,255,255,.22);
+      cursor: pointer;
+    }
+    .scratch-dot.active {
+      width: 18px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #d4af37, #f5e6a6);
+    }
+    .scratch-actions {
+      width: min(280px, 100%);
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 8px;
+      flex-shrink: 0;
+      padding-bottom: 4px;
+    }
+    .scratch-actions.show { display: flex; }
+    .scratch-actions .primary {
+      margin-top: 0;
+      width: 100%;
+      padding: 13px 12px;
+      background: linear-gradient(135deg, #f5e6a6, #d4af37);
+      color: #1a1208;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+    .scratch-actions-row {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+    .scratch-actions .secondary,
+    .scratch-actions .ghost-btn {
+      flex: 1;
+      margin: 0;
+      width: auto;
+      border-radius: 12px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 11px 8px;
+      cursor: pointer;
+    }
+    .scratch-actions .secondary {
+      background: transparent;
+      border: 1px solid rgba(245, 230, 166, .35);
+      color: #f5e6a6;
+    }
+    .scratch-actions .ghost-btn {
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.85);
+    }
+    .scratch-body.is-unlocked .scratch-stage {
+      max-height: min(260px, 32vh);
+    }
+    .scratch-body.is-unlocked .scratch-deck {
+      margin-bottom: 4px;
+      padding-bottom: 8px;
+    }
+
+    .overlay {
+      position: absolute; inset: 0; background: rgba(15,23,42,.45);
+      display: none; align-items: flex-end; z-index: 6;
+    }
+    .overlay.open { display: flex; }
+    .bs {
+      width: 100%; max-height: 85%; overflow: auto;
+      background: #fff; border-radius: 18px 18px 0 0; padding: 12px 16px 20px;
+    }
+    .grab {
+      width: 40px; height: 4px; border-radius: 999px;
+      background: #d1d5db; margin: 0 auto 10px;
+    }
+    .bs h3 { margin: 0 0 10px; font-size: 17px; color: var(--ink); }
+    .bs img.steps {
+      width: 100%;
+      border-radius: 10px;
+      display: block;
+      height: auto;
+      /* Full poster visible — do not crop with cover + forced ratio */
+      aspect-ratio: auto;
+      object-fit: contain;
+      background: #0b3d91;
+    }
+    .table { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: 12px; }
+    .th, .tr {
+      display: grid; grid-template-columns: 1.4fr 1fr;
+      padding: 11px 12px; font-size: 13px;
+    }
+    .th {
+      background: #f7fafc; font-size: 11px; font-weight: 700;
+      color: var(--muted); text-transform: uppercase;
+    }
+    .tr { border-top: 1px solid var(--line); font-weight: 600; color: var(--ink); }
+    .campaign-line {
+      margin: 10px 0 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--amber);
+      text-align: center;
+    }
+    .note { margin: 10px 0 0; font-size: 11px; color: var(--muted); line-height: 1.4; }
+    .option {
+      display: flex; align-items: center; gap: 12px; width: 100%;
+      border: 0; background: transparent; padding: 12px 2px;
+      border-bottom: 1px solid var(--line); cursor: pointer;
+      font: inherit; text-align: left; color: var(--ink);
+    }
+    .share-icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      display: block;
+    }
+    .perm-bs { text-align: center; padding-bottom: 22px; }
+    .perm-bs .perm-icon {
+      width: 72px; height: 72px; margin: 8px auto 14px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #e8f3ff, #cce5ff);
+      display: grid; place-items: center;
+    }
+    .perm-bs .perm-icon svg { width: 40px; height: 40px; }
+    .perm-bs .perm-body {
+      margin: 0 auto 16px;
+      max-width: 300px;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--muted);
+      text-align: center;
+    }
+    .perm-bs .secondary {
+      margin-top: 10px;
+      background: transparent;
+      border: 0;
+      color: var(--muted);
+      box-shadow: none;
+    }
+    .contacts-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0 0 12px;
+      background: var(--bg);
+      min-height: 0;
+      overflow: hidden;
+    }
+    .contacts-search {
+      margin: 0 16px 10px;
+      width: calc(100% - 32px);
+      border: 1px solid #d5e0ec;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font: inherit;
+      font-size: 14px;
+      background: #fff;
+      color: var(--ink);
+    }
+    .contacts-search::placeholder { color: #94a3b8; }
+    .contacts-meta {
+      margin: 0 16px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .contacts-list {
+      flex: 1;
+      overflow: auto;
+      background: #fff;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 0 16px;
+    }
+    .contact-row {
+      display: grid;
+      grid-template-columns: 40px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .contact-row:last-child { border-bottom: 0; }
+    .contact-row .joined {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ok);
+      padding: 0 4px;
+    }
+    .contact-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .contact-actions button {
+      border: 0;
+      border-radius: 8px;
+      padding: 7px 10px;
+      font: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #fff;
+    }
+    .contact-actions .wa-btn { background: #25d366; }
+    .contact-actions .sms-btn { background: #475569; }
+    .contacts-footer {
+      padding: 12px 16px 4px;
+      background: var(--bg);
+    }
+    .toast {
+      position: absolute; left: 50%; bottom: 24px;
+      transform: translateX(-50%) translateY(12px);
+      background: #15202b; color: #fff; font-size: 12px; font-weight: 600;
+      padding: 10px 14px; border-radius: 999px; opacity: 0; transition: .2s;
+      z-index: 9; pointer-events: none; white-space: nowrap;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #confettiCanvas {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 20;
+    }
+  </style>
+</head>
+<body>
+  <div class="mvp-shell">
+  <header class="mvp-header">
+    <h1>Referrals MVP</h1>
+  </header>
+  <div class="mvp-main">
+  <aside class="mvp-panel">
+    <p class="panel-title">Demo controls</p>
+    <details class="legend">
+      <summary>How the cases work</summary>
+      <div class="legend-body">
+        <ul>
+          <li><b>Case 1:</b> progress bar + joined / first sales / earned.</li>
+          <li><b>Case 2:</b> this month empty — quiet progress (demo has no leftover unscratched past cards).</li>
+          <li><b>Case 3:</b> never referred — no scratch cards → no strip.</li>
+          <li><b>Scratch strip:</b> max <b>3</b> unscratched (₹100 / ₹400 / ₹1,000). Scratch all → strip disappears from home.</li>
+          <li><b>Home contacts row:</b> demo with Invite from contacts on home vs without that row.</li>
+        </ul>
+      </div>
+    </details>
+    <div class="tabs">
+      <div class="tab-group">
+        <div class="tab-label">Screens</div>
+        <button type="button" class="active" data-go="home">Home</button>
+        <button type="button" data-go="progress">Referrals</button>
+        <button type="button" data-go="scratch">Scratch</button>
+        <button type="button" data-go="contacts">Contacts</button>
+      </div>
+      <div class="tab-group">
+        <div class="tab-label">Sheets</div>
+        <button type="button" data-open-how>How it works</button>
+        <button type="button" data-open-share>Share</button>
+      </div>
+      <div class="tab-group">
+        <div class="tab-label">Home cases</div>
+        <button type="button" id="filledToggle" data-toggle-filled>Case 1: has this month</button>
+        <button type="button" id="monthEmptyToggle" data-toggle-month-empty>Case 2: past yes · month 0</button>
+        <button type="button" id="zeroToggle" data-toggle-zero>Case 3: never referred</button>
+      </div>
+      <div class="tab-group">
+        <div class="tab-label">Foil demos</div>
+        <button type="button" data-foil-demo="100">Foil: ₹100 silver</button>
+        <button type="button" data-foil-demo="400">Foil: ₹400 gold</button>
+        <button type="button" data-foil-demo="1000">Foil: ₹1,000 luxe</button>
+        <button type="button" id="resetScratchDemo">Reset scratched (demo)</button>
+      </div>
+      <div class="tab-group">
+        <div class="tab-label">Font</div>
+        <button type="button" id="fontFigtreeBtn" class="active" data-font="figtree">Figtree (app)</button>
+        <button type="button" id="fontDmBtn" data-font="dm">DM Sans (old MVP)</button>
+      </div>
+      <div class="tab-group">
+        <div class="tab-label">Home invite row</div>
+        <button type="button" id="homeInviteOnToggle" data-home-invite="on">With Invite contacts</button>
+        <button type="button" id="homeInviteOffToggle" data-home-invite="off">Without Invite contacts</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="phone">
+    <div class="screen-wrap" id="app">
+      <div class="status"><span>9:41</span><span>5G ●●●</span></div>
+
+      <section class="screen active" data-screen="home">
+        <div class="hero">
+          <img class="hero-img" alt="Refer and Earn"
+            src="https://cdn.gromo.in/static-resources/notification-resources/notification_images/1783659481_Artboard+10.png" />
+          <div class="hero-bar">
+            <button class="icon-btn" type="button">←</button>
+            <button class="icon-btn" type="button" data-toast="Support (demo)">?</button>
+          </div>
+        </div>
+        <div class="sheet">
+          <div class="label">Your Referral's Progress</div>
+          <div class="progress-card" id="progressCard">
+            <div class="pc-main" id="pcMain" data-go="progress" role="button" tabindex="0">
+              <div class="pc-top">
+                <span class="pill" id="homeMonthPill">August 2026</span>
+                <div class="pc-top-right">
+                  <span class="joined" id="homeJoinedWrap"><b id="homeJoined">18</b> joined</span>
+                  <span class="pc-chevron" aria-hidden="true">›</span>
+                </div>
+              </div>
+              <div class="pc-body" id="pcFilled">
+                <div class="bar"><i id="homeBar"></i></div>
+                <div class="meta">
+                  <span><b id="homeCount">2</b>/<b id="homeJoinedDenom">4</b> first sales</span>
+                  <span><b id="homeEarned">₹100</b> earned</span>
+                </div>
+              </div>
+              <!-- Case 2: past referrals, current month empty -->
+              <p class="pc-empty-quiet" id="pcEmptyQuiet" hidden>No referrals yet this month</p>
+              <!-- Case 3: never referred since campaign -->
+              <div class="pc-empty-new" id="pcEmptyNew" hidden>
+                <span class="pc-empty-badge">Limited time · up to ₹1,100</span>
+                <div class="pc-empty-hero">
+                  <span class="pc-empty-reward" aria-hidden="true">
+                    <svg viewBox="0 0 48 48" fill="none">
+                      <!-- soft ground shadow -->
+                      <ellipse cx="24" cy="42" rx="11" ry="2.2" fill="#c9a227" fill-opacity=".28"/>
+                      <!-- box body -->
+                      <rect x="10" y="20" width="28" height="18" rx="4" fill="url(#gBody)"/>
+                      <rect x="10" y="20" width="28" height="18" rx="4" fill="url(#gShine)" fill-opacity=".35"/>
+                      <!-- lid -->
+                      <rect x="8" y="15" width="32" height="7" rx="3" fill="url(#gLid)"/>
+                      <!-- vertical ribbon -->
+                      <rect x="21.5" y="15" width="5" height="23" rx="1.5" fill="url(#gRibbon)"/>
+                      <!-- horizontal ribbon on lid -->
+                      <rect x="8" y="16.5" width="32" height="3.5" fill="#f5e6a6" fill-opacity=".55"/>
+                      <!-- bow left -->
+                      <path d="M24 15C19.2 15 15.8 11.8 16.4 9.2c.5-2.2 3.2-2.8 5.2-1.2C23.2 9.2 24 12.2 24 15Z" fill="url(#gBow)"/>
+                      <!-- bow right -->
+                      <path d="M24 15C28.8 15 32.2 11.8 31.6 9.2c-.5-2.2-3.2-2.8-5.2-1.2C24.8 9.2 24 12.2 24 15Z" fill="url(#gBow)"/>
+                      <!-- bow knot -->
+                      <circle cx="24" cy="14.2" r="2.4" fill="#fff3c4"/>
+                      <circle cx="24" cy="14.2" r="1.4" fill="#e8c76a"/>
+                      <!-- sparkles -->
+                      <path d="M37 12l.7 1.6L39.3 14.3l-1.6.7L37 16.6l-.7-1.6-1.6-.7 1.6-.7L37 12Z" fill="#fff8dc"/>
+                      <path d="M11 12.5l.5 1.1 1.1.5-1.1.5-.5 1.1-.5-1.1-1.1-.5 1.1-.5.5-1.1Z" fill="#fff8dc" fill-opacity=".9"/>
+                      <defs>
+                        <linearGradient id="gBody" x1="10" y1="20" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+                          <stop stop-color="#3b82f6"/>
+                          <stop offset="1" stop-color="#1a56db"/>
+                        </linearGradient>
+                        <linearGradient id="gShine" x1="14" y1="20" x2="20" y2="38" gradientUnits="userSpaceOnUse">
+                          <stop stop-color="#fff" stop-opacity=".55"/>
+                          <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+                        </linearGradient>
+                        <linearGradient id="gLid" x1="8" y1="15" x2="40" y2="22" gradientUnits="userSpaceOnUse">
+                          <stop stop-color="#60a5fa"/>
+                          <stop offset="1" stop-color="#2563eb"/>
+                        </linearGradient>
+                        <linearGradient id="gRibbon" x1="21.5" y1="15" x2="26.5" y2="38" gradientUnits="userSpaceOnUse">
+                          <stop stop-color="#fff8dc"/>
+                          <stop offset=".5" stop-color="#f0d78a"/>
+                          <stop offset="1" stop-color="#d4af37"/>
+                        </linearGradient>
+                        <linearGradient id="gBow" x1="16" y1="8" x2="24" y2="15" gradientUnits="userSpaceOnUse">
+                          <stop stop-color="#fff3c4"/>
+                          <stop offset="1" stop-color="#e0b84a"/>
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                  </span>
+                  <div class="pc-empty-copy">
+                    <p class="pc-empty-title">Your first ₹100 is waiting</p>
+                    <p class="pc-empty-sub">Refer a friend — unlock on their 1st sale. Hit 5 for ₹400 each.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="hint" id="homeHint" data-hint-action="share">
+              13 more to unlock ₹1,000 each ›
+            </button>
+          </div>
+
+          <button class="scratch-strip" id="scratchStrip" type="button" data-go="scratch" data-scratch-id="neha">
+            <span class="scratch-ico" aria-hidden="true"></span>
+            <span>
+              <strong id="stripTitle">1 reward to scratch</strong>
+              <span class="sub" id="stripSub" style="display:block">From Neha’s 1st sale</span>
+            </span>
+            <span class="cta">Scratch ›</span>
+          </button>
+
+          <div class="how-block open" id="howBlock">
+            <button type="button" class="how-toggle" id="howToggle" aria-expanded="true" aria-controls="howPanel">
+              <span class="how-toggle-label">HOW IT WORKS?</span>
+              <span class="how-toggle-chevron" aria-hidden="true">⌃</span>
+            </button>
+            <div class="how-panel" id="howPanel">
+              <img class="how-img" data-open-how alt="How it works"
+                src="https://cdn.gromo.in/static-resources/notification-resources/notification_images/1780405348_banner030.jpg" />
+              <button class="ghost" type="button" data-open-how>See How it Works ›</button>
+            </div>
+          </div>
+
+          <button class="primary" type="button" data-open-share>
+            Refer now
+          </button>
+          <button class="home-contacts" type="button" id="homeContactsBtn">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3Zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3Zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z" fill="#1f6feb"/>
+              </svg>
+            </span>
+            <span class="copy">
+              <b>Invite from contacts</b>
+              <span>Find friends in your phonebook</span>
+            </span>
+            <span class="chev" aria-hidden="true">›</span>
+          </button>
+          <div class="or">Or share your referral code</div>
+          <div class="code">
+            <b>SOCD7434</b>
+            <button type="button" data-toast="Code copied">Copy</button>
+          </div>
+          <div class="tc">Refer &amp; Earn — T&amp;Cs</div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="progress">
+        <div class="topbar">
+          <button class="back" type="button" data-go="home">←</button>
+          <h2>Referrals</h2>
+          <span class="earned" id="progressEarned">₹2,100</span>
+        </div>
+        <div class="body">
+          <div class="month-select-wrap">
+            <label for="monthSelect">Month</label>
+            <select id="monthSelect" class="month-select" aria-label="Select month">
+              <option value="2026-08" selected>August 2026</option>
+              <option value="2026-07">July 2026</option>
+              <option value="2026-06">June 2026</option>
+              <option value="2026-05">May 2026</option>
+            </select>
+          </div>
+          <div class="filters" id="statusFilters">
+            <button type="button" class="active" data-status="all">All <span class="n" id="c-all">(0)</span></button>
+            <button type="button" data-status="completed">Completed <span class="n" id="c-completed">(0)</span></button>
+            <button type="button" data-status="pending">Pending <span class="n" id="c-pending">(0)</span></button>
+          </div>
+          <div class="filters" id="amountFilters" hidden>
+            <button type="button" data-amount="100">₹100 <span class="n" id="c-100">(0)</span></button>
+            <button type="button" data-amount="400">₹400 <span class="n" id="c-400">(0)</span></button>
+            <button type="button" data-amount="1000">₹1,000 <span class="n" id="c-1000">(0)</span></button>
+          </div>
+          <div class="card" style="padding:2px 12px" id="rewardList"></div>
+          <p class="empty" id="emptyList" style="display:none">No referrals for this month / filter yet.</p>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="scratch">
+        <div class="topbar" style="background:transparent;border:0;position:absolute;left:0;right:0;z-index:3">
+          <button class="back" type="button" id="scratchBack" style="background:rgba(255,255,255,.12);color:#f5e6a6;border:1px solid rgba(245,230,166,.25)">←</button>
+          <h2 style="color:transparent;font-size:1px">Scratch</h2>
+          <span style="width:34px"></span>
+        </div>
+        <div class="scratch-body">
+          <div class="scratch-top-meta">
+            <span class="scratch-pill" id="scratchCount">12 / 15</span>
+          </div>
+          <h3 id="scratchHeading">Gaurav’s reward</h3>
+          <p class="sub" id="scratchSub">1st sale · Aug 2026</p>
+          <div class="scratch-progress" id="scratchProgressWrap">
+            <div class="scratch-progress-track"><i id="scratchProgressBar"></i></div>
+            <div class="scratch-progress-label" id="scratchCountSub">Keep going — collect every card</div>
+          </div>
+          <p class="scratch-empty" id="scratchEmpty">All rewards collected. Refer more friends to earn new ones.</p>
+          <div class="scratch-deck" id="scratchCarouselWrap">
+            <div class="scratch-stage" id="scratchStage">
+              <div class="scratch-prize tier-400" id="scratchPrize">
+                <div class="big" id="prizeAmount">₹400</div>
+                <div class="label">Reward</div>
+                <div class="from" id="prizeFrom">Gaurav’s 1st sale</div>
+              </div>
+              <canvas id="scratchCanvas"></canvas>
+              <div class="scratch-stage-frame" aria-hidden="true"></div>
+            </div>
+          </div>
+          <div class="scratch-dots" id="scratchCarousel" aria-label="Jump to reward"></div>
+          <div class="scratch-controls" id="scratchPager">
+            <button type="button" class="scratch-nav" id="scratchPrev">‹ Prev</button>
+            <button type="button" class="scratch-nav" id="scratchNextNav">Next ›</button>
+          </div>
+          <p class="scratch-hint" id="scratchHint">Scratch the gold foil</p>
+          <div class="scratch-actions" id="scratchActions">
+            <button class="primary" type="button" id="scratchNextBtn" hidden>Collect next ›</button>
+            <div class="scratch-actions-row">
+              <button class="ghost-btn" type="button" data-go="progress" id="scratchSeeBtn">See referrals</button>
+              <button class="secondary" type="button" data-go="home" data-open-share-after>Refer more</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="overlay" id="how">
+        <div class="bs">
+          <div class="grab"></div>
+          <div class="row">
+            <h3>How Refer &amp; Earn works</h3>
+            <button class="icon-btn" type="button" data-close-how style="background:#eef2f6;color:#64748b">×</button>
+          </div>
+          <img class="steps" alt="Refer steps"
+            src="https://cdn.gromo.in/static-resources/notification-resources/notification_images/1780404579_banner020.jpg" />
+          <div class="table">
+            <div class="th"><span>Refer this many</span><span>You earn</span></div>
+            <div class="tr"><span>1–4 Referrals</span><span>₹100 Each</span></div>
+            <div class="tr"><span>5–19 Referrals</span><span>₹400 Each</span></div>
+            <div class="tr"><span>20+ Referrals</span><span>₹1,000 Each</span></div>
+          </div>
+          <p class="campaign-line">Limited time · Ends 31st August</p>
+          <p class="note">Any self sale, insurance sale or sale to GroMo partner done by your referral will not be eligible for the referral earnings</p>
+          <button class="primary" type="button" data-close-how style="margin-top:14px">Got it</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="share">
+        <div class="bs">
+          <div class="grab"></div>
+          <h3>Refer now</h3>
+          <p class="sub" style="margin:0 0 8px;color:var(--muted)">Choose how you want to invite your friends</p>
+          <button class="option" type="button" data-toast="Opening WhatsApp…">
+            <!-- ic_whatsapp_round -->
+            <svg class="share-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 32C24.837 32 32 24.837 32 16C32 7.163 24.837 0 16 0C7.163 0 0 7.163 0 16C0 24.837 7.163 32 16 32Z" fill="#25D366"/><path fill-rule="evenodd" d="M16.527 24.902H16.524C14.931 24.901 13.367 24.501 11.977 23.743L6.933 25.067L8.283 20.136C7.451 18.694 7.012 17.057 7.013 15.38C7.015 10.134 11.283 5.867 16.527 5.867C19.072 5.868 21.461 6.858 23.257 8.657C25.054 10.455 26.042 12.845 26.041 15.388C26.039 20.632 21.773 24.899 16.527 24.902ZM12.211 22.021L12.499 22.192C13.714 22.913 15.105 23.294 16.524 23.295H16.527C20.886 23.295 24.433 19.747 24.435 15.387C24.436 13.274 23.614 11.287 22.121 9.793C20.628 8.298 18.643 7.474 16.531 7.474C12.169 7.474 8.621 11.021 8.619 15.381C8.619 16.875 9.037 18.33 9.829 19.589L10.017 19.888L9.218 22.806L12.211 22.021ZM21.32 17.65C21.261 17.551 21.103 17.491 20.865 17.372C20.627 17.253 19.458 16.678 19.24 16.599C19.023 16.52 18.864 16.48 18.706 16.718C18.547 16.956 18.092 17.491 17.953 17.65C17.814 17.809 17.676 17.829 17.438 17.709C17.2 17.59 16.434 17.34 15.526 16.53C14.819 15.899 14.342 15.121 14.204 14.883C14.065 14.645 14.189 14.516 14.308 14.398C14.415 14.291 14.546 14.12 14.665 13.981C14.783 13.842 14.823 13.743 14.902 13.585C14.981 13.426 14.942 13.287 14.882 13.168C14.823 13.049 14.348 11.879 14.149 11.403C13.957 10.939 13.76 11.002 13.615 10.995C13.476 10.988 13.317 10.986 13.159 10.986C13 10.986 12.743 11.046 12.525 11.284C12.307 11.522 11.693 12.097 11.693 13.267C11.693 14.437 12.545 15.568 12.664 15.726C12.783 15.885 14.34 18.286 16.725 19.316C17.292 19.561 17.735 19.707 18.08 19.817C18.649 19.998 19.168 19.972 19.577 19.911C20.034 19.843 20.984 19.336 21.182 18.781C21.38 18.225 21.38 17.749 21.32 17.65Z" fill="#FDFDFD"/></svg>
+            <span><b>WhatsApp</b><br><span class="sub">Recommended</span></span>
+          </button>
+          <button class="option" type="button" id="shareContactsBtn">
+            <!-- ic_phonebook_blue -->
+            <svg class="share-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.549 3.757L16.875 3.226A1.77 1.77 132.529 0 1 18.719 4.917L19.359 19.748A1.77 1.77 132.529 0 1 17.668 21.592L5.342 22.124A1.77 1.77 132.529 0 1 3.498 20.432L2.858 5.602A1.77 1.77 132.529 0 1 4.549 3.757z" fill="#CCE5FF"/><path d="M7.947 1.8H19.449A1.77 1.77 0 0 1 21.219 3.569V18.414A1.77 1.77 0 0 1 19.449 20.183H7.947A1.77 1.77 0 0 1 6.178 18.414V3.569A1.77 1.77 0 0 1 7.947 1.8z" fill="#61AEFA"/><path d="M5.759 6.814H6.595A0.836 0.836 0 0 1 7.431 7.649V7.649A0.836 0.836 0 0 1 6.595 8.485H5.759A0.836 0.836 0 0 1 4.924 7.649V7.649A0.836 0.836 0 0 1 5.759 6.814z" fill="#0F66BD"/><path d="M5.759 10.156H6.595A0.836 0.836 0 0 1 7.431 10.992V10.992A0.836 0.836 0 0 1 6.595 11.827H5.759A0.836 0.836 0 0 1 4.924 10.992V10.992A0.836 0.836 0 0 1 5.759 10.156z" fill="#0F66BD"/><path d="M5.759 13.498H6.595A0.836 0.836 0 0 1 7.431 14.334V14.334A0.836 0.836 0 0 1 6.595 15.17H5.759A0.836 0.836 0 0 1 4.924 14.334V14.334A0.836 0.836 0 0 1 5.759 13.498z" fill="#0F66BD"/><path d="M13.698 8.903m-2.089 0a2.089 2.089 0 1 1 4.178 0a2.089 2.089 0 1 1-4.178 0" fill="#0F66BD"/><circle cx="13.698" cy="8.903" r="2.089" fill="#0F66BD"/><path d="M17.851 14.752C18.096 14.752 18.296 14.553 18.272 14.31C18.17 13.253 17.705 12.259 16.948 11.502C16.086 10.64 14.917 10.156 13.698 10.156C12.479 10.156 11.31 10.64 10.448 11.502C9.691 12.259 9.225 13.253 9.123 14.31C9.1 14.553 9.3 14.752 9.544 14.752H17.851Z" fill="#fff" fill-opacity=".7"/></svg>
+            <span><b>Invite from contacts</b><br><span class="sub">Sync phonebook · see who’s on GroMo</span></span>
+          </button>
+          <button class="option" type="button" data-toast="Opening share sheet…">
+            <!-- ic_share_gray (Others on refer home) -->
+            <svg class="share-icon" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 0A20 20 0 0 1 40 20A20 20 0 0 1 20 40A20 20 0 0 1 0 20A20 20 0 0 1 20 0z" fill="#99A6B2"/><path d="M28 14.667C28 16.139 26.806 17.333 25.333 17.333C24.289 17.333 23.385 16.733 22.948 15.859C22.768 15.501 22.667 15.095 22.667 14.667C22.667 13.194 23.861 12 25.333 12C26.806 12 28 13.194 28 14.667Z" fill="#fff"/><path d="M28 25.333C28 26.806 26.806 28 25.333 28C23.861 28 22.667 26.806 22.667 25.333C22.667 24.905 22.768 24.499 22.948 24.14C23.385 23.267 24.289 22.667 25.333 22.667C26.806 22.667 28 23.861 28 25.333Z" fill="#fff"/><path d="M17.333 20C17.333 20.429 17.232 20.834 17.052 21.193C16.615 22.067 15.711 22.667 14.667 22.667C13.194 22.667 12 21.473 12 20C12 18.527 13.194 17.333 14.667 17.333C15.711 17.333 16.615 17.933 17.052 18.807C17.232 19.166 17.333 19.571 17.333 20Z" fill="#fff"/><path d="M17.052 21.193C17.232 20.834 17.333 20.429 17.333 20C17.333 19.571 17.232 19.166 17.052 18.807M17.052 21.193C16.615 22.067 15.711 22.667 14.667 22.667C13.194 22.667 12 21.473 12 20C12 18.527 13.194 17.333 14.667 17.333C15.711 17.333 16.615 17.933 17.052 18.807M17.052 21.193L22.948 24.14M17.052 18.807L22.948 15.859M22.948 15.859C23.385 16.733 24.289 17.333 25.333 17.333C26.806 17.333 28 16.139 28 14.667C28 13.194 26.806 12 25.333 12C23.861 12 22.667 13.194 22.667 14.667C22.667 15.095 22.768 15.501 22.948 15.859ZM22.948 24.14C22.768 24.499 22.667 24.905 22.667 25.333C22.667 26.806 23.861 28 25.333 28C26.806 28 28 26.806 28 25.333C28 23.861 26.806 22.667 25.333 22.667C24.289 22.667 23.385 23.267 22.948 24.14Z" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span><b>Other apps</b><br><span class="sub">SMS, Telegram, etc.</span></span>
+          </button>
+          <button class="primary" type="button" data-close-share style="margin-top:14px;background:#e8eef5;color:var(--ink)">Close</button>
+        </div>
+      </div>
+
+      <div class="overlay" id="contactsPerm">
+        <div class="bs perm-bs">
+          <div class="grab"></div>
+          <div class="perm-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4.549 3.757L16.875 3.226A1.77 1.77 0 0 1 18.719 4.917L19.359 19.748A1.77 1.77 0 0 1 17.668 21.592L5.342 22.124A1.77 1.77 0 0 1 3.498 20.432L2.858 5.602A1.77 1.77 0 0 1 4.549 3.757z" fill="#CCE5FF"/><path d="M7.947 1.8H19.449A1.77 1.77 0 0 1 21.219 3.569V18.414A1.77 1.77 0 0 1 19.449 20.183H7.947A1.77 1.77 0 0 1 6.178 18.414V3.569A1.77 1.77 0 0 1 7.947 1.8z" fill="#61AEFA"/><path d="M5.759 6.814H6.595A0.836 0.836 0 0 1 7.431 7.649A0.836 0.836 0 0 1 6.595 8.485H5.759A0.836 0.836 0 0 1 4.924 7.649A0.836 0.836 0 0 1 5.759 6.814z" fill="#0F66BD"/><path d="M5.759 10.156H6.595A0.836 0.836 0 0 1 7.431 10.992A0.836 0.836 0 0 1 6.595 11.827H5.759A0.836 0.836 0 0 1 4.924 10.992A0.836 0.836 0 0 1 5.759 10.156z" fill="#0F66BD"/><path d="M5.759 13.498H6.595A0.836 0.836 0 0 1 7.431 14.334A0.836 0.836 0 0 1 6.595 15.17H5.759A0.836 0.836 0 0 1 4.924 14.334A0.836 0.836 0 0 1 5.759 13.498z" fill="#0F66BD"/><circle cx="13.698" cy="8.903" r="2.089" fill="#0F66BD"/><path d="M17.851 14.752C18.096 14.752 18.296 14.553 18.272 14.31C18.17 13.253 17.705 12.259 16.948 11.502C16.086 10.64 14.917 10.156 13.698 10.156C12.479 10.156 11.31 10.64 10.448 11.502C9.691 12.259 9.225 13.253 9.123 14.31C9.1 14.553 9.3 14.752 9.544 14.752H17.851Z" fill="#fff" fill-opacity=".7"/></svg>
+          </div>
+          <h3>Find &amp; Invite Friends on GroMo</h3>
+          <p class="perm-body">
+            GroMo will access your contact list — names and phone numbers — to show which of your friends are already on GroMo.
+            Your contacts are stored securely and never shared with third parties.
+          </p>
+          <button class="primary" type="button" id="allowContactsBtn">Allow Contacts Access</button>
+          <button class="secondary" type="button" id="denyContactsBtn">Not now</button>
+        </div>
+      </div>
+
+      <section class="screen" data-screen="contacts">
+        <div class="topbar">
+          <button class="back" type="button" id="contactsBack">←</button>
+          <h2>Invite Phonebook Contacts</h2>
+          <span style="width:34px"></span>
+        </div>
+        <div class="contacts-body">
+          <input class="contacts-search" type="search" placeholder="Search contacts" id="contactsSearch" autocomplete="off" />
+          <p class="contacts-meta" id="contactsMeta">8 phonebook contacts</p>
+          <div class="contacts-list" id="contactsList"></div>
+        </div>
+        <div class="contacts-footer">
+          <button class="primary" type="button" id="inviteAllBtn">Invite all</button>
+        </div>
+      </section>
+
+      <div class="toast" id="toast"></div>
+      <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+    </div>
+  </div><!-- /.phone -->
+  </div><!-- /.mvp-main -->
+  </div><!-- /.mvp-shell -->
+
+  <script>
+    const months = {
+      '2026-08': {
+        label: 'August 2026',
+        tierAmount: 400,
+        max: 30,
+        joined: 21,
+        rewards: [
+          // Only 3 unscratched total (demo: scratch all → home strip disappears)
+          { id: 'suresh', name: 'Suresh Nair', initial: 'S', avatar: 'c', amount: 100, date: '8 Aug', scratched: false },
+          { id: 'priya', name: 'Priya Mehta', initial: 'P', avatar: '', amount: 100, date: '5 Aug', scratched: true },
+          { id: 'karan', name: 'Karan Joshi', initial: 'K', avatar: 'b', amount: 100, date: '2 Aug', scratched: true },
+          { id: 'neha', name: 'Neha Verma', initial: 'N', avatar: 'd', amount: 400, date: '14 Aug', scratched: false },
+          { id: 'amit', name: 'Amit Sharma', initial: 'A', avatar: '', amount: 400, date: '12 Aug', scratched: true },
+          { id: 'vikram1000', name: 'Vikram Seth', initial: 'V', avatar: '', amount: 1000, date: '22 Aug', scratched: false },
+          { id: 'leena1000', name: 'Leena Kapoor', initial: 'L', avatar: 'b', amount: 1000, date: '23 Aug', scratched: true },
+          { id: 'riya', name: 'Riya Kapoor', initial: 'R', avatar: 'b', amount: 400, date: '10 Aug', scratched: true },
+          { id: 'divya', name: 'Divya Shah', initial: 'D', avatar: 'c', amount: 100, date: '1 Aug', scratched: true },
+          { id: 'vikash', name: 'Vikash Rao', initial: 'V', avatar: '', amount: 400, date: '15 Aug', scratched: true },
+          { id: 'ananya', name: 'Ananya Sen', initial: 'A', avatar: 'b', amount: 400, date: '16 Aug', scratched: true },
+          { id: 'deepak', name: 'Deepak Gill', initial: 'D', avatar: 'c', amount: 100, date: '17 Aug', scratched: true },
+          { id: 'fatima', name: 'Fatima Khan', initial: 'F', avatar: 'd', amount: 400, date: '18 Aug', scratched: true },
+          { id: 'gaurav', name: 'Gaurav Pal', initial: 'G', avatar: '', amount: 100, date: '19 Aug', scratched: true },
+          { id: 'hema', name: 'Hema Reddy', initial: 'H', avatar: 'b', amount: 400, date: '20 Aug', scratched: true },
+          { id: 'imran', name: 'Imran Ali', initial: 'I', avatar: 'c', amount: 100, date: '21 Aug', scratched: true },
+          { id: 'arjun1000', name: 'Arjun Bose', initial: 'A', avatar: 'd', amount: 1000, date: '24 Aug', scratched: true },
+        ],
+      },
+      '2026-07': {
+        label: 'July 2026',
+        tierAmount: 100,
+        max: 30,
+        joined: 9,
+        rewards: [
+          { id: 'july1', name: 'Ankit Rao', initial: 'A', avatar: 'b', amount: 100, date: '28 Jul', scratched: true },
+          { id: 'july2', name: 'Meera Iyer', initial: 'M', avatar: 'c', amount: 100, date: '20 Jul', scratched: true },
+          { id: 'july3', name: 'Rohit Das', initial: 'R', avatar: '', amount: 100, date: '12 Jul', scratched: true },
+          { id: 'july4', name: 'Sana Ali', initial: 'S', avatar: 'd', amount: 100, date: '4 Jul', scratched: true },
+          { id: 'july5', name: 'Dev Kapoor', initial: 'D', avatar: 'b', amount: 100, date: '2 Jul', scratched: true },
+        ],
+      },
+      '2026-06': {
+        label: 'June 2026',
+        tierAmount: 1000,
+        max: 30,
+        joined: 28,
+        rewards: [
+          { id: 'jun1', name: 'Vikram Seth', initial: 'V', avatar: '', amount: 1000, date: '25 Jun', scratched: true },
+          { id: 'jun2', name: 'Pooja Nair', initial: 'P', avatar: 'b', amount: 400, date: '18 Jun', scratched: true },
+          { id: 'jun3', name: 'Arjun Malhotra', initial: 'A', avatar: 'c', amount: 400, date: '10 Jun', scratched: true },
+          { id: 'jun4', name: 'Isha Kapoor', initial: 'I', avatar: 'd', amount: 100, date: '3 Jun', scratched: true },
+          { id: 'jun5', name: 'Nikhil Jain', initial: 'N', avatar: '', amount: 100, date: '1 Jun', scratched: true },
+        ],
+      },
+      '2026-05': {
+        label: 'May 2026',
+        tierAmount: 100,
+        max: 30,
+        joined: 4,
+        rewards: [
+          { id: 'may1', name: 'Ravi Mehta', initial: 'R', avatar: 'b', amount: 100, date: '20 May', scratched: true },
+          { id: 'may2', name: 'Tina Bose', initial: 'T', avatar: 'c', amount: 100, date: '8 May', scratched: true },
+        ],
+      },
+    };
+
+    const LATEST_MONTH = '2026-08';
+    const MONTH_KEY = 'referralMvpSelectedMonth';
+    const ZERO_KEY = 'referralMvpZeroMode';
+    const SCRATCHED_KEY = 'referralMvpScratchedIds';
+    const DECK_TOTAL_KEY = 'referralMvpScratchDeckTotal';
+    // Bump when dummy unscratched set changes — clears stale local scratched counts
+    const DATA_VER = 'v5-3-unscratched';
+    const DATA_VER_KEY = 'referralMvpDataVer';
+    const UNSCRATCHED_DEMO_IDS = ['suresh', 'neha', 'vikram1000']; // max 3 for “scratch all → strip gone”
+
+    function loadScratchedIds() {
+      try { return new Set(JSON.parse(localStorage.getItem(SCRATCHED_KEY) || '[]')); }
+      catch { return new Set(); }
+    }
+    function saveScratchedIds(ids) {
+      localStorage.setItem(SCRATCHED_KEY, JSON.stringify([...ids]));
+    }
+    // Fresh dummy sync: strip = exactly those 3 unscratched cards
+    (function restoreScratched() {
+      if (localStorage.getItem(DATA_VER_KEY) !== DATA_VER) {
+        localStorage.setItem(DATA_VER_KEY, DATA_VER);
+        localStorage.removeItem(SCRATCHED_KEY);
+        localStorage.removeItem(DECK_TOTAL_KEY);
+      }
+      const done = loadScratchedIds();
+      Object.keys(months).forEach((key) => {
+        months[key].rewards.forEach((r) => {
+          if (done.has(r.id)) r.scratched = true;
+        });
+      });
+    })();
+
+    const DEMO_KEY = 'referralMvpHomeDemo'; // never | monthEmpty | filled
+    let homeDemo = localStorage.getItem(DEMO_KEY) || (localStorage.getItem(ZERO_KEY) === '1' ? 'never' : 'filled');
+    if (!['never', 'monthEmpty', 'filled'].includes(homeDemo)) homeDemo = 'filled';
+    let zeroMode = homeDemo === 'never';
+    let monthEmptyDemo = homeDemo === 'monthEmpty';
+    let currentMonth = zeroMode || monthEmptyDemo ? LATEST_MONTH : (localStorage.getItem(MONTH_KEY) || LATEST_MONTH);
+    if (!months[currentMonth]) currentMonth = LATEST_MONTH;
+    let currentStatusFilter = 'all'; // all | completed | pending
+    let currentAmountFilter = 'any'; // any | 100 | 400 | 1000 — only used under Completed
+    let activeScratchId = 'neha';
+    let scratchReady = false;
+    let scratchReturnTo = 'home'; // back from scratch → home or progress (referrals list)
+
+    const app = document.getElementById('app');
+    const how = document.getElementById('how');
+    const share = document.getElementById('share');
+    const toastEl = document.getElementById('toast');
+    const listEl = document.getElementById('rewardList');
+    const emptyEl = document.getElementById('emptyList');
+    const strip = document.getElementById('scratchStrip');
+    const monthSelect = document.getElementById('monthSelect');
+    let toastTimer;
+
+    function monthData() { return months[currentMonth]; }
+    function rewards() { return monthData().rewards; }
+    function formatAmount(n) { return '₹' + n.toLocaleString('en-IN'); }
+
+    const PENDING_NAME_POOL = [
+      { name: 'Rahul Verma', initial: 'R', avatar: 'b' },
+      { name: 'Sneha Iyer', initial: 'S', avatar: 'c' },
+      { name: 'Kabir Shah', initial: 'K', avatar: 'd' },
+      { name: 'Pooja Nair', initial: 'P', avatar: '' },
+      { name: 'Aditya Menon', initial: 'A', avatar: 'b' },
+      { name: 'Nisha Patel', initial: 'N', avatar: 'c' },
+      { name: 'Manish Goel', initial: 'M', avatar: 'd' },
+      { name: 'Kavya Rao', initial: 'K', avatar: '' },
+      { name: 'Farhan Ali', initial: 'F', avatar: 'b' },
+      { name: 'Ishita Bose', initial: 'I', avatar: 'c' },
+    ];
+
+    /** Full referred list: pending (no 1st sale) + rewarded (scratch cards). */
+    function monthReferrals(monthKey) {
+      const m = months[monthKey];
+      if (!m) return [];
+      const withSale = (m.rewards || []).map((r) => ({
+        id: r.id,
+        name: r.name,
+        initial: r.initial,
+        avatar: r.avatar || '',
+        date: r.date,
+        amount: r.amount,
+        scratched: !!r.scratched,
+        hasSale: true,
+        daysLeft: null,
+      }));
+      const pendingCount = Math.max(0, (m.joined || 0) - withSale.length);
+      const pending = [];
+      for (let i = 0; i < pendingCount; i++) {
+        const p = PENDING_NAME_POOL[i % PENDING_NAME_POOL.length];
+        const suffix = i >= PENDING_NAME_POOL.length ? ' ' + (Math.floor(i / PENDING_NAME_POOL.length) + 1) : '';
+        pending.push({
+          id: monthKey + '-pend-' + i,
+          name: p.name + suffix,
+          initial: p.initial,
+          avatar: p.avatar,
+          date: 'Joined',
+          amount: 0,
+          scratched: false,
+          hasSale: false,
+          daysLeft: [3, 8, 14, 22, 5, 11, 18, 27, 1, 9][i % 10],
+        });
+      }
+      return pending.concat(withSale);
+    }
+
+    function referralFilterCounts(list) {
+      return {
+        all: list.length,
+        pendingSale: list.filter((r) => !r.hasSale).length,
+        completed: list.filter((r) => r.hasSale).length,
+        c100: list.filter((r) => r.amount === 100).length,
+        c400: list.filter((r) => r.amount === 400).length,
+        c1000: list.filter((r) => r.amount === 1000).length,
+        earned: list.reduce((s, r) => s + (r.amount || 0), 0),
+      };
+    }
+
+    function syncAmountFiltersVisibility() {
+      const block = document.getElementById('amountFilters');
+      if (block) block.hidden = currentStatusFilter !== 'completed';
+    }
+
+    function updateFilterCounts(rt) {
+      document.getElementById('c-all').textContent = '(' + rt.all + ')';
+      document.getElementById('c-pending').textContent = '(' + rt.pendingSale + ')';
+      document.getElementById('c-completed').textContent = '(' + rt.completed + ')';
+      document.getElementById('c-100').textContent = '(' + rt.c100 + ')';
+      document.getElementById('c-400').textContent = '(' + rt.c400 + ')';
+      document.getElementById('c-1000').textContent = '(' + rt.c1000 + ')';
+      syncAmountFiltersVisibility();
+    }
+
+    /** ⏳ flowing hourglass — amber normally, red when ≤3 days */
+    function pendingTimerHtml(days) {
+      const d = Math.max(0, Number(days) || 0);
+      if (d <= 0) return '<span class="timer urgent">⏳ Window ended</span>';
+      const urgent = d <= 3;
+      const label = d === 1 ? '1 day left' : (d + ' days left');
+      return '<span class="timer ' + (urgent ? 'urgent' : 'warn') + '">⏳ ' + label + '</span>';
+    }
+
+    function totals(list) {
+      // Match production: earned = sum of all created reward cards (scratched or not)
+      return {
+        earned: list.reduce((s, r) => s + (r.amount || 0), 0),
+        count: list.length,
+        pending: list.filter(r => !r.scratched),
+        c100: list.filter(r => r.amount === 100).length,
+        c400: list.filter(r => r.amount === 400).length,
+        c1000: list.filter(r => r.amount === 1000).length,
+      };
+    }
+
+    function nextTierHint(count, max) {
+      if (count <= 0) return 'Refer a friend — earn ₹100 on their 1st sale ›';
+      if (count >= max) return 'You’ve hit this month’s reward cap ›';
+      if (count < 5) {
+        const left = 5 - count;
+        return left + ' more to unlock ₹400 each ›';
+      }
+      if (count < 20) {
+        const left = 20 - count;
+        return left + ' more to unlock ₹1,000 each ›';
+      }
+      return 'Keep referring — ₹1,000 each till ' + max + ' ›';
+    }
+
+    function activeTotals() {
+      if (zeroMode || monthEmptyDemo) {
+        return { earned: 0, count: 0, pending: [], c100: 0, c400: 0, c1000: 0, joined: 0 };
+      }
+      const m = monthData();
+      return { ...totals(m.rewards), joined: m.joined };
+    }
+
+    function syncStateToggles() {
+      const zeroBtn = document.getElementById('zeroToggle');
+      const monthEmptyBtn = document.getElementById('monthEmptyToggle');
+      const filledBtn = document.getElementById('filledToggle');
+      if (filledBtn) {
+        filledBtn.classList.toggle('active', homeDemo === 'filled');
+        filledBtn.textContent = homeDemo === 'filled' ? 'Case 1: has this month ✓' : 'Case 1: has this month';
+      }
+      if (monthEmptyBtn) {
+        monthEmptyBtn.classList.toggle('active', homeDemo === 'monthEmpty');
+        monthEmptyBtn.textContent = homeDemo === 'monthEmpty' ? 'Case 2: past yes · month 0 ✓' : 'Case 2: past yes · month 0';
+      }
+      if (zeroBtn) {
+        zeroBtn.classList.toggle('active', homeDemo === 'never');
+        zeroBtn.textContent = homeDemo === 'never' ? 'Case 3: never referred ✓' : 'Case 3: never referred';
+      }
+    }
+
+    function setHomeDemo(mode) {
+      homeDemo = mode;
+      zeroMode = mode === 'never';
+      monthEmptyDemo = mode === 'monthEmpty';
+      localStorage.setItem(DEMO_KEY, mode);
+      localStorage.setItem(ZERO_KEY, zeroMode ? '1' : '0');
+      if (zeroMode || monthEmptyDemo) {
+        currentMonth = LATEST_MONTH;
+      } else {
+        const saved = localStorage.getItem(MONTH_KEY) || LATEST_MONTH;
+        currentMonth = months[saved] ? saved : LATEST_MONTH;
+      }
+      monthSelect.value = currentMonth;
+      refreshHome();
+      renderList();
+      go('home');
+      const labels = {
+        filled: 'Case 1 — current month progress',
+        monthEmpty: 'Case 2 — empty month, past unscratched cards still on home',
+        never: 'Case 3 — never referred, no scratch strip',
+      };
+      toast(labels[mode] || mode);
+    }
+
+    function setZeroMode(on) {
+      setHomeDemo(on ? 'never' : 'filled');
+    }
+
+    function resetAllScratchedDemo() {
+      localStorage.removeItem(SCRATCHED_KEY);
+      Object.keys(months).forEach((key) => {
+        months[key].rewards.forEach((r) => {
+          // Keep originally pre-scratched sample rows in older months as scratched
+          // Only the 3 demo cards stay unscratched after reset
+          r.scratched = !UNSCRATCHED_DEMO_IDS.includes(r.id);
+        });
+      });
+      localStorage.removeItem(DECK_TOTAL_KEY);
+      scratchSessionStart = 0;
+      setHomeDemo('filled');
+      toast('Scratch cards reset — try foil demos');
+    }
+
+    function openFoilDemo(amount) {
+      setHomeDemo('filled');
+      // Unscratch a matching card so it’s always available
+      let pick = null;
+      Object.keys(months).forEach((key) => {
+        months[key].rewards.forEach((r) => {
+          if (r.amount === amount) {
+            r.scratched = false;
+            if (!pick) pick = r;
+          }
+        });
+      });
+      const done = loadScratchedIds();
+      Object.keys(months).forEach((key) => {
+        months[key].rewards.forEach((r) => {
+          if (r.amount === amount) done.delete(r.id);
+        });
+      });
+      saveScratchedIds(done);
+      if (!pick) {
+        toast('No ₹' + amount + ' card in demo data');
+        return;
+      }
+      activeScratchId = pick.id;
+      scratchReturnTo = 'home';
+      scratchSessionStart = Math.max(scratchSessionStart, allPendingRewards().length);
+      persistScratchDeckTotal(allPendingRewards().length);
+      go('scratch');
+      loadScratchCard(pick.id);
+      const labels = { 100: 'Silver ₹100', 400: 'Gold ₹400', 1000: 'Luxe ₹1,000' };
+      toast(labels[amount] || ('₹' + amount));
+    }
+
+    function refreshHome() {
+      // Selected month retained; default = latest ongoing month until user changes it
+      const m = monthData();
+      const t = activeTotals();
+      const isEmpty = t.joined === 0 && t.count === 0;
+      // Bar = first sales / friends joined (same story as “2/4 first sales”)
+      const pct = t.joined > 0 ? Math.min(100, Math.round((t.count / t.joined) * 100)) : 0;
+      const hint = document.getElementById('homeHint');
+      const filled = document.getElementById('pcFilled');
+      const emptyQuiet = document.getElementById('pcEmptyQuiet');
+      const emptyNew = document.getElementById('pcEmptyNew');
+      const joinedWrap = document.getElementById('homeJoinedWrap');
+      const card = document.getElementById('progressCard');
+      const pcMain = document.getElementById('pcMain');
+
+      const hasPast = Object.keys(months).some((key) => {
+        if (key === currentMonth) return false;
+        const mm = months[key];
+        return (mm.joined || 0) > 0 || (mm.rewards && mm.rewards.length > 0);
+      });
+      // Case 1 filled | Case 2 past+month empty | Case 3 never referred
+      const case1 = !isEmpty;
+      const case3 = isEmpty && (zeroMode || !hasPast);
+      const case2 = isEmpty && !case3;
+
+      document.getElementById('homeMonthPill').textContent = m.label;
+      document.getElementById('homeJoined').textContent = String(t.joined);
+      document.getElementById('homeCount').textContent = String(t.count);
+      document.getElementById('homeJoinedDenom').textContent = String(t.joined);
+      document.getElementById('homeEarned').textContent = formatAmount(t.earned);
+      document.getElementById('homeBar').style.width = pct + '%';
+
+      filled.hidden = !case1;
+      emptyQuiet.hidden = !case2;
+      emptyNew.hidden = !case3;
+      joinedWrap.hidden = !case1;
+      card.classList.toggle('is-month-empty', case2);
+      card.classList.toggle('is-new-empty', case3);
+      card.classList.remove('is-empty');
+
+      if (case1) {
+        hint.textContent = nextTierHint(t.count, m.max);
+        pcMain.removeAttribute('data-open-share');
+        pcMain.setAttribute('data-go', 'progress');
+      } else if (case2) {
+        // Quiet empty — month pill + chevron → Referrals; CTA text link → Share
+        hint.textContent = 'Refer a friend — earn ₹100 on their 1st sale ›';
+        pcMain.removeAttribute('data-open-share');
+        pcMain.setAttribute('data-go', 'progress');
+      } else {
+        // Case 3 — exciting empty; whole card + blue CTA → Share
+        hint.textContent = 'Refer a friend — earn ₹100 ›';
+        pcMain.removeAttribute('data-go');
+        pcMain.setAttribute('data-open-share', '');
+      }
+      hint.dataset.hintAction = 'share';
+
+      document.getElementById('progressEarned').textContent = formatAmount(t.earned);
+      {
+        const emptyMonth = zeroMode || (monthEmptyDemo && currentMonth === LATEST_MONTH);
+        updateFilterCounts(referralFilterCounts(emptyMonth ? [] : monthReferrals(currentMonth)));
+      }
+      monthSelect.value = currentMonth;
+      syncStateToggles();
+
+      // Scratch strip: any unscratched referral card, any month (selected month irrelevant)
+      const allPending = allPendingRewards();
+      if (allPending.length) {
+        const first = allPending[0];
+        strip.classList.remove('hidden');
+        activeScratchId = first.reward.id;
+        strip.dataset.scratchId = first.reward.id;
+        strip.dataset.scratchMonth = first.monthKey;
+        const n = allPending.length;
+        document.getElementById('stripTitle').textContent =
+          n === 1 ? '1 reward to scratch' : n + ' rewards to scratch';
+        const monthsInPending = new Set(allPending.map((p) => p.monthKey));
+        document.getElementById('stripSub').textContent =
+          n === 1
+            ? ('From ' + first.reward.name.split(' ')[0] + '’s 1st sale')
+            : (monthsInPending.size > 1
+              ? 'From referrals across months'
+              : 'From your referrals’ 1st sales');
+      } else {
+        strip.classList.add('hidden');
+      }
+    }
+
+    function renderList() {
+      const emptyMonth = zeroMode || (monthEmptyDemo && currentMonth === LATEST_MONTH);
+      const list = emptyMonth ? [] : monthReferrals(currentMonth);
+      const rt = referralFilterCounts(list);
+      document.getElementById('progressEarned').textContent = formatAmount(rt.earned);
+      updateFilterCounts(rt);
+
+      const filtered = list.filter((r) => {
+        if (currentStatusFilter === 'all') return true;
+        if (currentStatusFilter === 'pending') return !r.hasSale;
+        // Completed — optional amount refine
+        if (!r.hasSale) return false;
+        if (currentAmountFilter === 'any') return true;
+        return String(r.amount) === currentAmountFilter;
+      });
+      listEl.innerHTML = '';
+      emptyEl.style.display = filtered.length ? 'none' : 'block';
+      emptyEl.textContent = zeroMode
+        ? 'No referrals yet this month. Share your code to get started.'
+        : 'No referrals for this month / filter yet.';
+
+      filtered.forEach((r) => {
+        if (!r.hasSale) {
+          const row = document.createElement('div');
+          row.className = 'friend disabled';
+          row.innerHTML =
+            '<div class="avatar ' + (r.avatar || '') + '">' + r.initial + '</div>' +
+            '<div><div class="name">' + r.name + '</div>' +
+            '<div class="detail">' + pendingTimerHtml(r.daysLeft) + '</div></div>' +
+            '<div class="friend-actions">' +
+              '<div class="ref-btns">' +
+                '<button type="button" class="wa-pill" data-ref-remind="wa" data-ref-name="' + r.name + '">WhatsApp</button>' +
+                '<button type="button" class="sms-pill" data-ref-remind="sms" data-ref-name="' + r.name + '">SMS</button>' +
+              '</div>' +
+            '</div>';
+          listEl.appendChild(row);
+          return;
+        }
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'friend' + (r.scratched ? ' disabled' : '');
+        btn.innerHTML =
+          '<div class="avatar ' + (r.avatar || '') + '">' + r.initial + '</div>' +
+          '<div><div class="name">' + r.name + '</div></div>' +
+          '<div class="earn">' + formatAmount(r.amount) +
+          '<span class="st ' + (r.scratched ? 'done' : '') + '">' +
+          (r.scratched ? 'Scratched' : 'Scratch now') +
+          '</span></div>';
+        if (!r.scratched) {
+          btn.addEventListener('click', () => {
+            activeScratchId = r.id;
+            scratchReturnTo = 'progress';
+            go('scratch');
+          });
+        }
+        listEl.appendChild(btn);
+      });
+    }
+
+    function findReward(id) {
+      for (const key of Object.keys(months)) {
+        const r = months[key].rewards.find(x => x.id === id);
+        if (r) return { reward: r, monthKey: key };
+      }
+      return null;
+    }
+
+    function go(id) {
+      app.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.dataset.screen === id));
+      document.querySelectorAll('.tabs [data-go]').forEach(b => b.classList.toggle('active', b.dataset.go === id));
+      how.classList.remove('open');
+      share.classList.remove('open');
+      if (id === 'progress') renderList();
+      if (id === 'scratch') setupScratch();
+      if (id === 'home') refreshHome();
+    }
+
+    function toast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1400);
+    }
+
+    const canvas = document.getElementById('scratchCanvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let scratchQueue = []; // all pending at open time + freshly done for carousel
+    let autoNextTimer = null;
+
+    /** Unscratched scratch cards across months — home strip ignores selected month. */
+    function allPendingRewards() {
+      // Case 3: never referred → no cards at all
+      if (zeroMode) return [];
+      const list = [];
+      // Newest month first so home strip prioritises recent unlocks
+      Object.keys(months).sort().reverse().forEach((key) => {
+        // Case 2: current month is empty — don’t invent August cards; past months still count
+        if (monthEmptyDemo && key === LATEST_MONTH) return;
+        months[key].rewards.forEach((r) => {
+          if (!r.scratched) list.push({ reward: r, monthKey: key });
+        });
+      });
+      return list;
+    }
+
+    function syncScratchQueue() {
+      const pending = allPendingRewards();
+      const pendingIds = new Set(pending.map((p) => p.reward.id));
+      // Keep done cards that were in this session’s queue, then all still-pending
+      const keptDone = scratchQueue.filter((q) => q.reward.scratched && !pendingIds.has(q.reward.id));
+      scratchQueue = [...pending, ...keptDone];
+      if (!scratchQueue.length && pending.length) scratchQueue = pending;
+    }
+
+    function pendingIndex() {
+      const pending = allPendingRewards();
+      const idx = pending.findIndex((p) => p.reward.id === activeScratchId);
+      return { pending, idx: idx < 0 ? 0 : idx };
+    }
+
+    function renderScratchCarousel() {
+      const dots = document.getElementById('scratchCarousel');
+      const countEl = document.getElementById('scratchCount');
+      const subEl = document.getElementById('scratchCountSub');
+      const bar = document.getElementById('scratchProgressBar');
+      const prevBtn = document.getElementById('scratchPrev');
+      const nextNav = document.getElementById('scratchNextNav');
+      const pager = document.getElementById('scratchPager');
+      const { pending, idx } = pendingIndex();
+      const left = pending.length;
+      const sessionTotal = Math.max(scratchSessionStart || left, left);
+      const doneCount = Math.max(0, sessionTotal - left);
+      const activeDone = !!findReward(activeScratchId)?.reward?.scratched;
+      // Unambiguous: “16 of 17 left” (not 16/17 which reads like progress)
+      const leftLabel = left + ' of ' + sessionTotal + ' left';
+
+      if (left === 0) {
+        countEl.textContent = '0 of ' + sessionTotal + ' left';
+        subEl.textContent = 'All rewards collected';
+        bar.style.width = '100%';
+        prevBtn.disabled = true;
+        nextNav.disabled = true;
+        pager.style.display = 'none';
+        dots.style.display = 'none';
+      } else {
+        countEl.textContent = leftLabel;
+        // One count only (the pill). Don’t restate it under the bar.
+        subEl.textContent = activeDone ? '' : 'Scratch to unlock';
+        bar.style.width = Math.round((doneCount / sessionTotal) * 100) + '%';
+        prevBtn.disabled = idx <= 0;
+        nextNav.disabled = idx >= left - 1;
+        // Hide pager/dots on unlock so they don’t stack under Collect next
+        pager.style.display = activeDone ? 'none' : 'flex';
+        dots.style.display = activeDone ? 'none' : 'flex';
+      }
+
+      dots.innerHTML = '';
+      if (!activeDone && left > 0) {
+        pending.forEach((item) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'scratch-dot' + (item.reward.id === activeScratchId ? ' active' : '');
+          btn.dataset.scratchPick = item.reward.id;
+          btn.title = item.reward.name;
+          btn.setAttribute('aria-label', 'Go to ' + item.reward.name.split(' ')[0]);
+          dots.appendChild(btn);
+        });
+      }
+    }
+
+    function stepScratch(delta) {
+      const { pending, idx } = pendingIndex();
+      if (!pending.length) return;
+      const next = pending[Math.max(0, Math.min(pending.length - 1, idx + delta))];
+      if (!next || next.reward.id === activeScratchId) return;
+      clearTimeout(autoNextTimer);
+      activeScratchId = next.reward.id;
+      loadScratchCard(activeScratchId);
+    }
+
+    function foilTheme(amount) {
+      // Tier foil colours — must be obviously different at a glance
+      if (amount >= 1000) {
+        // Dark charcoal + soft gold foil (top tier, dialed back)
+        return {
+          stops: ['#14161c', '#1e2028', '#0e1014', '#181a20', '#0a0b10'],
+          stripe: 'rgba(232,199,106,.14)',
+          text: 'rgba(245,230,166,.75)',
+          label: 'SCRATCH TO REVEAL',
+          hint: 'Scratch the luxe foil',
+          stageBg: 'radial-gradient(circle at 30% 15%, rgba(232,199,106,.14), transparent 45%), linear-gradient(160deg, #181a20 0%, #0e1014 55%, #0a0b10 100%)',
+          edge: '0 0 0 1px rgba(212,175,55,.4), 0 18px 36px rgba(0,0,0,.45)',
+          premium: true,
+        };
+      }
+      if (amount >= 400) {
+        return {
+          stops: ['#f8ecc0', '#e8c76a', '#c9a227', '#f0d78a', '#a8841c'],
+          stripe: 'rgba(255,255,255,.22)',
+          text: 'rgba(26,18,8,.55)',
+          label: 'SCRATCH TO REVEAL',
+          hint: 'Scratch the gold foil',
+          stageBg: 'radial-gradient(circle at 30% 20%, #fff8dc, transparent 40%), linear-gradient(145deg, #f7e7a1 0%, #e0c35a 35%, #b8860b 70%, #8a6a12 100%)',
+          edge: null,
+          premium: false,
+        };
+      }
+      return {
+        stops: ['#f2f4f7', '#c5ccd6', '#9aa3b2', '#e8ecf1', '#7b8494'],
+        stripe: 'rgba(255,255,255,.28)',
+        text: 'rgba(21,32,43,.5)',
+        label: 'SCRATCH TO REVEAL',
+        hint: 'Scratch the silver foil',
+        stageBg: 'radial-gradient(circle at 30% 20%, #fff, transparent 40%), linear-gradient(145deg, #eef1f5 0%, #c5ccd6 45%, #8b93a1 100%)',
+        edge: null,
+        premium: false,
+      };
+    }
+
+    function paintFoil(amount) {
+      const theme = foilTheme(amount || 400);
+      const stage = document.getElementById('scratchStage');
+      stage.style.background = theme.stageBg;
+      if (theme.edge) stage.style.boxShadow = theme.edge;
+      else stage.style.removeProperty('box-shadow');
+      const frame = stage.querySelector('.scratch-stage-frame');
+      if (frame) {
+        // Premium draws its own gold frame on canvas — hide the pale HTML rim
+        frame.style.display = theme.premium ? 'none' : '';
+        frame.style.borderColor = 'rgba(255,255,255,.35)';
+      }
+      const hintEl = document.getElementById('scratchHint');
+      if (hintEl && theme.hint) hintEl.textContent = theme.hint;
+      requestAnimationFrame(() => {
+        const rect = stage.getBoundingClientRect();
+        if (!rect.width) return;
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.floor(rect.width * dpr);
+        canvas.height = Math.floor(rect.height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const w = rect.width;
+        const h = rect.height;
+        ctx.globalCompositeOperation = 'source-over';
+
+        if (theme.premium) {
+          // Soft charcoal base
+          const base = ctx.createLinearGradient(0, 0, w, h);
+          base.addColorStop(0, '#1a1c24');
+          base.addColorStop(0.5, '#12141a');
+          base.addColorStop(1, '#0a0b10');
+          ctx.fillStyle = base;
+          ctx.fillRect(0, 0, w, h);
+          // Light gold foil wedges — spaced, low contrast
+          for (let i = -h; i < w + 40; i += 26) {
+            const stripe = ctx.createLinearGradient(i, 0, i + 36, h);
+            stripe.addColorStop(0, 'rgba(232,199,106,.04)');
+            stripe.addColorStop(0.45, 'rgba(232,199,106,.2)');
+            stripe.addColorStop(0.55, 'rgba(245,230,166,.28)');
+            stripe.addColorStop(1, 'rgba(232,199,106,.04)');
+            ctx.fillStyle = stripe;
+            ctx.beginPath();
+            ctx.moveTo(i, 0);
+            ctx.lineTo(i + 36, 0);
+            ctx.lineTo(i + 10, h);
+            ctx.lineTo(i - 26, h);
+            ctx.closePath();
+            ctx.fill();
+          }
+          // Soft top sheen only
+          const bloom = ctx.createRadialGradient(w * 0.4, h * 0.2, 2, w * 0.4, h * 0.2, h * 0.5);
+          bloom.addColorStop(0, 'rgba(245,230,166,.16)');
+          bloom.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = bloom;
+          ctx.fillRect(0, 0, w, h);
+          // Thin gold frame
+          ctx.strokeStyle = 'rgba(212,175,55,.45)';
+          ctx.lineWidth = 1.25;
+          roundRectStroke(ctx, 11, 11, w - 22, h - 22, 13);
+          // Same overlay copy as ₹100 / ₹400
+          ctx.fillStyle = 'rgba(245,230,166,.72)';
+          ctx.font = '700 14px ' + (document.body.classList.contains('font-dm') ? 'DM Sans' : 'Figtree') + ', sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(theme.label, w / 2, h / 2);
+          return;
+        }
+
+        const g = ctx.createLinearGradient(0, 0, w, h);
+        theme.stops.forEach((c, i) => g.addColorStop(i / (theme.stops.length - 1), c));
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = theme.stripe;
+        for (let i = -h; i < w; i += 22) {
+          ctx.beginPath();
+          ctx.moveTo(i, 0);
+          ctx.lineTo(i + 48, 0);
+          ctx.lineTo(i + 16, h);
+          ctx.lineTo(i - 32, h);
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.fillStyle = theme.text;
+        ctx.font = '700 14px ' + (document.body.classList.contains('font-dm') ? 'DM Sans' : 'Figtree') + ', sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(theme.label, w / 2, h / 2);
+      });
+    }
+
+    function roundRectPath(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+    function roundRectStroke(ctx, x, y, w, h, r) {
+      roundRectPath(ctx, x, y, w, h, r);
+      ctx.stroke();
+    }
+
+    function setScratchUnlockedUi(on) {
+      document.querySelector('.scratch-body')?.classList.toggle('is-unlocked', !!on);
+    }
+
+    function setScratchTierTheme(amount) {
+      const body = document.querySelector('.scratch-body');
+      if (!body) return;
+      body.classList.remove('theme-100', 'theme-400', 'theme-1000');
+      body.classList.add(
+        amount >= 1000 ? 'theme-1000' : amount >= 400 ? 'theme-400' : 'theme-100'
+      );
+    }
+
+    function collectNextLabel(left) {
+      // Don’t repeat the fraction on the button — pill already shows “16 of 17 left”
+      return left ? 'Collect next ›' : 'Done';
+    }
+
+    function loadScratchCard(id) {
+      clearTimeout(autoNextTimer);
+      stopConfetti();
+      const found = findReward(id) || allPendingRewards()[0];
+      const stage = document.getElementById('scratchStage');
+      const empty = document.getElementById('scratchEmpty');
+      const carouselWrap = document.getElementById('scratchCarouselWrap');
+      const actions = document.getElementById('scratchActions');
+      const hint = document.getElementById('scratchHint');
+      const nextBtn = document.getElementById('scratchNextBtn');
+      const seeBtn = document.getElementById('scratchSeeBtn');
+
+      if (!found) {
+        stage.style.display = 'none';
+        hint.style.display = 'none';
+        empty.classList.add('show');
+        carouselWrap.style.display = 'none';
+        document.getElementById('scratchPager').style.display = 'none';
+        document.getElementById('scratchHeading').textContent = 'Deck cleared';
+        document.getElementById('scratchSub').textContent = 'You’ve collected every reward';
+        actions.classList.add('show');
+        setScratchUnlockedUi(true);
+        nextBtn.hidden = true;
+        seeBtn.className = 'primary';
+        scratchReady = false;
+        renderScratchCarousel();
+        return;
+      }
+
+      empty.classList.remove('show');
+      stage.style.display = 'block';
+      carouselWrap.style.display = 'block';
+      document.getElementById('scratchCarousel').style.display = 'flex';
+      document.getElementById('scratchPager').style.display = 'flex';
+      activeScratchId = found.reward.id;
+      if (found.monthKey !== currentMonth) {
+        currentMonth = found.monthKey;
+        monthSelect.value = currentMonth;
+      }
+
+      const reward = found.reward;
+      document.getElementById('prizeAmount').textContent = formatAmount(reward.amount);
+      document.getElementById('prizeFrom').textContent = reward.name.split(' ')[0] + '’s 1st sale';
+      const prize = document.getElementById('scratchPrize');
+      prize.classList.remove('tier-100', 'tier-400', 'tier-1000');
+      prize.classList.add(
+        reward.amount >= 1000 ? 'tier-1000' : reward.amount >= 400 ? 'tier-400' : 'tier-100'
+      );
+      setScratchTierTheme(reward.amount);
+      nextBtn.hidden = true;
+      seeBtn.className = 'ghost-btn';
+      actions.classList.remove('show');
+      setScratchUnlockedUi(false);
+
+      if (reward.scratched) {
+        document.getElementById('scratchHeading').textContent = 'Already scratched';
+        document.getElementById('scratchSub').textContent = formatAmount(reward.amount) + ' from ' + reward.name.split(' ')[0];
+        canvas.style.display = 'none';
+        hint.style.display = 'none';
+        actions.classList.add('show');
+        setScratchUnlockedUi(true);
+        const pending = allPendingRewards();
+        nextBtn.hidden = pending.length === 0;
+        if (pending.length) nextBtn.textContent = collectNextLabel(pending.length);
+        scratchReady = false;
+        renderScratchCarousel();
+        return;
+      }
+
+      const monthShort = months[found.monthKey].label.replace(' 2026', '');
+      document.getElementById('scratchHeading').textContent = reward.name.split(' ')[0] + '’s reward';
+      document.getElementById('scratchSub').textContent = '1st sale · ' + monthShort;
+      canvas.style.display = 'block';
+      hint.style.display = 'block';
+      scratchReady = true;
+      renderScratchCarousel();
+      paintFoil(reward.amount);
+    }
+
+    let scratchSessionStart = 0;
+
+    /** Persist deck size so reopen shows “15 of 17 left”, not “15 of 15”. */
+    function persistScratchDeckTotal(pendingCount) {
+      if (pendingCount <= 0) {
+        localStorage.removeItem(DECK_TOTAL_KEY);
+        return 0;
+      }
+      const stored = parseInt(localStorage.getItem(DECK_TOTAL_KEY) || '0', 10) || 0;
+      const total = Math.max(stored, pendingCount, scratchSessionStart || 0);
+      localStorage.setItem(DECK_TOTAL_KEY, String(total));
+      return total;
+    }
+
+    function markRewardScratched(reward) {
+      if (!reward) return;
+      reward.scratched = true;
+      const done = loadScratchedIds();
+      done.add(reward.id);
+      saveScratchedIds(done);
+    }
+
+    function setupScratch() {
+      scratchQueue = allPendingRewards();
+      // Never shrink total when reopening after collecting some cards
+      scratchSessionStart = persistScratchDeckTotal(scratchQueue.length);
+      if (!findReward(activeScratchId) || findReward(activeScratchId)?.reward.scratched) {
+        activeScratchId = scratchQueue[0]?.reward.id || null;
+      }
+      loadScratchCard(activeScratchId);
+    }
+
+    function goToNextPending() {
+      const pending = allPendingRewards();
+      if (!pending.length) {
+        loadScratchCard(null);
+        return;
+      }
+      activeScratchId = pending[0].reward.id;
+      loadScratchCard(activeScratchId);
+    }
+
+    function scratchAt(clientX, clientY) {
+      if (!scratchReady) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, 22, 0, Math.PI * 2);
+      ctx.fill();
+      checkScratchProgress();
+    }
+
+    function checkScratchProgress() {
+      const w = canvas.width, h = canvas.height;
+      if (!w || !h) return;
+      const data = ctx.getImageData(0, 0, w, h).data;
+      let clear = 0;
+      const step = 16;
+      for (let i = 3; i < data.length; i += 4 * step) {
+        if (data[i] < 128) clear++;
+      }
+      const total = Math.ceil(data.length / (4 * step));
+      if (clear / total > 0.42) finishScratch();
+    }
+
+    let confettiAnim = 0;
+    let confettiParts = [];
+
+    function stopConfetti() {
+      cancelAnimationFrame(confettiAnim);
+      confettiAnim = 0;
+      confettiParts = [];
+      const c = document.getElementById('confettiCanvas');
+      if (c) {
+        const cx = c.getContext('2d');
+        cx.clearRect(0, 0, c.width, c.height);
+      }
+    }
+
+    function burstConfetti() {
+      const c = document.getElementById('confettiCanvas');
+      const wrap = document.getElementById('app');
+      if (!c || !wrap) return;
+      stopConfetti();
+      const rect = wrap.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      c.width = Math.floor(rect.width * dpr);
+      c.height = Math.floor(rect.height * dpr);
+      const cx = c.getContext('2d');
+      cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const w = rect.width;
+      const h = rect.height;
+      const colors = ['#d4af37', '#f5e6a6', '#fff', '#1f6feb', '#f0d78a', '#e8c76a', '#ff6b6b'];
+      const originX = w / 2;
+      const originY = h * 0.38;
+      confettiParts = [];
+      for (let i = 0; i < 90; i++) {
+        const angle = (Math.PI * 2 * i) / 90 + (Math.random() - 0.5) * 0.4;
+        const speed = 4 + Math.random() * 8;
+        confettiParts.push({
+          x: originX,
+          y: originY,
+          vx: Math.cos(angle) * speed * (0.4 + Math.random()),
+          vy: Math.sin(angle) * speed - 6 - Math.random() * 4,
+          w: 4 + Math.random() * 5,
+          h: 6 + Math.random() * 8,
+          rot: Math.random() * Math.PI,
+          vr: (Math.random() - 0.5) * 0.35,
+          color: colors[i % colors.length],
+          life: 1,
+        });
+      }
+      // Extra side bursts (like app confetti)
+      for (let side = 0; side < 2; side++) {
+        const sx = side ? w * 0.15 : w * 0.85;
+        for (let i = 0; i < 28; i++) {
+          confettiParts.push({
+            x: sx,
+            y: h * 0.55,
+            vx: (side ? 1 : -1) * (2 + Math.random() * 5),
+            vy: -8 - Math.random() * 6,
+            w: 3 + Math.random() * 5,
+            h: 5 + Math.random() * 7,
+            rot: Math.random() * Math.PI,
+            vr: (Math.random() - 0.5) * 0.4,
+            color: colors[(i + side) % colors.length],
+            life: 1,
+          });
+        }
+      }
+      const start = performance.now();
+      const tick = (now) => {
+        const t = (now - start) / 1000;
+        cx.clearRect(0, 0, w, h);
+        let alive = 0;
+        confettiParts.forEach((p) => {
+          p.vy += 0.22;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= 0.99;
+          p.rot += p.vr;
+          p.life = Math.max(0, 1 - t / 2.4);
+          if (p.life <= 0 || p.y > h + 20) return;
+          alive++;
+          cx.save();
+          cx.translate(p.x, p.y);
+          cx.rotate(p.rot);
+          cx.globalAlpha = p.life;
+          cx.fillStyle = p.color;
+          cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          cx.restore();
+        });
+        if (alive > 0 && t < 2.5) {
+          confettiAnim = requestAnimationFrame(tick);
+        } else {
+          stopConfetti();
+        }
+      };
+      confettiAnim = requestAnimationFrame(tick);
+    }
+
+    function finishScratch() {
+      if (!scratchReady) return;
+      scratchReady = false;
+      const found = findReward(activeScratchId);
+      const reward = found?.reward;
+      if (reward) markRewardScratched(reward);
+      syncScratchQueue();
+      canvas.style.display = 'none';
+      document.getElementById('scratchHint').style.display = 'none';
+      document.getElementById('scratchHeading').textContent = 'You unlocked ' + formatAmount(reward.amount);
+      // Name lives on the card — don’t repeat it here
+      document.getElementById('scratchSub').textContent = 'Added to your wallet';
+      const actions = document.getElementById('scratchActions');
+      const nextBtn = document.getElementById('scratchNextBtn');
+      const pending = allPendingRewards();
+      scratchSessionStart = persistScratchDeckTotal(pending.length);
+      actions.classList.add('show');
+      setScratchUnlockedUi(true);
+      document.getElementById('scratchSeeBtn').className = 'ghost-btn';
+      nextBtn.hidden = pending.length === 0;
+      nextBtn.textContent = collectNextLabel(pending.length);
+      toastEl.classList.remove('show');
+      burstConfetti();
+      renderScratchCarousel();
+      refreshHome();
+      // Stay on unlock screen until user taps “Collect next”
+    }
+
+    canvas.addEventListener('mousedown', (e) => { drawing = true; scratchAt(e.clientX, e.clientY); });
+    canvas.addEventListener('mousemove', (e) => { if (drawing) scratchAt(e.clientX, e.clientY); });
+    window.addEventListener('mouseup', () => { drawing = false; });
+    canvas.addEventListener('touchstart', (e) => {
+      drawing = true;
+      scratchAt(e.touches[0].clientX, e.touches[0].clientY);
+      e.preventDefault();
+    }, { passive: false });
+    canvas.addEventListener('touchmove', (e) => {
+      if (!drawing) return;
+      scratchAt(e.touches[0].clientX, e.touches[0].clientY);
+      e.preventDefault();
+    }, { passive: false });
+    canvas.addEventListener('touchend', () => { drawing = false; });
+
+    monthSelect.addEventListener('change', () => {
+      currentMonth = monthSelect.value;
+      localStorage.setItem(MONTH_KEY, currentMonth);
+      currentStatusFilter = 'all';
+      currentAmountFilter = 'any';
+      document.querySelectorAll('#statusFilters button').forEach((b) => {
+        b.classList.toggle('active', b.dataset.status === 'all');
+      });
+      document.querySelectorAll('#amountFilters button').forEach((b) => b.classList.remove('active'));
+      refreshHome();
+      renderList();
+      toast(monthData().label + ' selected');
+    });
+
+    document.getElementById('statusFilters').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-status]');
+      if (!btn) return;
+      currentStatusFilter = btn.dataset.status;
+      document.querySelectorAll('#statusFilters button').forEach((b) => b.classList.toggle('active', b === btn));
+      if (currentStatusFilter !== 'completed') {
+        currentAmountFilter = 'any';
+        document.querySelectorAll('#amountFilters button').forEach((b) => b.classList.remove('active'));
+      }
+      renderList();
+    });
+
+    document.getElementById('amountFilters').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-amount]');
+      if (!btn) return;
+      // Tap again to clear — Completed with no amount = all completed
+      if (currentAmountFilter === btn.dataset.amount) {
+        currentAmountFilter = 'any';
+        btn.classList.remove('active');
+      } else {
+        currentAmountFilter = btn.dataset.amount;
+        document.querySelectorAll('#amountFilters button').forEach((b) => b.classList.toggle('active', b === btn));
+      }
+      renderList();
+    });
+
+    document.addEventListener('click', (e) => {
+      const remindBtn = e.target.closest('[data-ref-remind]');
+      if (remindBtn) {
+        e.stopPropagation();
+        const via = remindBtn.dataset.refRemind === 'wa' ? 'WhatsApp' : 'SMS';
+        toast('Opening ' + via + ' to remind ' + (remindBtn.dataset.refName || 'friend') + '…');
+        return;
+      }
+      if (e.target.closest('[data-toggle-zero]')) {
+        setHomeDemo('never');
+        return;
+      }
+      if (e.target.closest('[data-toggle-month-empty]')) {
+        setHomeDemo('monthEmpty');
+        return;
+      }
+      if (e.target.closest('[data-toggle-filled]')) {
+        setHomeDemo('filled');
+        return;
+      }
+      const foilDemo = e.target.closest('[data-foil-demo]');
+      if (foilDemo) {
+        openFoilDemo(Number(foilDemo.dataset.foilDemo));
+        return;
+      }
+      if (e.target.closest('#resetScratchDemo')) {
+        resetAllScratchedDemo();
+        return;
+      }
+      const hintBtn = e.target.closest('#homeHint');
+      if (hintBtn) {
+        share.classList.add('open');
+        return;
+      }
+      const pick = e.target.closest('[data-scratch-pick]');
+      if (pick) {
+        clearTimeout(autoNextTimer);
+        activeScratchId = pick.dataset.scratchPick;
+        loadScratchCard(activeScratchId);
+        return;
+      }
+      if (e.target.closest('#scratchPrev')) {
+        stepScratch(-1);
+        return;
+      }
+      if (e.target.closest('#scratchNextNav')) {
+        stepScratch(1);
+        return;
+      }
+      if (e.target.closest('#scratchNextBtn')) {
+        clearTimeout(autoNextTimer);
+        goToNextPending();
+        return;
+      }
+      if (e.target.closest('#scratchBack')) {
+        go(scratchReturnTo || 'home');
+        return;
+      }
+      const scratchGo = e.target.closest('[data-go="scratch"]');
+      if (scratchGo) {
+        // Home strip / Scratch tab → back returns to home
+        if (!scratchGo.closest('#rewardList')) scratchReturnTo = 'home';
+        if (scratchGo.dataset.scratchId) {
+          activeScratchId = scratchGo.dataset.scratchId;
+          if (scratchGo.dataset.scratchMonth) {
+            currentMonth = scratchGo.dataset.scratchMonth;
+            localStorage.setItem(MONTH_KEY, currentMonth);
+            monthSelect.value = currentMonth;
+          }
+        }
+      }
+      const g = e.target.closest('[data-go]');
+      if (g) {
+        if (g.hasAttribute('data-open-share-after')) {
+          go(g.dataset.go);
+          setTimeout(() => share.classList.add('open'), 200);
+          return;
+        }
+        return go(g.dataset.go);
+      }
+      if (e.target.closest('#howToggle')) {
+        const block = document.getElementById('howBlock');
+        const open = !block.classList.contains('open');
+        block.classList.toggle('open', open);
+        document.getElementById('howToggle').setAttribute('aria-expanded', open ? 'true' : 'false');
+        return;
+      }
+      if (e.target.closest('[data-open-how]')) return how.classList.add('open');
+      if (e.target.closest('[data-close-how]')) return how.classList.remove('open');
+      if (e.target.closest('[data-open-share]')) return share.classList.add('open');
+      if (e.target.closest('[data-close-share]')) return share.classList.remove('open');
+      const toastBtn = e.target.closest('[data-toast]');
+      if (toastBtn) toast(toastBtn.dataset.toast);
+    });
+    how.addEventListener('click', e => { if (e.target === how) how.classList.remove('open'); });
+    share.addEventListener('click', e => { if (e.target === share) share.classList.remove('open'); });
+
+    const CONTACTS_GRANT_KEY = 'referralMvpContactsGranted';
+    const contactsPerm = document.getElementById('contactsPerm');
+    const mockContacts = [
+      { id: 'c1', name: 'Asha Patel', initial: 'A', phone: '+91 98765 43210', avatar: '', joined: false },
+      { id: 'c2', name: 'Rohan Gupta', initial: 'R', phone: '+91 98111 22334', avatar: 'b', joined: false },
+      { id: 'c3', name: 'Meera Singh', initial: 'M', phone: '+91 99001 44556', avatar: 'c', joined: true },
+      { id: 'c4', name: 'Vikram Rao', initial: 'V', phone: '+91 97654 11223', avatar: 'd', joined: false },
+      { id: 'c5', name: 'Pooja Nair', initial: 'P', phone: '+91 98222 66778', avatar: '', joined: false },
+      { id: 'c6', name: 'Arjun Malhotra', initial: 'A', phone: '+91 98887 33445', avatar: 'b', joined: true },
+      { id: 'c7', name: 'Sneha Iyer', initial: 'S', phone: '+91 97111 88990', avatar: 'c', joined: false },
+      { id: 'c8', name: 'Kabir Shah', initial: 'K', phone: '+91 96555 00112', avatar: 'd', joined: false },
+    ];
+    let contactsFilter = '';
+
+    function isContactsGranted() {
+      return localStorage.getItem(CONTACTS_GRANT_KEY) === '1';
+    }
+    function setContactsGranted(on) {
+      localStorage.setItem(CONTACTS_GRANT_KEY, on ? '1' : '0');
+    }
+
+    const HOME_INVITE_KEY = 'referralMvpHomeInviteRow';
+    function isHomeInviteVisible() {
+      return localStorage.getItem(HOME_INVITE_KEY) !== '0';
+    }
+    function syncHomeInviteRow() {
+      const show = isHomeInviteVisible();
+      const btn = document.getElementById('homeContactsBtn');
+      if (btn) btn.hidden = !show;
+      const onToggle = document.getElementById('homeInviteOnToggle');
+      const offToggle = document.getElementById('homeInviteOffToggle');
+      if (onToggle) onToggle.classList.toggle('active', show);
+      if (offToggle) offToggle.classList.toggle('active', !show);
+    }
+    function setHomeInviteDemo(show) {
+      localStorage.setItem(HOME_INVITE_KEY, show ? '1' : '0');
+      syncHomeInviteRow();
+      go('home');
+      toast(show ? 'Home: Invite contacts row on' : 'Home: Invite contacts row off');
+    }
+
+    function renderContactsList() {
+      const listEl = document.getElementById('contactsList');
+      const meta = document.getElementById('contactsMeta');
+      const q = contactsFilter.trim().toLowerCase();
+      const filtered = mockContacts.filter((c) => {
+        if (!q) return true;
+        return c.name.toLowerCase().includes(q) || c.phone.includes(q);
+      });
+      meta.textContent = filtered.length + ' phonebook contacts';
+      listEl.innerHTML = filtered.map((c) => {
+        const actions = c.joined
+          ? '<span class="joined">Joined</span>'
+          : '<div class="contact-actions">' +
+            '<button type="button" class="wa-btn" data-contact-invite="wa" data-contact-name="' + c.name + '">WhatsApp</button>' +
+            '<button type="button" class="sms-btn" data-contact-invite="sms" data-contact-name="' + c.name + '">SMS</button>' +
+            '</div>';
+        return (
+          '<div class="contact-row">' +
+          '<div class="avatar ' + c.avatar + '">' + c.initial + '</div>' +
+          '<div><div class="name">' + c.name + '</div><div class="detail">' + c.phone + '</div></div>' +
+          actions +
+          '</div>'
+        );
+      }).join('');
+    }
+
+    function openContactsScreen() {
+      contactsPerm.classList.remove('open');
+      share.classList.remove('open');
+      contactsFilter = '';
+      const search = document.getElementById('contactsSearch');
+      if (search) search.value = '';
+      renderContactsList();
+      go('contacts');
+    }
+
+    function startContactsInvite() {
+      share.classList.remove('open');
+      if (isContactsGranted()) {
+        openContactsScreen();
+      } else {
+        contactsPerm.classList.add('open');
+      }
+    }
+
+    document.getElementById('shareContactsBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      startContactsInvite();
+    });
+    document.getElementById('homeContactsBtn').addEventListener('click', () => {
+      startContactsInvite();
+    });
+    document.getElementById('allowContactsBtn').addEventListener('click', () => {
+      setContactsGranted(true);
+      toast('Contacts synced');
+      openContactsScreen();
+    });
+    document.getElementById('denyContactsBtn').addEventListener('click', () => {
+      contactsPerm.classList.remove('open');
+    });
+    contactsPerm.addEventListener('click', (e) => {
+      if (e.target === contactsPerm) contactsPerm.classList.remove('open');
+    });
+    document.getElementById('contactsBack').addEventListener('click', () => go('home'));
+    document.getElementById('inviteAllBtn').addEventListener('click', () => {
+      const n = mockContacts.filter((c) => !c.joined).length;
+      toast('Invite sent to ' + n + ' contacts');
+    });
+    document.getElementById('contactsSearch').addEventListener('input', (e) => {
+      contactsFilter = e.target.value || '';
+      renderContactsList();
+    });
+    document.getElementById('contactsList').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-contact-invite]');
+      if (!btn) return;
+      const via = btn.dataset.contactInvite === 'wa' ? 'WhatsApp' : 'SMS';
+      toast('Opening ' + via + ' for ' + btn.dataset.contactName + '…');
+    });
+    document.getElementById('homeInviteOnToggle').addEventListener('click', () => setHomeInviteDemo(true));
+    document.getElementById('homeInviteOffToggle').addEventListener('click', () => setHomeInviteDemo(false));
+
+    // Contacts tab: same entry as Share → Invite from contacts
+    document.querySelectorAll('[data-go="contacts"]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        startContactsInvite();
+      }, true);
+    });
+
+    const FONT_KEY = 'referralMvpFont';
+    function setMvpFont(which) {
+      const useDm = which === 'dm';
+      document.body.classList.toggle('font-dm', useDm);
+      localStorage.setItem(FONT_KEY, useDm ? 'dm' : 'figtree');
+      document.getElementById('fontFigtreeBtn').classList.toggle('active', !useDm);
+      document.getElementById('fontDmBtn').classList.toggle('active', useDm);
+      toast(useDm ? 'DM Sans (old MVP)' : 'Figtree (app font)');
+    }
+    document.getElementById('fontFigtreeBtn').addEventListener('click', () => setMvpFont('figtree'));
+    document.getElementById('fontDmBtn').addEventListener('click', () => setMvpFont('dm'));
+    // Default = Figtree (matches app); restore last pick if any
+    const savedFont = localStorage.getItem(FONT_KEY);
+    if (savedFont === 'dm') setMvpFont('dm');
+    else {
+      document.getElementById('fontFigtreeBtn').classList.add('active');
+      document.getElementById('fontDmBtn').classList.remove('active');
+    }
+
+    monthSelect.value = currentMonth;
+    syncHomeInviteRow();
+    refreshHome();
+    renderList();
+  </script>
+</body>
+</html>
