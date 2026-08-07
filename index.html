@@ -175,44 +175,308 @@
     }
     .screen.active { display: flex; }
 
-    /* Full hero — image not cropped */
+    /* Compact campaign header (no fixed banner image) */
     .hero {
       position: relative;
       width: 100%;
-      background: #9ec9f5;
       flex-shrink: 0;
-    }
-    .hero-img {
-      display: block;
-      width: 100%;
-      height: auto;
-      aspect-ratio: 961 / 481;
-      object-fit: contain;
-      object-position: center top;
-      background: #9ec9f5;
+      background: linear-gradient(165deg, #1f6feb 0%, #1558c0 55%, #0f4aa8 100%);
+      color: #fff;
+      padding: 34px 14px 18px;
     }
     .hero-bar {
-      position: absolute; top: 28px; left: 10px; right: 10px;
-      display: flex; justify-content: space-between; z-index: 2;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 14px;
     }
     .icon-btn {
       width: 34px; height: 34px; border: 0; border-radius: 50%;
-      background: rgba(0,0,0,.25); color: #fff; font-size: 16px; cursor: pointer;
+      background: rgba(255,255,255,.18); color: #fff; font-size: 16px; cursor: pointer;
+    }
+    .hero-copy { text-align: center; padding: 0 8px 4px; }
+    .hero-eyebrow {
+      margin: 0 0 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; color: rgba(255,255,255,.78);
+    }
+    .hero-title {
+      margin: 0;
+      font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2;
+    }
+    .hero-title em {
+      font-style: normal;
+      color: #ffe08a;
+    }
+    .hero-sub {
+      margin: 8px 0 0;
+      font-size: 13px; font-weight: 500; line-height: 1.35;
+      color: rgba(255,255,255,.88);
     }
 
     .sheet {
-      margin-top: -14px;
+      margin-top: 0;
       flex: 1;
       overflow: auto;
       background: #fff;
       border-radius: 18px 18px 0 0;
-      padding: 14px 12px 28px;
+      padding: 14px 12px 88px;
       position: relative;
       z-index: 1;
       -webkit-overflow-scrolling: touch;
       display: flex;
       flex-direction: column;
       gap: var(--stack);
+    }
+    .screen[data-screen="home"] { background: #fff; }
+
+    /* On-page referral journey + How it works entry */
+    .journey-wrap {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      overflow: hidden;
+    }
+    .journey {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      padding: 12px 12px 10px;
+      background: #f7f9fc;
+    }
+    .journey-step {
+      text-align: center;
+      padding: 4px 2px;
+      position: relative;
+    }
+    .journey-step .n {
+      width: 22px; height: 22px; margin: 0 auto 6px;
+      border-radius: 50%; background: var(--blue); color: #fff;
+      font-size: 11px; font-weight: 700;
+      display: grid; place-items: center;
+    }
+    .journey-step b {
+      display: block; font-size: 11px; font-weight: 700; line-height: 1.25; color: var(--ink);
+    }
+    .journey-step span {
+      display: block; margin-top: 2px; font-size: 10px; color: var(--muted); line-height: 1.25;
+    }
+    .how-link {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border: 0;
+      border-top: 1px solid var(--line);
+      background: #fff;
+      cursor: pointer;
+      font: inherit;
+      color: var(--ink);
+      text-align: left;
+    }
+    .how-link:active { background: #f5f8fc; }
+    .how-link-icon {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #e8f3ff, #cce5ff);
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .how-link-copy {
+      flex: 1;
+      min-width: 0;
+    }
+    .how-link-copy b {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue);
+    }
+    .how-link-copy small {
+      display: block;
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+    .how-link-chev {
+      color: var(--blue);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1;
+    }
+    /* When journey steps are hidden, drop the internal separator on the how-link */
+    .journey-wrap.steps-hidden .how-link { border-top: 0; }
+
+    /* Visual reward slabs on home */
+    .slabs {
+      display: flex; gap: 6px;
+      margin-top: 10px;
+    }
+    .slab {
+      flex: 1;
+      border-radius: 10px;
+      padding: 8px 6px;
+      text-align: center;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 600;
+      line-height: 1.25;
+    }
+    .slab strong { display: block; font-size: 13px; color: var(--ink); margin-bottom: 2px; }
+    .slab.on {
+      border-color: #b7d0f5;
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+    .slab.on strong { color: var(--blue); }
+    .slab.done {
+      border-color: #b7e0c8;
+      background: #eefaf3;
+      color: var(--ok);
+    }
+    .slab.done strong { color: var(--ok); }
+
+    /* Home rewards carousel */
+    .rewards-block { margin: 0; }
+    .rewards-head {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin: 0 2px 8px;
+    }
+    .rewards-head .label { margin: 0; }
+    .rewards-head button {
+      border: 0; background: transparent; color: var(--blue);
+      font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; padding: 0;
+    }
+    .rewards-carousel {
+      display: flex; gap: 10px;
+      overflow-x: auto;
+      padding: 2px 2px 6px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .rewards-carousel::-webkit-scrollbar { display: none; }
+    .reward-card {
+      flex: 0 0 148px;
+      scroll-snap-align: start;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 12px;
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+      color: var(--ink);
+      min-height: 132px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(21,32,43,.04);
+    }
+    .reward-card.locked {
+      background: linear-gradient(160deg, #f3f5f8, #e8edf3);
+      color: var(--muted);
+      cursor: default;
+    }
+    .reward-card.ready {
+      border-color: var(--amber-border);
+      background: linear-gradient(160deg, #fffaf0, #fff3d6);
+    }
+    .reward-card .rc-tag {
+      font-size: 10px; font-weight: 700; letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .reward-card.locked .rc-tag { color: #7b8794; }
+    .reward-card.ready .rc-tag { color: var(--amber-text); }
+    .reward-card .rc-amount {
+      font-size: 22px; font-weight: 700; letter-spacing: -0.02em; line-height: 1;
+    }
+    .reward-card.locked .rc-amount { filter: blur(5px); user-select: none; }
+    .reward-card .rc-from {
+      font-size: 12px; font-weight: 600; color: var(--ink);
+    }
+    .reward-card.locked .rc-from { color: var(--muted); }
+    .reward-card .rc-hint {
+      margin-top: auto;
+      font-size: 11px; font-weight: 600; color: var(--muted); line-height: 1.3;
+    }
+    .reward-card.ready .rc-hint { color: var(--amber-text); }
+    .rewards-empty {
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      font-size: 12px; color: var(--muted); text-align: center;
+    }
+
+    /* Sticky Refer Now */
+    .sticky-cta {
+      position: absolute;
+      left: 12px; right: 12px; bottom: 12px;
+      z-index: 5;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 0;
+      pointer-events: none;
+    }
+    .sticky-cta .refer-now {
+      pointer-events: auto;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--blue);
+      color: #fff;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 14px 18px;
+      min-height: 52px;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(31,111,235,.35);
+    }
+    .sticky-cta .refer-now:active { background: var(--blue-hover); }
+    .sticky-cta .refer-now svg { width: 22px; height: 22px; flex-shrink: 0; }
+    .wallet-chip {
+      pointer-events: none;
+      position: absolute;
+      top: 36px;
+      right: 12px;
+      z-index: 6;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: #15202b;
+      color: #ffe08a;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 8px 18px rgba(21,32,43,.25);
+      font-size: 16px;
+      opacity: 0;
+      transform: scale(.85);
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    .wallet-chip.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .fly-coin {
+      position: absolute;
+      z-index: 25;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff3c4, #e0b84a 55%, #c98500);
+      box-shadow: 0 2px 6px rgba(0,0,0,.25);
+      pointer-events: none;
+      transition: transform .7s cubic-bezier(.2,.8,.2,1), opacity .7s ease;
+      opacity: 1;
     }
     /* Home stack: shared card chrome — never flex-shrink (overflow:hidden
        cards otherwise crush to a 1–2px sliver inside the fixed phone height) */
@@ -221,6 +485,7 @@
     .sheet .progress-card,
     .sheet .scratch-strip,
     .sheet .how-block,
+    .sheet .journey-wrap,
     .sheet .home-contacts,
     .sheet .code {
       margin-bottom: 0;
@@ -388,6 +653,12 @@
       align-items: center;
       gap: 8px;
       flex-shrink: 0;
+    }
+    .pc-top-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: .01em;
     }
     .pc-chevron {
       color: #8a9aab;
@@ -575,13 +846,733 @@
     }
     .how-panel {
       display: none;
-      padding: 0 var(--pad) var(--pad);
+      padding: 4px var(--pad) 12px;
     }
     .how-block.open .how-panel { display: block; }
-    .how-img {
-      width: 100%; border-radius: var(--radius-sm); display: block;
-      aspect-ratio: 78/41; object-fit: cover; cursor: pointer;
-      margin-top: 12px;
+
+    /* How it works — near full-page sheet + 3 style variants */
+    #how.overlay { align-items: stretch; background: rgba(15,23,42,.5); }
+    #how .bs {
+      max-height: none;
+      height: 100%;
+      border-radius: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #f4f7fb;
+    }
+    #how .how-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 16px 10px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      flex-shrink: 0;
+    }
+    #how .how-top h3 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    #how .how-style-pills {
+      display: flex;
+      gap: 6px;
+      padding: 10px 16px 0;
+      background: #fff;
+      flex-shrink: 0;
+    }
+    #how .how-style-pills button {
+      flex: 1;
+      border: 1px solid var(--line);
+      background: #f7f9fc;
+      color: var(--muted);
+      font: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 8px 6px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    #how .how-style-pills button.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+    }
+    #how .how-scroll {
+      flex: 1;
+      overflow: auto;
+      padding: 14px 16px 12px;
+      -webkit-overflow-scrolling: touch;
+    }
+    #how .how-footer {
+      flex-shrink: 0;
+      padding: 12px 16px 18px;
+      background: #fff;
+      border-top: 1px solid var(--line);
+      box-shadow: 0 -8px 20px rgba(21,32,43,.04);
+    }
+    #how .how-footer .primary { margin: 0; width: 100%; }
+    .how-variant[hidden] { display: none !important; }
+    .how-sec-label {
+      margin: 0 0 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-align: left;
+    }
+    .how-steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 0 0 14px;
+      padding: 4px 0;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .how-steps-list .row-st {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      position: relative;
+    }
+    .how-steps-list .row-st + .row-st { border-top: 1px solid #eef2f6; }
+    .how-steps-list .num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .how-steps-list .copy b {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .how-steps-list .copy span {
+      display: block;
+      margin-top: 2px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .how-ladder {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .how-ladder .rung {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+    .how-ladder .rung.hot {
+      background: linear-gradient(90deg, #fff8e6, #fff);
+      border-color: #f0d48a;
+    }
+    .how-ladder .bar {
+      width: 6px;
+      border-radius: 999px;
+      background: #d7e4f5;
+      align-self: stretch;
+      min-height: 28px;
+    }
+    .how-ladder .rung:nth-child(1) .bar { background: #9ec5f5; }
+    .how-ladder .rung:nth-child(2) .bar { background: #4f8fe8; }
+    .how-ladder .rung.hot .bar { background: linear-gradient(180deg, #f0c14b, #e0a800); }
+
+    /* How it works — compact, homepage-matching typography */
+    .lang-toggle {
+      display: inline-flex;
+      gap: 2px;
+      margin: 0 0 12px;
+      padding: 3px;
+      background: #eef2f6;
+      border-radius: 999px;
+    }
+    .lang-toggle button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .lang-toggle button.active {
+      background: #fff;
+      color: var(--ink);
+      box-shadow: 0 1px 3px rgba(21,32,43,.08);
+    }
+    /* ─────────  How it works — revamp v2  ───────── */
+    .how-v2 { padding-bottom: 4px; }
+
+    /* Poster hero — visual explainer instead of a text paragraph */
+    .how-poster {
+      position: relative;
+      margin: 4px 0 16px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #f4f7fb;
+      border: 1px solid #dfe6ee;
+    }
+    .how-poster img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    /* Caption strip under each poster scene — makes the visual self-explanatory */
+    .how-poster-caps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      align-items: start;
+      background: #fff;
+      border-top: 1px solid #e6ecf3;
+    }
+    .how-poster-caps span {
+      position: relative;
+      text-align: center;
+      padding: 10px 6px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.25;
+    }
+    .how-poster-caps span + span { border-left: 1px solid #eef2f7; }
+    .how-poster-caps span::before {
+      content: attr(data-step);
+      display: block;
+      margin: 0 auto 4px;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+      border-radius: 999px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 9.5px;
+      font-weight: 800;
+    }
+    .how-chip {
+      display: inline-block;
+      background: #fff3d6;
+      color: #8a5a00;
+      border: 1px solid #f0d48a;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .how-chip.on-poster {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255,255,255,.92);
+      color: #8a5a00;
+      border-color: rgba(240,212,138,.9);
+      backdrop-filter: blur(2px);
+    }
+    .how-sub {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .how-sub b { color: var(--ink); font-weight: 800; }
+    .how-def {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+    .how-anchor {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 4px;
+      background: #eaf1fd;
+      border: 1px solid #cfe0f7;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 999px;
+    }
+    .how-anchor b { font-size: 15px; font-weight: 800; letter-spacing: -0.01em; }
+    .how-clarify {
+      margin: -8px 0 16px;
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .how-section {
+      margin: 8px 0 2px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .how-section-sub {
+      margin: 0 0 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* 3 easy steps — clean numbered journey (same DNA as home) */
+    .how-journey3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 4px;
+      margin: 8px 0 18px;
+      padding: 16px 8px 14px;
+      background: #f4f7fb;
+      border: 1px solid #dfe6ee;
+      border-radius: 16px;
+      position: relative;
+    }
+    .how-journey3::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: 22%;
+      right: 22%;
+      height: 0;
+      border-top: 2px dashed #c4d1e0;
+      z-index: 0;
+    }
+    .how-journey3 .j3-col {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 0 4px;
+    }
+    .how-journey3 .j3-num {
+      width: 28px; height: 28px;
+      margin: 0 auto 8px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      display: grid; place-items: center;
+      box-shadow: 0 0 0 4px #f4f7fb;
+    }
+    .how-journey3 b {
+      display: block;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.25;
+    }
+    .how-journey3 span {
+      display: block;
+      margin-top: 3px;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+
+    /* Reward ladder — range badge → reward mapping, highlighted (no table) */
+    .rewards-ladder {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 10px 0 16px;
+    }
+    .rl-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #f7faff;
+      border: 1px solid #eef2f7;
+    }
+    .rl-card.is-max {
+      background: #eef5ff;
+      border-color: #d9e7fb;
+    }
+    .rl-badge {
+      flex: none;
+      width: 60px;
+      align-self: stretch;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 4px;
+      border-radius: 12px;
+      background: #e7f0fd;
+      color: var(--blue);
+    }
+    .rl-card.s2 .rl-badge { background: #d6e6fc; }
+    .rl-card.s3 .rl-badge {
+      background: linear-gradient(150deg, #2a7bf0, #1858c4);
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(31,111,235,.3);
+    }
+    .rl-badge b {
+      font-size: 19px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .rl-badge span {
+      margin-top: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #5b7aa8;
+    }
+    .rl-card.s3 .rl-badge span { color: rgba(255,255,255,.85); }
+    .rl-arrow {
+      flex: none;
+      color: #b7c6dc;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .rl-reward {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+    .rl-amt {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+    .rl-card.s3 .rl-amt { color: var(--blue); }
+    .rl-amt > span[data-t="slab-unit"] {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .rl-max {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--blue);
+      padding: 2px 7px;
+      border-radius: 999px;
+    }
+    .rl-desc {
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    /* Info line (used inside How it works for the exclusion note) */
+    .warn-card {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #f4f7fb;
+      border: 1px solid #dfe6ee;
+    }
+    .warn-card .warn-ico {
+      flex-shrink: 0;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      display: grid; place-items: center;
+      line-height: 1;
+      margin-top: 1px;
+    }
+    .warn-card p {
+      margin: 0;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Warning card v2 — chip-based, no wall of text */
+    .how-warn {
+      margin: 10px 0 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #fff7ec;
+      border: 1px solid #f3d69a;
+    }
+    .how-warn-title {
+      margin: 0 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #7a4e00;
+    }
+    .how-warn-ico {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: #e0a800;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      display: grid; place-items: center;
+      line-height: 1;
+    }
+    .how-warn-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .how-warn-chips .wc {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #7a4e00;
+      background: #fff;
+      border: 1px solid #f3d69a;
+      padding: 5px 10px;
+      border-radius: 999px;
+    }
+    .how-warn-chips .wc::before {
+      content: '✕';
+      color: #c98500;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .how-tnc {
+      margin: 14px 0 4px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .how-tnc a {
+      color: var(--blue);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* Style 2 — Horizontal journey cards */
+    .how-journey-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      margin: 0 0 18px;
+      position: relative;
+    }
+    .how-journey-row .jc {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 8px 12px;
+      text-align: center;
+      position: relative;
+    }
+    .how-journey-row .jc .ico {
+      width: 42px; height: 42px;
+      margin: 0 auto 8px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, #e8f3ff, #cce5ff);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+    }
+    .how-journey-row .jc:nth-child(3) .ico {
+      background: linear-gradient(145deg, #fff8e6, #ffe08a);
+    }
+    .how-journey-row .jc .n {
+      position: absolute;
+      top: 8px; left: 8px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+    }
+    .how-journey-row .jc b {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.25;
+    }
+    .how-journey-row .jc span {
+      display: block;
+      margin-top: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+    .how-earn-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .how-earn-strip .seg {
+      padding: 14px 8px;
+      text-align: center;
+      position: relative;
+    }
+    .how-earn-strip .seg + .seg { border-left: 1px solid var(--line); }
+    .how-earn-strip .seg.hot {
+      background: linear-gradient(180deg, #fff8e6, #fff1c4);
+    }
+    .how-earn-strip .seg .a {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .how-earn-strip .seg.hot .a { color: #9a6a00; font-size: 17px; }
+    .how-earn-strip .seg .f {
+      margin-top: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .how-earn-strip .seg.hot .f { color: #b88400; }
+
+    /* Style 3 — CRED-style slabs + thin steps */
+    .how-slabs-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 0 0 18px;
+    }
+    .how-slabs-stack .slab {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 14px;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+    .how-slabs-stack .slab::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 5px;
+      background: #9ec5f5;
+    }
+    .how-slabs-stack .slab:nth-child(2)::before { background: #1f6feb; }
+    .how-slabs-stack .slab.hot {
+      background: linear-gradient(90deg, #fff8e6 0%, #fff 55%);
+      border-color: #f0d48a;
+      box-shadow: 0 10px 22px rgba(201,133,0,.1);
+      transform: scale(1.01);
+    }
+    .how-slabs-stack .slab.hot::before {
+      width: 6px;
+      background: linear-gradient(180deg, #ffe08a, #e0a800);
+    }
+    .how-slabs-stack .amt {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      min-width: 72px;
+    }
+    .how-slabs-stack .slab.hot .amt { color: #9a6a00; font-size: 24px; }
+    .how-slabs-stack .meta { flex: 1; min-width: 0; }
+    .how-slabs-stack .meta b {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .how-slabs-stack .meta span {
+      display: block;
+      margin-top: 2px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .how-slabs-stack .pill {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: #9a6a00;
+      background: #fff1c4;
+      padding: 4px 8px;
+      border-radius: 999px;
+    }
+    .how-check-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-radius: 16px;
+      background: #fff;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .how-check-steps .cs {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+    }
+    .how-check-steps .cs + .cs { border-top: 1px solid #eef2f6; }
+    .how-check-steps .n {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .how-check-steps .cs b {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
     }
     /* Home: secondary path — same card chrome as How it works */
     .home-contacts {
@@ -661,7 +1652,71 @@
       font-weight: 700; font: inherit; font-size: 13px; cursor: pointer;
       padding: 0;
     }
+    .collapse-block {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      overflow: hidden;
+    }
+    .collapse-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px var(--pad);
+      border: 0;
+      background: #fff;
+      cursor: pointer;
+      font: inherit;
+      color: var(--ink);
+      min-height: 48px;
+    }
+    .collapse-toggle-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .collapse-chevron {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1;
+      transition: transform .2s ease;
+    }
+    .collapse-block:not(.open) .collapse-chevron { transform: rotate(180deg); }
+    .collapse-panel {
+      display: none;
+      padding: 0 var(--pad) var(--pad);
+    }
+    .collapse-block.open .collapse-panel { display: block; }
+    .collapse-block[hidden] { display: none !important; }
+    .month-sep {
+      margin: 14px 0 8px;
+      padding: 0 2px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .month-sep:first-child { margin-top: 4px; }
     .tc { text-align: center; margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+    .screen[data-screen="contacts"] {
+      background: var(--bg);
+    }
+    .screen[data-screen="contacts"] .contacts-body {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .screen[data-screen="contacts"] .contacts-list {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
 
     .topbar {
       display: flex; align-items: center; gap: 10px;
@@ -1120,32 +2175,17 @@
       background: #d1d5db; margin: 0 auto 10px;
     }
     .bs h3 { margin: 0 0 10px; font-size: 17px; color: var(--ink); }
-    .bs img.steps {
-      width: 100%;
-      border-radius: 10px;
-      display: block;
-      height: auto;
-      /* Full poster visible — do not crop with cover + forced ratio */
-      aspect-ratio: auto;
-      object-fit: contain;
-      background: #0b3d91;
-    }
-    .table { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: 12px; }
-    .th, .tr {
-      display: grid; grid-template-columns: 1.4fr 1fr;
-      padding: 11px 12px; font-size: 13px;
-    }
-    .th {
-      background: #f7fafc; font-size: 11px; font-weight: 700;
-      color: var(--muted); text-transform: uppercase;
-    }
-    .tr { border-top: 1px solid var(--line); font-weight: 600; color: var(--ink); }
     .campaign-line {
-      margin: 10px 0 0;
+      margin: 12px 0 0;
       font-size: 12px;
       font-weight: 700;
       color: var(--amber);
       text-align: center;
+    }
+    .how-sheet-title {
+      margin: 0 0 4px;
+      font-size: 17px;
+      color: var(--ink);
     }
     .note { margin: 10px 0 0; font-size: 11px; color: var(--muted); line-height: 1.4; }
     .option {
@@ -1277,11 +2317,12 @@
       <summary>How the cases work</summary>
       <div class="legend-body">
         <ul>
-          <li><b>Case 1:</b> progress bar + joined / first sales / earned.</li>
-          <li><b>Case 2:</b> this month empty — quiet progress (demo has no leftover unscratched past cards).</li>
-          <li><b>Case 3:</b> never referred — no scratch cards → no strip.</li>
-          <li><b>Scratch strip:</b> max <b>3</b> unscratched (₹100 / ₹400 / ₹1,000). Scratch all → strip disappears from home.</li>
-          <li><b>Home contacts row:</b> demo with Invite from contacts on home vs without that row.</li>
+          <li><b>Meeting MVP:</b> promote up to ₹1,100, sticky Refer now, on-page 3-step journey.</li>
+          <li><b>Rewards:</b> locked/ready carousel → Collect → confetti + coins to wallet.</li>
+          <li><b>History:</b> single scroll with month separators (completed / pending).</li>
+          <li><b>How it works:</b> clear home entry under journey → opens full-page detail.</li>
+          <li><b>Collapsed:</b> referral code, invite contacts (last).</li>
+          <li><b>Cases 1–3:</b> filled / empty month / never referred demos still work.</li>
         </ul>
       </div>
     </details>
@@ -1300,9 +2341,8 @@
       </div>
       <div class="tab-group">
         <div class="tab-label">Home cases</div>
-        <button type="button" id="filledToggle" data-toggle-filled>Case 1: has this month</button>
-        <button type="button" id="monthEmptyToggle" data-toggle-month-empty>Case 2: past yes · month 0</button>
-        <button type="button" id="zeroToggle" data-toggle-zero>Case 3: never referred</button>
+        <button type="button" id="filledToggle" data-toggle-filled>Has referred</button>
+        <button type="button" id="zeroToggle" data-toggle-zero>Never referred</button>
       </div>
       <div class="tab-group">
         <div class="tab-label">Foil demos</div>
@@ -1330,139 +2370,141 @@
 
       <section class="screen active" data-screen="home">
         <div class="hero">
-          <img class="hero-img" alt="Refer and Earn"
-            src="https://cdn.gromo.in/static-resources/notification-resources/notification_images/1783659481_Artboard+10.png" />
           <div class="hero-bar">
             <button class="icon-btn" type="button">←</button>
-            <button class="icon-btn" type="button" data-toast="Support (demo)">?</button>
+            <button class="icon-btn" type="button" data-open-how aria-label="How it works">?</button>
+          </div>
+          <div class="hero-copy">
+            <p class="hero-eyebrow" id="homeEyebrow" data-t="hero-eyebrow">Limited time · ends 31 Aug</p>
+            <h2 class="hero-title">Refer your friends.<br>Earn up to <em>₹1,100</em></h2>
+            <p class="hero-sub">Reward unlocks when your friend makes their first sale.</p>
           </div>
         </div>
         <div class="sheet">
-          <div class="label">Your Referral's Progress</div>
+          <div class="journey-wrap" id="homeJourneyWrap">
+            <div class="journey" id="homeJourney" aria-label="How referral works">
+              <div class="journey-step">
+                <div class="n">1</div>
+                <b>Refer friends</b>
+                <span>Share your invite</span>
+              </div>
+              <div class="journey-step">
+                <div class="n">2</div>
+                <b>They join GroMo</b>
+                <span>Friend signs up</span>
+              </div>
+              <div class="journey-step">
+                <div class="n">3</div>
+                <b>First sale</b>
+                <span>You earn cash</span>
+              </div>
+            </div>
+            <button type="button" class="how-link" id="howBlock" data-open-how aria-label="How it works">
+              <span class="how-link-icon" aria-hidden="true">?</span>
+              <span class="how-link-copy">
+                <b>How it works</b>
+                <small>Earn up to ₹1,000 per friend · see full details</small>
+              </span>
+              <span class="how-link-chev" aria-hidden="true">›</span>
+            </button>
+          </div>
+
+          <div class="label">Your progress</div>
           <div class="progress-card" id="progressCard">
             <div class="pc-main" id="pcMain" data-go="progress" role="button" tabindex="0">
               <div class="pc-top">
-                <span class="pill" id="homeMonthPill">August 2026</span>
+                <span class="pc-top-label">Your referrals</span>
                 <div class="pc-top-right">
-                  <span class="joined" id="homeJoinedWrap"><b id="homeJoined">18</b> joined</span>
+                  <span class="joined" id="homeJoinedWrap"><b id="homeJoined">18</b> friends</span>
                   <span class="pc-chevron" aria-hidden="true">›</span>
                 </div>
               </div>
               <div class="pc-body" id="pcFilled">
                 <div class="bar"><i id="homeBar"></i></div>
                 <div class="meta">
-                  <span><b id="homeCount">2</b>/<b id="homeJoinedDenom">4</b> first sales</span>
+                  <span><b id="homeCount">2</b> first sales</span>
                   <span><b id="homeEarned">₹100</b> earned</span>
                 </div>
+                <div class="slabs" id="homeSlabs" aria-label="Reward milestones">
+                  <div class="slab" data-slab="100"><strong>₹100</strong>1–4 sales</div>
+                  <div class="slab" data-slab="400"><strong>₹400</strong>5–19 sales</div>
+                  <div class="slab" data-slab="1000"><strong>₹1,000</strong>20+ sales</div>
+                </div>
               </div>
-              <!-- Case 2: past referrals, current month empty -->
-              <p class="pc-empty-quiet" id="pcEmptyQuiet" hidden>No referrals yet this month</p>
-              <!-- Case 3: never referred since campaign -->
+              <p class="pc-empty-quiet" id="pcEmptyQuiet" hidden>Refer more friends to earn on their 1st sale</p>
               <div class="pc-empty-new" id="pcEmptyNew" hidden>
-                <span class="pc-empty-badge">Limited time · up to ₹1,100</span>
+                <span class="pc-empty-badge">Earn up to ₹1,100 per referral</span>
                 <div class="pc-empty-hero">
-                  <span class="pc-empty-reward" aria-hidden="true">
-                    <svg viewBox="0 0 48 48" fill="none">
-                      <!-- soft ground shadow -->
-                      <ellipse cx="24" cy="42" rx="11" ry="2.2" fill="#c9a227" fill-opacity=".28"/>
-                      <!-- box body -->
-                      <rect x="10" y="20" width="28" height="18" rx="4" fill="url(#gBody)"/>
-                      <rect x="10" y="20" width="28" height="18" rx="4" fill="url(#gShine)" fill-opacity=".35"/>
-                      <!-- lid -->
-                      <rect x="8" y="15" width="32" height="7" rx="3" fill="url(#gLid)"/>
-                      <!-- vertical ribbon -->
-                      <rect x="21.5" y="15" width="5" height="23" rx="1.5" fill="url(#gRibbon)"/>
-                      <!-- horizontal ribbon on lid -->
-                      <rect x="8" y="16.5" width="32" height="3.5" fill="#f5e6a6" fill-opacity=".55"/>
-                      <!-- bow left -->
-                      <path d="M24 15C19.2 15 15.8 11.8 16.4 9.2c.5-2.2 3.2-2.8 5.2-1.2C23.2 9.2 24 12.2 24 15Z" fill="url(#gBow)"/>
-                      <!-- bow right -->
-                      <path d="M24 15C28.8 15 32.2 11.8 31.6 9.2c-.5-2.2-3.2-2.8-5.2-1.2C24.8 9.2 24 12.2 24 15Z" fill="url(#gBow)"/>
-                      <!-- bow knot -->
-                      <circle cx="24" cy="14.2" r="2.4" fill="#fff3c4"/>
-                      <circle cx="24" cy="14.2" r="1.4" fill="#e8c76a"/>
-                      <!-- sparkles -->
-                      <path d="M37 12l.7 1.6L39.3 14.3l-1.6.7L37 16.6l-.7-1.6-1.6-.7 1.6-.7L37 12Z" fill="#fff8dc"/>
-                      <path d="M11 12.5l.5 1.1 1.1.5-1.1.5-.5 1.1-.5-1.1-1.1-.5 1.1-.5.5-1.1Z" fill="#fff8dc" fill-opacity=".9"/>
-                      <defs>
-                        <linearGradient id="gBody" x1="10" y1="20" x2="38" y2="38" gradientUnits="userSpaceOnUse">
-                          <stop stop-color="#3b82f6"/>
-                          <stop offset="1" stop-color="#1a56db"/>
-                        </linearGradient>
-                        <linearGradient id="gShine" x1="14" y1="20" x2="20" y2="38" gradientUnits="userSpaceOnUse">
-                          <stop stop-color="#fff" stop-opacity=".55"/>
-                          <stop offset="1" stop-color="#fff" stop-opacity="0"/>
-                        </linearGradient>
-                        <linearGradient id="gLid" x1="8" y1="15" x2="40" y2="22" gradientUnits="userSpaceOnUse">
-                          <stop stop-color="#60a5fa"/>
-                          <stop offset="1" stop-color="#2563eb"/>
-                        </linearGradient>
-                        <linearGradient id="gRibbon" x1="21.5" y1="15" x2="26.5" y2="38" gradientUnits="userSpaceOnUse">
-                          <stop stop-color="#fff8dc"/>
-                          <stop offset=".5" stop-color="#f0d78a"/>
-                          <stop offset="1" stop-color="#d4af37"/>
-                        </linearGradient>
-                        <linearGradient id="gBow" x1="16" y1="8" x2="24" y2="15" gradientUnits="userSpaceOnUse">
-                          <stop stop-color="#fff3c4"/>
-                          <stop offset="1" stop-color="#e0b84a"/>
-                        </linearGradient>
-                      </defs>
-                    </svg>
-                  </span>
                   <div class="pc-empty-copy">
-                    <p class="pc-empty-title">Your first ₹100 is waiting</p>
-                    <p class="pc-empty-sub">Refer a friend — unlock on their 1st sale. Hit 5 for ₹400 each.</p>
+                    <p class="pc-empty-title">Refer your friends</p>
+                    <p class="pc-empty-sub">You earn when they make their first sale. Reach 20 sales for ₹1,000 each.</p>
                   </div>
                 </div>
               </div>
             </div>
             <button type="button" class="hint" id="homeHint" data-hint-action="share">
-              13 more to unlock ₹1,000 each ›
+              Refer more friends to unlock higher rewards ›
             </button>
           </div>
 
-          <button class="scratch-strip" id="scratchStrip" type="button" data-go="scratch" data-scratch-id="neha">
-            <span class="scratch-ico" aria-hidden="true"></span>
-            <span>
-              <strong id="stripTitle">1 reward to scratch</strong>
-              <span class="sub" id="stripSub" style="display:block">From Neha’s 1st sale</span>
-            </span>
-            <span class="cta">Scratch ›</span>
-          </button>
+          <div class="rewards-block" id="rewardsBlock">
+            <div class="rewards-head">
+              <div class="label">Rewards</div>
+              <button type="button" id="seeAllRewards" data-go="scratch">See all</button>
+            </div>
+            <div class="rewards-carousel" id="rewardsCarousel"></div>
+            <p class="rewards-empty" id="rewardsEmpty" hidden>No rewards yet — refer a friend to start.</p>
+          </div>
 
-          <div class="how-block open" id="howBlock">
-            <button type="button" class="how-toggle" id="howToggle" aria-expanded="true" aria-controls="howPanel">
-              <span class="how-toggle-label">HOW IT WORKS?</span>
-              <span class="how-toggle-chevron" aria-hidden="true">⌃</span>
+          <div id="howAnchorBottom"></div>
+
+          <!-- legacy hook kept for JS that still toggles strip visibility -->
+          <button class="scratch-strip hidden" id="scratchStrip" type="button" hidden aria-hidden="true"></button>
+          <span id="stripTitle" hidden></span>
+          <span id="stripSub" hidden></span>
+          <span id="homeJoinedDenom" hidden>0</span>
+
+          <div class="collapse-block" id="codeBlock">
+            <button type="button" class="collapse-toggle" id="codeToggle" aria-expanded="false" aria-controls="codePanel">
+              <span class="collapse-toggle-label">Referral code</span>
+              <span class="collapse-chevron" aria-hidden="true">⌃</span>
             </button>
-            <div class="how-panel" id="howPanel">
-              <img class="how-img" data-open-how alt="How it works"
-                src="https://cdn.gromo.in/static-resources/notification-resources/notification_images/1780405348_banner030.jpg" />
-              <button class="ghost" type="button" data-open-how>See How it Works ›</button>
+            <div class="collapse-panel" id="codePanel">
+              <div class="code">
+                <b>SOCD7434</b>
+                <button type="button" data-toast="Code copied">Copy</button>
+              </div>
             </div>
           </div>
 
-          <button class="primary" type="button" data-open-share>
+          <div class="collapse-block" id="inviteBlock">
+            <button type="button" class="collapse-toggle" id="inviteToggle" aria-expanded="false" aria-controls="invitePanel">
+              <span class="collapse-toggle-label">Invite from contacts</span>
+              <span class="collapse-chevron" aria-hidden="true">⌃</span>
+            </button>
+            <div class="collapse-panel" id="invitePanel">
+              <button class="home-contacts" type="button" id="homeContactsBtn">
+                <span class="ico" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3Zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3Zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z" fill="#1f6feb"/>
+                  </svg>
+                </span>
+                <span class="copy">
+                  <b>Open phonebook</b>
+                  <span>Find friends already on GroMo</span>
+                </span>
+                <span class="chev" aria-hidden="true">›</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="tc">Refer &amp; Earn — T&amp;Cs</div>
+        </div>
+        <div class="sticky-cta">
+          <button class="refer-now" type="button" data-open-share>
+            <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 32C24.837 32 32 24.837 32 16C32 7.163 24.837 0 16 0C7.163 0 0 7.163 0 16C0 24.837 7.163 32 16 32Z" fill="#25D366"/><path fill-rule="evenodd" d="M16.527 24.902H16.524C14.931 24.901 13.367 24.501 11.977 23.743L6.933 25.067L8.283 20.136C7.451 18.694 7.012 17.057 7.013 15.38C7.015 10.134 11.283 5.867 16.527 5.867C19.072 5.868 21.461 6.858 23.257 8.657C25.054 10.455 26.042 12.845 26.041 15.388C26.039 20.632 21.773 24.899 16.527 24.902ZM21.32 17.65C21.261 17.551 21.103 17.491 20.865 17.372C20.627 17.253 19.458 16.678 19.24 16.599C19.023 16.52 18.864 16.48 18.706 16.718C18.547 16.956 18.092 17.491 17.953 17.65C17.814 17.809 17.676 17.829 17.438 17.709C17.2 17.59 16.434 17.34 15.526 16.53C14.819 15.899 14.342 15.121 14.204 14.883C14.065 14.645 14.189 14.516 14.308 14.398C14.415 14.291 14.546 14.12 14.665 13.981C14.783 13.842 14.823 13.743 14.902 13.585C14.981 13.426 14.942 13.287 14.882 13.168C14.823 13.049 14.348 11.879 14.149 11.403C13.957 10.939 13.76 11.002 13.615 10.995C13.476 10.988 13.317 10.986 13.159 10.986C13 10.986 12.743 11.046 12.525 11.284C12.307 11.522 11.693 12.097 11.693 13.267C11.693 14.437 12.545 15.568 12.664 15.726C12.783 15.885 14.34 18.286 16.725 19.316C17.292 19.561 17.735 19.707 18.08 19.817C18.649 19.998 19.168 19.972 19.577 19.911C20.034 19.843 20.984 19.336 21.182 18.781C21.38 18.225 21.38 17.749 21.32 17.65Z" fill="#FDFDFD"/></svg>
             Refer now
           </button>
-          <button class="home-contacts" type="button" id="homeContactsBtn">
-            <span class="ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3Zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3Zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z" fill="#1f6feb"/>
-              </svg>
-            </span>
-            <span class="copy">
-              <b>Invite from contacts</b>
-              <span>Find friends in your phonebook</span>
-            </span>
-            <span class="chev" aria-hidden="true">›</span>
-          </button>
-          <div class="or">Or share your referral code</div>
-          <div class="code">
-            <b>SOCD7434</b>
-            <button type="button" data-toast="Code copied">Copy</button>
-          </div>
-          <div class="tc">Refer &amp; Earn — T&amp;Cs</div>
         </div>
       </section>
 
@@ -1473,15 +2515,12 @@
           <span class="earned" id="progressEarned">₹2,100</span>
         </div>
         <div class="body">
-          <div class="month-select-wrap">
-            <label for="monthSelect">Month</label>
-            <select id="monthSelect" class="month-select" aria-label="Select month">
-              <option value="2026-08" selected>August 2026</option>
-              <option value="2026-07">July 2026</option>
-              <option value="2026-06">June 2026</option>
-              <option value="2026-05">May 2026</option>
-            </select>
-          </div>
+          <select id="monthSelect" class="month-select" hidden aria-hidden="true">
+            <option value="2026-08" selected>August 2026</option>
+            <option value="2026-07">July 2026</option>
+            <option value="2026-06">June 2026</option>
+            <option value="2026-05">May 2026</option>
+          </select>
           <div class="filters" id="statusFilters">
             <button type="button" class="active" data-status="all">All <span class="n" id="c-all">(0)</span></button>
             <button type="button" data-status="completed">Completed <span class="n" id="c-completed">(0)</span></button>
@@ -1493,7 +2532,7 @@
             <button type="button" data-amount="1000">₹1,000 <span class="n" id="c-1000">(0)</span></button>
           </div>
           <div class="card" style="padding:2px 12px" id="rewardList"></div>
-          <p class="empty" id="emptyList" style="display:none">No referrals for this month / filter yet.</p>
+          <p class="empty" id="emptyList" style="display:none">No referrals yet.</p>
         </div>
       </section>
 
@@ -1530,8 +2569,9 @@
             <button type="button" class="scratch-nav" id="scratchPrev">‹ Prev</button>
             <button type="button" class="scratch-nav" id="scratchNextNav">Next ›</button>
           </div>
-          <p class="scratch-hint" id="scratchHint">Scratch the gold foil</p>
-          <div class="scratch-actions" id="scratchActions">
+          <p class="scratch-hint" id="scratchHint">Reward ready to collect</p>
+          <div class="scratch-actions show" id="scratchActions">
+            <button class="primary" type="button" id="collectRewardBtn">Collect reward</button>
             <button class="primary" type="button" id="scratchNextBtn" hidden>Collect next ›</button>
             <div class="scratch-actions-row">
               <button class="ghost-btn" type="button" data-go="progress" id="scratchSeeBtn">See referrals</button>
@@ -1543,22 +2583,67 @@
 
       <div class="overlay" id="how">
         <div class="bs">
-          <div class="grab"></div>
-          <div class="row">
-            <h3>How Refer &amp; Earn works</h3>
-            <button class="icon-btn" type="button" data-close-how style="background:#eef2f6;color:#64748b">×</button>
+          <div class="how-top">
+            <h3>How it works</h3>
+            <button class="icon-btn" type="button" data-close-how style="background:#eef2f6;color:#64748b" aria-label="Close">×</button>
           </div>
-          <img class="steps" alt="Refer steps"
-            src="https://cdn.gromo.in/static-resources/notification-resources/notification_images/1780404579_banner020.jpg" />
-          <div class="table">
-            <div class="th"><span>Refer this many</span><span>You earn</span></div>
-            <div class="tr"><span>1–4 Referrals</span><span>₹100 Each</span></div>
-            <div class="tr"><span>5–19 Referrals</span><span>₹400 Each</span></div>
-            <div class="tr"><span>20+ Referrals</span><span>₹1,000 Each</span></div>
+          <div class="how-scroll">
+            <div class="how-v2">
+              <div class="lang-toggle" role="tablist" aria-label="Language">
+                <button type="button" class="active" data-lang="en">English</button>
+                <button type="button" data-lang="hi">Hinglish</button>
+              </div>
+
+              <div class="how-poster">
+                <span class="how-chip on-poster" data-t="hero-eyebrow">Offer ends 31 Aug · limited time</span>
+                <img src="assets/referral-how-poster.png" alt="You refer a friend, they make their first sale, you earn cash" />
+                <div class="how-poster-caps">
+                  <span data-step="1" data-t="pcap-1">You refer a friend</span>
+                  <span data-step="2" data-t="pcap-2">They make their 1st sale</span>
+                  <span data-step="3" data-t="pcap-3">You earn cash</span>
+                </div>
+              </div>
+
+              <p class="how-section" data-t="tier-label">Your reward per friend</p>
+              <p class="how-section-sub" data-t="tier-sub">You earn on every friend who makes their 1st sale — the more friends who sell, the more you get on each.</p>
+              <div class="rewards-ladder" aria-label="Reward per friend">
+                <div class="rl-card s1">
+                  <span class="rl-badge"><b>1–4</b><span data-t="rl-fr">friends</span></span>
+                  <span class="rl-arrow" aria-hidden="true">→</span>
+                  <div class="rl-reward">
+                    <div class="rl-amt">₹100 <span data-t="slab-unit">per friend</span></div>
+                    <div class="rl-desc" data-t="rr-s1">who make their 1st sale</div>
+                  </div>
+                </div>
+                <div class="rl-card s2">
+                  <span class="rl-badge"><b>5–19</b><span data-t="rl-fr">friends</span></span>
+                  <span class="rl-arrow" aria-hidden="true">→</span>
+                  <div class="rl-reward">
+                    <div class="rl-amt">₹400 <span data-t="slab-unit">per friend</span></div>
+                    <div class="rl-desc" data-t="rr-s2">who make their 1st sale</div>
+                  </div>
+                </div>
+                <div class="rl-card s3 is-max">
+                  <span class="rl-badge"><b>20+</b><span data-t="rl-fr">friends</span></span>
+                  <span class="rl-arrow" aria-hidden="true">→</span>
+                  <div class="rl-reward">
+                    <div class="rl-amt">₹1,000 <span data-t="slab-unit">per friend</span> <span class="rl-max" data-t="rung-max">Max</span></div>
+                    <div class="rl-desc" data-t="rr-s3">who make their 1st sale</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="warn-card">
+                <span class="warn-ico" aria-hidden="true">i</span>
+                <p data-t="note">Any self sale, insurance sale or sale to a GroMo partner done by your referral will not be eligible for the referral earnings.</p>
+              </div>
+
+              <p class="how-tnc" data-t="tnc">Refer &amp; Earn — <a href="#" data-toast="T&amp;Cs (demo)">T&amp;Cs</a></p>
+            </div>
           </div>
-          <p class="campaign-line">Limited time · Ends 31st August</p>
-          <p class="note">Any self sale, insurance sale or sale to GroMo partner done by your referral will not be eligible for the referral earnings</p>
-          <button class="primary" type="button" data-close-how style="margin-top:14px">Got it</button>
+          <div class="how-footer">
+            <button class="primary" type="button" data-close-how data-open-share>Invite friends</button>
+          </div>
         </div>
       </div>
 
@@ -1618,6 +2703,7 @@
         </div>
       </section>
 
+      <div class="wallet-chip" id="walletTarget" aria-hidden="true">👛</div>
       <div class="toast" id="toast"></div>
       <canvas id="confettiCanvas" aria-hidden="true"></canvas>
     </div>
@@ -1725,9 +2811,10 @@
 
     const DEMO_KEY = 'referralMvpHomeDemo'; // never | monthEmpty | filled
     let homeDemo = localStorage.getItem(DEMO_KEY) || (localStorage.getItem(ZERO_KEY) === '1' ? 'never' : 'filled');
-    if (!['never', 'monthEmpty', 'filled'].includes(homeDemo)) homeDemo = 'filled';
+    if (homeDemo === 'monthEmpty') homeDemo = 'filled';
+    if (!['never', 'filled'].includes(homeDemo)) homeDemo = 'filled';
     let zeroMode = homeDemo === 'never';
-    let monthEmptyDemo = homeDemo === 'monthEmpty';
+    let monthEmptyDemo = false;
     let currentMonth = zeroMode || monthEmptyDemo ? LATEST_MONTH : (localStorage.getItem(MONTH_KEY) || LATEST_MONTH);
     if (!months[currentMonth]) currentMonth = LATEST_MONTH;
     let currentStatusFilter = 'all'; // all | completed | pending
@@ -1847,67 +2934,144 @@
     }
 
     function nextTierHint(count, max) {
-      if (count <= 0) return 'Refer a friend — earn ₹100 on their 1st sale ›';
-      if (count >= max) return 'You’ve hit this month’s reward cap ›';
+      if (count <= 0) return 'Refer your friends — earn when they make a 1st sale ›';
+      if (count >= max) return 'You’ve hit the reward cap ›';
       if (count < 5) {
         const left = 5 - count;
-        return left + ' more to unlock ₹400 each ›';
+        return left + ' more 1st sale' + (left === 1 ? '' : 's') + ' to unlock ₹400/friend ›';
       }
       if (count < 20) {
         const left = 20 - count;
-        return left + ' more to unlock ₹1,000 each ›';
+        return left + ' more 1st sale' + (left === 1 ? '' : 's') + ' to unlock ₹1,000/friend ›';
       }
-      return 'Keep referring — ₹1,000 each till ' + max + ' ›';
+      return 'You’re at the top tier — ₹1,000/friend ›';
+    }
+
+    function updateHomeSlabs(count) {
+      const root = document.getElementById('homeSlabs');
+      if (!root) return;
+      root.querySelectorAll('.slab').forEach((el) => {
+        const slab = Number(el.dataset.slab);
+        el.classList.remove('on', 'done');
+        if (slab === 100) {
+          if (count >= 1 && count < 5) el.classList.add('on');
+          if (count >= 5) el.classList.add('done');
+        } else if (slab === 400) {
+          if (count >= 5 && count < 20) el.classList.add('on');
+          if (count >= 20) el.classList.add('done');
+        } else if (slab === 1000) {
+          if (count >= 20) el.classList.add('on');
+        }
+      });
+    }
+
+    /** Locked (pending first sale) + unlocked ready-to-collect cards for home carousel. */
+    function homeRewardCards() {
+      if (zeroMode) return [];
+      const cards = [];
+      // Ready to collect first
+      allPendingRewards().forEach((p) => {
+        cards.push({
+          kind: 'ready',
+          id: p.reward.id,
+          amount: p.reward.amount,
+          name: p.reward.name,
+          hint: 'Collect reward',
+        });
+      });
+      // Locked pending friends (waiting on 1st sale) — current month sample
+      const monthKey = monthEmptyDemo ? null : LATEST_MONTH;
+      if (monthKey && months[monthKey]) {
+        monthReferrals(monthKey).filter((r) => !r.hasSale).slice(0, 4).forEach((r) => {
+          cards.push({
+            kind: 'locked',
+            id: r.id,
+            amount: 100, // hidden / blurred — milestone messaging
+            name: r.name,
+            hint: 'Unlocks on their 1st sale',
+          });
+        });
+      }
+      return cards;
+    }
+
+    function renderHomeRewardsCarousel() {
+      const track = document.getElementById('rewardsCarousel');
+      const empty = document.getElementById('rewardsEmpty');
+      const seeAll = document.getElementById('seeAllRewards');
+      if (!track) return;
+      const cards = homeRewardCards();
+      track.innerHTML = '';
+      if (!cards.length) {
+        if (empty) empty.hidden = false;
+        if (seeAll) seeAll.hidden = true;
+        return;
+      }
+      if (empty) empty.hidden = true;
+      if (seeAll) seeAll.hidden = !allPendingRewards().length;
+      cards.forEach((c) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'reward-card ' + (c.kind === 'ready' ? 'ready' : 'locked');
+        btn.dataset.rewardKind = c.kind;
+        if (c.kind === 'ready') btn.dataset.scratchId = c.id;
+        btn.innerHTML =
+          '<span class="rc-tag">' + (c.kind === 'ready' ? 'Ready' : 'Locked') + '</span>' +
+          '<span class="rc-amount">' + formatAmount(c.amount) + '</span>' +
+          '<span class="rc-from">' + c.name.split(' ')[0] + '</span>' +
+          '<span class="rc-hint">' + c.hint + '</span>';
+        track.appendChild(btn);
+      });
     }
 
     function activeTotals() {
-      if (zeroMode || monthEmptyDemo) {
+      if (zeroMode) {
         return { earned: 0, count: 0, pending: [], c100: 0, c400: 0, c1000: 0, joined: 0 };
       }
-      const m = monthData();
-      return { ...totals(m.rewards), joined: m.joined };
+      // Lifetime totals across all months — the referral campaign is time-bound
+      // (ends 31 Aug), but progress shown to the user is always the running total.
+      const agg = { earned: 0, count: 0, pending: [], c100: 0, c400: 0, c1000: 0, joined: 0 };
+      Object.keys(months).forEach((key) => {
+        if (monthEmptyDemo && key === LATEST_MONTH) return;
+        const m = months[key];
+        const tt = totals(m.rewards);
+        agg.earned += tt.earned || 0;
+        agg.count += tt.count || 0;
+        agg.c100 += tt.c100 || 0;
+        agg.c400 += tt.c400 || 0;
+        agg.c1000 += tt.c1000 || 0;
+        agg.joined += m.joined || 0;
+        if (tt.pending && tt.pending.length) agg.pending.push(...tt.pending);
+      });
+      return agg;
     }
 
     function syncStateToggles() {
       const zeroBtn = document.getElementById('zeroToggle');
-      const monthEmptyBtn = document.getElementById('monthEmptyToggle');
       const filledBtn = document.getElementById('filledToggle');
       if (filledBtn) {
         filledBtn.classList.toggle('active', homeDemo === 'filled');
-        filledBtn.textContent = homeDemo === 'filled' ? 'Case 1: has this month ✓' : 'Case 1: has this month';
-      }
-      if (monthEmptyBtn) {
-        monthEmptyBtn.classList.toggle('active', homeDemo === 'monthEmpty');
-        monthEmptyBtn.textContent = homeDemo === 'monthEmpty' ? 'Case 2: past yes · month 0 ✓' : 'Case 2: past yes · month 0';
+        filledBtn.textContent = homeDemo === 'filled' ? 'Has referred ✓' : 'Has referred';
       }
       if (zeroBtn) {
         zeroBtn.classList.toggle('active', homeDemo === 'never');
-        zeroBtn.textContent = homeDemo === 'never' ? 'Case 3: never referred ✓' : 'Case 3: never referred';
+        zeroBtn.textContent = homeDemo === 'never' ? 'Never referred ✓' : 'Never referred';
       }
     }
 
     function setHomeDemo(mode) {
+      if (mode !== 'never' && mode !== 'filled') mode = 'filled';
       homeDemo = mode;
       zeroMode = mode === 'never';
-      monthEmptyDemo = mode === 'monthEmpty';
+      monthEmptyDemo = false;
       localStorage.setItem(DEMO_KEY, mode);
       localStorage.setItem(ZERO_KEY, zeroMode ? '1' : '0');
-      if (zeroMode || monthEmptyDemo) {
-        currentMonth = LATEST_MONTH;
-      } else {
-        const saved = localStorage.getItem(MONTH_KEY) || LATEST_MONTH;
-        currentMonth = months[saved] ? saved : LATEST_MONTH;
-      }
+      currentMonth = zeroMode ? LATEST_MONTH : (months[localStorage.getItem(MONTH_KEY)] ? localStorage.getItem(MONTH_KEY) : LATEST_MONTH);
       monthSelect.value = currentMonth;
       refreshHome();
       renderList();
       go('home');
-      const labels = {
-        filled: 'Case 1 — current month progress',
-        monthEmpty: 'Case 2 — empty month, past unscratched cards still on home',
-        never: 'Case 3 — never referred, no scratch strip',
-      };
-      toast(labels[mode] || mode);
+      toast(mode === 'never' ? 'Never referred' : 'Has referred');
     }
 
     function setZeroMode(on) {
@@ -1987,7 +3151,6 @@
       const case3 = isEmpty && (zeroMode || !hasPast);
       const case2 = isEmpty && !case3;
 
-      document.getElementById('homeMonthPill').textContent = m.label;
       document.getElementById('homeJoined').textContent = String(t.joined);
       document.getElementById('homeCount').textContent = String(t.count);
       document.getElementById('homeJoinedDenom').textContent = String(t.joined);
@@ -2007,52 +3170,70 @@
         pcMain.removeAttribute('data-open-share');
         pcMain.setAttribute('data-go', 'progress');
       } else if (case2) {
-        // Quiet empty — month pill + chevron → Referrals; CTA text link → Share
-        hint.textContent = 'Refer a friend — earn ₹100 on their 1st sale ›';
+        hint.textContent = 'Refer more friends — earn on their 1st sale ›';
         pcMain.removeAttribute('data-open-share');
         pcMain.setAttribute('data-go', 'progress');
       } else {
-        // Case 3 — exciting empty; whole card + blue CTA → Share
-        hint.textContent = 'Refer a friend — earn ₹100 ›';
+        hint.textContent = 'Refer your friends — earn up to ₹1,100 ›';
         pcMain.removeAttribute('data-go');
         pcMain.setAttribute('data-open-share', '');
       }
       hint.dataset.hintAction = 'share';
+      updateHomeSlabs(t.count);
 
-      document.getElementById('progressEarned').textContent = formatAmount(t.earned);
+      // Home journey strip + How it works entry:
+      //  - Never-referred (case3): 3 steps at TOP + How it works link right below.
+      //  - Has referred (case1/2): steps hidden; move the How it works entry BELOW
+      //    the rewards block (user already knows the flow).
+      const homeJourneyEl = document.getElementById('homeJourney');
+      const homeJourneyWrap = document.getElementById('homeJourneyWrap');
+      const sheet = document.querySelector('.screen[data-screen="home"] .sheet');
+      const anchorBottom = document.getElementById('howAnchorBottom');
+      if (homeJourneyEl && homeJourneyWrap && sheet && anchorBottom) {
+        homeJourneyEl.style.display = case3 ? '' : 'none';
+        homeJourneyWrap.classList.remove('solo');
+        homeJourneyWrap.classList.toggle('steps-hidden', !case3);
+        if (case3) {
+          sheet.insertBefore(homeJourneyWrap, sheet.firstElementChild);
+        } else {
+          anchorBottom.parentNode.insertBefore(homeJourneyWrap, anchorBottom);
+        }
+      }
+
+      document.getElementById('progressEarned').textContent = formatAmount(lifetimeEarned());
       {
-        const emptyMonth = zeroMode || (monthEmptyDemo && currentMonth === LATEST_MONTH);
-        updateFilterCounts(referralFilterCounts(emptyMonth ? [] : monthReferrals(currentMonth)));
+        const all = allReferralsFlat();
+        updateFilterCounts(referralFilterCounts(all));
       }
       monthSelect.value = currentMonth;
       syncStateToggles();
 
-      // Scratch strip: any unscratched referral card, any month (selected month irrelevant)
+      // Legacy strip hidden — rewards shown in carousel
+      strip.classList.add('hidden');
       const allPending = allPendingRewards();
       if (allPending.length) {
-        const first = allPending[0];
-        strip.classList.remove('hidden');
-        activeScratchId = first.reward.id;
-        strip.dataset.scratchId = first.reward.id;
-        strip.dataset.scratchMonth = first.monthKey;
-        const n = allPending.length;
-        document.getElementById('stripTitle').textContent =
-          n === 1 ? '1 reward to scratch' : n + ' rewards to scratch';
-        const monthsInPending = new Set(allPending.map((p) => p.monthKey));
-        document.getElementById('stripSub').textContent =
-          n === 1
-            ? ('From ' + first.reward.name.split(' ')[0] + '’s 1st sale')
-            : (monthsInPending.size > 1
-              ? 'From referrals across months'
-              : 'From your referrals’ 1st sales');
-      } else {
-        strip.classList.add('hidden');
+        activeScratchId = allPending[0].reward.id;
+        strip.dataset.scratchId = allPending[0].reward.id;
       }
+      renderHomeRewardsCarousel();
+    }
+
+    function allReferralsFlat() {
+      if (zeroMode) return [];
+      const out = [];
+      Object.keys(months).sort().reverse().forEach((key) => {
+        if (monthEmptyDemo && key === LATEST_MONTH) return;
+        monthReferrals(key).forEach((r) => out.push({ ...r, monthKey: key, monthLabel: months[key].label }));
+      });
+      return out;
+    }
+
+    function lifetimeEarned() {
+      return allReferralsFlat().reduce((s, r) => s + (r.amount || 0), 0);
     }
 
     function renderList() {
-      const emptyMonth = zeroMode || (monthEmptyDemo && currentMonth === LATEST_MONTH);
-      const list = emptyMonth ? [] : monthReferrals(currentMonth);
+      const list = allReferralsFlat();
       const rt = referralFilterCounts(list);
       document.getElementById('progressEarned').textContent = formatAmount(rt.earned);
       updateFilterCounts(rt);
@@ -2060,16 +3241,13 @@
       const filtered = list.filter((r) => {
         if (currentStatusFilter === 'all') return true;
         if (currentStatusFilter === 'pending') return !r.hasSale;
-        // Completed — optional amount refine
-        if (!r.hasSale) return false;
-        if (currentAmountFilter === 'any') return true;
-        return String(r.amount) === currentAmountFilter;
+        return !!r.hasSale;
       });
       listEl.innerHTML = '';
       emptyEl.style.display = filtered.length ? 'none' : 'block';
       emptyEl.textContent = zeroMode
-        ? 'No referrals yet this month. Share your code to get started.'
-        : 'No referrals for this month / filter yet.';
+        ? 'No referrals yet. Refer your friends to get started.'
+        : 'No referrals for this filter yet.';
 
       filtered.forEach((r) => {
         if (!r.hasSale) {
@@ -2094,10 +3272,11 @@
         btn.className = 'friend' + (r.scratched ? ' disabled' : '');
         btn.innerHTML =
           '<div class="avatar ' + (r.avatar || '') + '">' + r.initial + '</div>' +
-          '<div><div class="name">' + r.name + '</div></div>' +
+          '<div><div class="name">' + r.name + '</div>' +
+          '<div class="detail">1st sale · reward ready</div></div>' +
           '<div class="earn">' + formatAmount(r.amount) +
           '<span class="st ' + (r.scratched ? 'done' : '') + '">' +
-          (r.scratched ? 'Scratched' : 'Scratch now') +
+          (r.scratched ? 'Collected' : 'Collect') +
           '</span></div>';
         if (!r.scratched) {
           btn.addEventListener('click', () => {
@@ -2199,7 +3378,7 @@
       } else {
         countEl.textContent = leftLabel;
         // One count only (the pill). Don’t restate it under the bar.
-        subEl.textContent = activeDone ? '' : 'Scratch to unlock';
+        subEl.textContent = activeDone ? '' : 'Collect when ready';
         bar.style.width = Math.round((doneCount / sessionTotal) * 100) + '%';
         prevBtn.disabled = idx <= 0;
         nextNav.disabled = idx >= left - 1;
@@ -2389,7 +3568,6 @@
     }
 
     function collectNextLabel(left) {
-      // Don’t repeat the fraction on the button — pill already shows “16 of 17 left”
       return left ? 'Collect next ›' : 'Done';
     }
 
@@ -2403,6 +3581,7 @@
       const actions = document.getElementById('scratchActions');
       const hint = document.getElementById('scratchHint');
       const nextBtn = document.getElementById('scratchNextBtn');
+      const collectBtn = document.getElementById('collectRewardBtn');
       const seeBtn = document.getElementById('scratchSeeBtn');
 
       if (!found) {
@@ -2411,11 +3590,12 @@
         empty.classList.add('show');
         carouselWrap.style.display = 'none';
         document.getElementById('scratchPager').style.display = 'none';
-        document.getElementById('scratchHeading').textContent = 'Deck cleared';
-        document.getElementById('scratchSub').textContent = 'You’ve collected every reward';
+        document.getElementById('scratchHeading').textContent = 'All collected';
+        document.getElementById('scratchSub').textContent = 'Refer more friends to earn new rewards';
         actions.classList.add('show');
         setScratchUnlockedUi(true);
         nextBtn.hidden = true;
+        if (collectBtn) collectBtn.hidden = true;
         seeBtn.className = 'primary';
         scratchReady = false;
         renderScratchCarousel();
@@ -2444,16 +3624,16 @@
       setScratchTierTheme(reward.amount);
       nextBtn.hidden = true;
       seeBtn.className = 'ghost-btn';
-      actions.classList.remove('show');
-      setScratchUnlockedUi(false);
+      actions.classList.add('show');
+      // Collect-first: amount visible, no foil required
+      canvas.style.display = 'none';
+      setScratchUnlockedUi(true);
 
       if (reward.scratched) {
-        document.getElementById('scratchHeading').textContent = 'Already scratched';
+        document.getElementById('scratchHeading').textContent = 'Already collected';
         document.getElementById('scratchSub').textContent = formatAmount(reward.amount) + ' from ' + reward.name.split(' ')[0];
-        canvas.style.display = 'none';
         hint.style.display = 'none';
-        actions.classList.add('show');
-        setScratchUnlockedUi(true);
+        if (collectBtn) collectBtn.hidden = true;
         const pending = allPendingRewards();
         nextBtn.hidden = pending.length === 0;
         if (pending.length) nextBtn.textContent = collectNextLabel(pending.length);
@@ -2465,11 +3645,14 @@
       const monthShort = months[found.monthKey].label.replace(' 2026', '');
       document.getElementById('scratchHeading').textContent = reward.name.split(' ')[0] + '’s reward';
       document.getElementById('scratchSub').textContent = '1st sale · ' + monthShort;
-      canvas.style.display = 'block';
       hint.style.display = 'block';
+      hint.textContent = 'Tap Collect — cash goes to your wallet';
+      if (collectBtn) {
+        collectBtn.hidden = false;
+        collectBtn.textContent = 'Collect ' + formatAmount(reward.amount);
+      }
       scratchReady = true;
       renderScratchCarousel();
-      paintFoil(reward.amount);
     }
 
     let scratchSessionStart = 0;
@@ -2635,6 +3818,38 @@
       confettiAnim = requestAnimationFrame(tick);
     }
 
+    function flyCoinsToWallet(amount) {
+      const appEl = document.getElementById('app');
+      const wallet = document.getElementById('walletTarget');
+      const stage = document.getElementById('scratchStage') || document.getElementById('rewardsCarousel');
+      if (!appEl || !wallet || !stage) return;
+      wallet.classList.add('show');
+      const appRect = appEl.getBoundingClientRect();
+      const from = stage.getBoundingClientRect();
+      const to = wallet.getBoundingClientRect();
+      const startX = from.left + from.width / 2 - appRect.left;
+      const startY = from.top + from.height / 2 - appRect.top;
+      const endX = to.left + to.width / 2 - appRect.left;
+      const endY = to.top + to.height / 2 - appRect.top;
+      for (let i = 0; i < 6; i++) {
+        const coin = document.createElement('div');
+        coin.className = 'fly-coin';
+        coin.style.left = startX + (Math.random() * 24 - 12) + 'px';
+        coin.style.top = startY + (Math.random() * 18 - 9) + 'px';
+        coin.style.transform = 'translate(0,0) scale(1)';
+        appEl.appendChild(coin);
+        requestAnimationFrame(() => {
+          const dx = endX - startX + (Math.random() * 10 - 5);
+          const dy = endY - startY + (Math.random() * 10 - 5);
+          coin.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(.35)';
+          coin.style.opacity = '0.15';
+        });
+        setTimeout(() => coin.remove(), 780 + i * 40);
+      }
+      setTimeout(() => wallet.classList.remove('show'), 1400);
+      toast(formatAmount(amount) + ' added to wallet');
+    }
+
     function finishScratch() {
       if (!scratchReady) return;
       scratchReady = false;
@@ -2644,23 +3859,24 @@
       syncScratchQueue();
       canvas.style.display = 'none';
       document.getElementById('scratchHint').style.display = 'none';
-      document.getElementById('scratchHeading').textContent = 'You unlocked ' + formatAmount(reward.amount);
-      // Name lives on the card — don’t repeat it here
-      document.getElementById('scratchSub').textContent = 'Added to your wallet';
+      document.getElementById('scratchHeading').textContent = 'Collected ' + formatAmount(reward.amount);
+      document.getElementById('scratchSub').textContent = 'Flying to your wallet';
       const actions = document.getElementById('scratchActions');
       const nextBtn = document.getElementById('scratchNextBtn');
+      const collectBtn = document.getElementById('collectRewardBtn');
       const pending = allPendingRewards();
       scratchSessionStart = persistScratchDeckTotal(pending.length);
       actions.classList.add('show');
       setScratchUnlockedUi(true);
       document.getElementById('scratchSeeBtn').className = 'ghost-btn';
+      if (collectBtn) collectBtn.hidden = true;
       nextBtn.hidden = pending.length === 0;
       nextBtn.textContent = collectNextLabel(pending.length);
       toastEl.classList.remove('show');
       burstConfetti();
+      flyCoinsToWallet(reward.amount || 0);
       renderScratchCarousel();
       refreshHome();
-      // Stay on unlock screen until user taps “Collect next”
     }
 
     canvas.addEventListener('mousedown', (e) => { drawing = true; scratchAt(e.clientX, e.clientY); });
@@ -2730,10 +3946,6 @@
         setHomeDemo('never');
         return;
       }
-      if (e.target.closest('[data-toggle-month-empty]')) {
-        setHomeDemo('monthEmpty');
-        return;
-      }
       if (e.target.closest('[data-toggle-filled]')) {
         setHomeDemo('filled');
         return;
@@ -2767,9 +3979,20 @@
         stepScratch(1);
         return;
       }
+      if (e.target.closest('#collectRewardBtn')) {
+        finishScratch();
+        return;
+      }
       if (e.target.closest('#scratchNextBtn')) {
         clearTimeout(autoNextTimer);
         goToNextPending();
+        return;
+      }
+      const readyCard = e.target.closest('.reward-card.ready');
+      if (readyCard && readyCard.dataset.scratchId) {
+        activeScratchId = readyCard.dataset.scratchId;
+        scratchReturnTo = 'home';
+        go('scratch');
         return;
       }
       if (e.target.closest('#scratchBack')) {
@@ -2798,14 +4021,26 @@
         }
         return go(g.dataset.go);
       }
-      if (e.target.closest('#howToggle')) {
-        const block = document.getElementById('howBlock');
+      if (e.target.closest('#codeToggle')) {
+        const block = document.getElementById('codeBlock');
         const open = !block.classList.contains('open');
         block.classList.toggle('open', open);
-        document.getElementById('howToggle').setAttribute('aria-expanded', open ? 'true' : 'false');
+        document.getElementById('codeToggle').setAttribute('aria-expanded', open ? 'true' : 'false');
+        return;
+      }
+      if (e.target.closest('#inviteToggle')) {
+        const block = document.getElementById('inviteBlock');
+        const open = !block.classList.contains('open');
+        block.classList.toggle('open', open);
+        document.getElementById('inviteToggle').setAttribute('aria-expanded', open ? 'true' : 'false');
         return;
       }
       if (e.target.closest('[data-open-how]')) return how.classList.add('open');
+      if (e.target.closest('[data-close-how][data-open-share]')) {
+        how.classList.remove('open');
+        share.classList.add('open');
+        return;
+      }
       if (e.target.closest('[data-close-how]')) return how.classList.remove('open');
       if (e.target.closest('[data-open-share]')) return share.classList.add('open');
       if (e.target.closest('[data-close-share]')) return share.classList.remove('open');
@@ -2842,7 +4077,9 @@
     }
     function syncHomeInviteRow() {
       const show = isHomeInviteVisible();
+      const block = document.getElementById('inviteBlock');
       const btn = document.getElementById('homeContactsBtn');
+      if (block) block.hidden = !show;
       if (btn) btn.hidden = !show;
       const onToggle = document.getElementById('homeInviteOnToggle');
       const offToggle = document.getElementById('homeInviteOffToggle');
@@ -2964,6 +4201,117 @@
       document.getElementById('fontFigtreeBtn').classList.add('active');
       document.getElementById('fontDmBtn').classList.remove('active');
     }
+
+    // How it works — EN / Hinglish copy
+    const HOW_LANG_KEY = 'referralMvpHowLang';
+    const howCopy = {
+      en: {
+        'hero-eyebrow': 'Limited time · till 31 Aug',
+        'how-sub-a': '3 steps · earn up to ',
+        'how-sub-amt': '₹1,000',
+        'how-sub-b': ' per friend',
+        'how-def': 'Invite friends to GroMo. When they start selling, you earn cash — again and again.',
+        'pcap-1': 'You refer a friend',
+        'pcap-2': 'They make their 1st sale',
+        'pcap-3': 'You earn cash',
+        'how-anchor-a': 'Up to ',
+        'how-anchor-amt': '₹1,000',
+        'how-anchor-b': ' per friend',
+        'steps-label': '3 easy steps',
+        'step1-t': 'Invite friends',
+        'step1-s': 'Share on WhatsApp',
+        'step2-t': 'They join GroMo',
+        'step2-s': 'Sign up with your link',
+        'step3-t': 'You earn cash',
+        'step3-s': 'On their 1st sale',
+        'tier-label': 'Your reward per friend',
+        'tier-sub': 'You earn on every friend who makes their 1st sale — the more friends who sell, the more you get on each.',
+        'rl-fr': 'friends',
+        'rr-s1': 'who make their 1st sale',
+        'rr-s2': 'who make their 1st sale',
+        'rr-s3': 'who make their 1st sale',
+        'slab-unit': 'per friend',
+        'rung-max': 'Max',
+        'note': 'Any self sale, insurance sale or sale to a GroMo partner done by your referral will not be eligible for the referral earnings.',
+        'tnc-a': 'Refer & Earn — ',
+        'tnc-b': 'T&Cs',
+      },
+      hi: {
+        'hero-eyebrow': 'Limited time · 31 Aug tak',
+        'how-sub-a': '3 steps · ',
+        'how-sub-amt': '₹1,000',
+        'how-sub-b': ' tak har dost pe kamao',
+        'how-def': 'Apne doston ko GroMo par invite karo. Jab wo bechna shuru karein, aap baar-baar cash kamao.',
+        'pcap-1': 'Dost ko refer karo',
+        'pcap-2': 'Wo apni 1st sale karein',
+        'pcap-3': 'Cash aapko milega',
+        'how-anchor-a': '',
+        'how-anchor-amt': '₹1,000',
+        'how-anchor-b': ' tak har dost pe',
+        'steps-label': '3 aasaan steps',
+        'step1-t': 'Dost ko invite karo',
+        'step1-s': 'WhatsApp par bhejo',
+        'step2-t': 'Dost GroMo join kare',
+        'step2-s': 'Aapke link se sign up',
+        'step3-t': 'Cash aapko milega',
+        'step3-s': 'Unki pehli sale pe',
+        'tier-label': 'Har dost pe aapka reward',
+        'tier-sub': 'Jo bhi dost apni 1st sale kare, uspe aap kamate ho — jitne zyada dost bechein, har dost pe utna zyada.',
+        'rl-fr': 'dost',
+        'rr-s1': 'jo apni 1st sale karein',
+        'rr-s2': 'jo apni 1st sale karein',
+        'rr-s3': 'jo apni 1st sale karein',
+        'slab-unit': 'har dost pe',
+        'rung-max': 'Max',
+        'note': 'Aapke referral dwara ki gayi koi bhi self sale, insurance sale ya GroMo partner ko ki gayi sale referral earnings ke liye eligible nahi hogi.',
+        'tnc-a': 'Refer & Earn — ',
+        'tnc-b': 'T&Cs',
+      },
+    };
+    function setHowLang(lang) {
+      const next = lang === 'hi' ? 'hi' : 'en';
+      localStorage.setItem(HOW_LANG_KEY, next);
+      const dict = howCopy[next];
+      document.querySelectorAll('[data-t]').forEach((el) => {
+        const key = el.getAttribute('data-t');
+        if (key === 'how-anchor') {
+          el.innerHTML = dict['how-anchor-a'] + '<b>' + dict['how-anchor-amt'] + '</b>' + dict['how-anchor-b'];
+          return;
+        }
+        if (key === 'tnc') {
+          el.innerHTML = dict['tnc-a'] + '<a href="#" data-toast="T&amp;Cs (demo)">' + dict['tnc-b'] + '</a>';
+          return;
+        }
+        if (dict[key] != null) el.textContent = dict[key];
+      });
+      document.querySelectorAll('[data-lang]').forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === next);
+      });
+    }
+    document.querySelectorAll('[data-lang]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setHowLang(btn.getAttribute('data-lang'));
+      });
+    });
+    setHowLang(localStorage.getItem(HOW_LANG_KEY) || 'en');
+
+    // Limited-time countdown → dynamically update hero eyebrow copy
+    (function updateCountdown() {
+      const endDate = new Date('2026-08-31T23:59:59+05:30');
+      const now = new Date();
+      const daysLeft = Math.max(0, Math.ceil((endDate - now) / (1000 * 60 * 60 * 24)));
+      const lang = localStorage.getItem(HOW_LANG_KEY) === 'hi' ? 'hi' : 'en';
+      let en, hi;
+      if (daysLeft <= 0) { en = 'Offer ended · 31 Aug'; hi = 'Offer khatam · 31 Aug'; }
+      else if (daysLeft === 1) { en = 'Last day · ends 31 Aug'; hi = 'Aakhri din · 31 Aug tak'; }
+      else { en = 'Offer ends 31 Aug · ' + daysLeft + ' days left'; hi = 'Offer 31 Aug tak · ' + daysLeft + ' din baaki'; }
+      howCopy.en['hero-eyebrow'] = en;
+      howCopy.hi['hero-eyebrow'] = hi;
+      const txt = lang === 'hi' ? hi : en;
+      document.querySelectorAll('[data-t="hero-eyebrow"]').forEach((el) => { el.textContent = txt; });
+    })();
 
     monthSelect.value = currentMonth;
     syncHomeInviteRow();
