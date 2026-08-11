@@ -3805,7 +3805,7 @@
           : isCollected ? firstName + '\'s 1st referral sale · Collected'
           : item.status === 'locked' ? 'Unlocks on 1st sale' : 'Reward expired';
         const statusLabel = isCollectable ? 'Collect'
-          : isCollected ? 'Collected ✓'
+          : isCollected ? 'Claimed'
           : item.status === 'locked' ? 'Locked' : 'Expired';
         card.innerHTML =
           '<div class="rl-card-amount">' + (amtText || '₹?') + '</div>' +
@@ -3818,7 +3818,7 @@
           card.style.cursor = 'pointer';
           card.addEventListener('click', () => {
             closeRewardList();
-            scratchReturnTo = 'home';
+            scratchReturnTo = 'reward-list';
             go('scratch');
             const idx = scratchQueue.findIndex((q) => q.reward.id === item.id);
             if (idx >= 0) { scratchIdx = idx; showScratchCard(); }
@@ -4815,7 +4815,12 @@
         return;
       }
       if (e.target.closest('#scratchBack')) {
-        go(scratchReturnTo || 'home');
+        if (scratchReturnTo === 'reward-list') {
+          go('home');
+          setTimeout(openRewardList, 60);
+        } else {
+          go(scratchReturnTo || 'home');
+        }
         return;
       }
       const scratchGo = e.target.closest('[data-go="scratch"]');
