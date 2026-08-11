@@ -3801,14 +3801,17 @@
         card.className = 'rl-card' + (item.status === 'expired' ? ' is-expired' : '') + (isCollectable ? ' is-clickable' : '') + (isCollected ? ' is-collected' : '');
         const amtText = item.status === 'locked' ? '' : formatAmount(item.amount);
         const firstName = (item.label || 'Friend').split(' ')[0];
+        const isLocked = item.status === 'locked';
         const subtitle = isCollectable ? firstName + '\'s 1st sale'
           : isCollected ? firstName + '\'s 1st sale'
-          : item.status === 'locked' ? 'Unlocks on 1st sale' : 'Reward expired';
+          : isLocked ? firstName + ' joined · Awaiting 1st sale'
+          : 'Reward expired';
         const statusLabel = isCollectable ? 'Claim reward'
           : isCollected ? 'Claimed'
-          : item.status === 'locked' ? 'Locked' : 'Expired';
+          : isLocked ? '🔒 Locked'
+          : 'Expired';
         card.innerHTML =
-          '<div class="rl-card-amount">' + (amtText || '₹?') + '</div>' +
+          '<div class="rl-card-amount">' + (isLocked ? '🎟️' : (amtText || '₹?')) + '</div>' +
           '<div class="rl-card-info">' +
             '<div class="rl-card-name">Referral Reward</div>' +
             '<div class="rl-card-sub">' + subtitle + '</div>' +
