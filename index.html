@@ -481,6 +481,11 @@
     .rl-card.is-expired .rl-card-amount {
       color: var(--muted); text-decoration: line-through;
     }
+    .rl-card.is-clickable { cursor: pointer; }
+    .rl-card.is-clickable:active { transform: scale(.98); }
+    .rl-card-sub {
+      font-size: 12px; color: var(--muted); margin-top: 2px;
+    }
     .rewards-empty-ico { font-size: 28px; line-height: 1; }
     .rewards-empty-text {
       margin: 0;
@@ -3775,21 +3780,20 @@
         const m = months[key];
         (m.rewards || []).forEach((r) => {
           if (!r.scratched) {
-            unlocked.push({ amount: r.amount, name: r.name, status: 'unlocked', label: 'Next Sale Reward' });
+            unlocked.push({ id: r.id, amount: r.amount, name: r.name, status: 'unlocked', label: r.name });
           }
         });
         const refs = monthReferrals(key);
         refs.filter((r) => !r.hasSale).forEach((r) => {
           if (r.daysLeft !== null && r.daysLeft <= 0) {
-            expired.push({ amount: 50, name: r.name, status: 'expired', label: 'Next Sale Reward' });
+            expired.push({ id: r.id, amount: 50, name: r.name, status: 'expired', label: r.name });
           } else {
-            locked.push({ amount: 0, name: r.name, status: 'locked', label: 'Unlocks on 1st sale', daysLeft: r.daysLeft });
+            locked.push({ id: r.id, amount: 0, name: r.name, status: 'locked', label: r.name, daysLeft: r.daysLeft });
           }
         });
       });
-      // Demo expired: add one if none exist and there's data
       if (!expired.length && (unlocked.length || locked.length)) {
-        expired.push({ amount: 50, name: 'Expired Friend', status: 'expired', label: 'Next Sale Reward' });
+        expired.push({ id: 'demo-expired', amount: 50, name: 'Expired Friend', status: 'expired', label: 'Expired Friend' });
       }
       return { unlocked, locked, expired };
     }
@@ -3813,17 +3817,29 @@
       }
       list.forEach((item) => {
         const card = document.createElement('div');
-        card.className = 'rl-card' + (item.status === 'expired' ? ' is-expired' : '');
+        card.className = 'rl-card' + (item.status === 'expired' ? ' is-expired' : '') + (item.status === 'unlocked' ? ' is-clickable' : '');
         const amtText = item.status === 'locked' ? '' : formatAmount(item.amount);
+        const subtitle = item.status === 'unlocked' ? 'Next Sale Reward' : item.status === 'locked' ? 'Unlocks on 1st sale' : 'Reward expired';
         card.innerHTML =
           '<div class="rl-card-amount">' + (amtText || '₹?') + '</div>' +
           '<div class="rl-card-info">' +
             '<div class="rl-card-name">' + item.label + '</div>' +
+            '<div class="rl-card-sub">' + subtitle + '</div>' +
             '<span class="rl-card-status ' + item.status + '">' +
               (item.status === 'unlocked' ? 'Collect' :
                item.status === 'locked' ? 'Locked' : 'Expired') +
             '</span>' +
           '</div>';
+        if (item.status === 'unlocked' && item.id) {
+          card.style.cursor = 'pointer';
+          card.addEventListener('click', () => {
+            closeRewardList();
+            scratchReturnTo = 'home';
+            go('scratch');
+            const idx = scratchQueue.findIndex((q) => q.reward.id === item.id);
+            if (idx >= 0) { scratchIdx = idx; showScratchCard(); }
+          });
+        }
         body.appendChild(card);
       });
     }
