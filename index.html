@@ -2331,38 +2331,32 @@
     .scratch-empty.show { display: block; }
     .scratch-prize {
       position: absolute; inset: 0; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; color: var(--ink);
+      align-items: center; justify-content: center;
       padding: 16px;
-      background: #fff;
-    }
-    .scratch-prize .big {
-      font-size: 48px; font-weight: 800;
-      color: var(--blue);
-    }
-    .scratch-prize .label {
-      color: var(--muted); letter-spacing: .06em; text-transform: uppercase;
-      font-size: 11px; font-weight: 700; margin: 8px 0 0;
-    }
-    .scratch-prize .from { margin-top: 10px; font-size: 14px; color: var(--ink); font-weight: 600; }
-    .scratch-prize.tier-100 {
-      background: linear-gradient(180deg, #f8fafc, #fff);
-    }
-    .scratch-prize.tier-100 .big { color: var(--blue); }
-    .scratch-prize.tier-100 .label { color: var(--muted); }
-    .scratch-prize.tier-400 {
-      background: linear-gradient(180deg, #f8faff, #fff);
-    }
-    .scratch-prize.tier-400 .big { color: var(--blue); }
-    .scratch-prize.tier-1000 {
       background: linear-gradient(135deg, #1e3a8a, #2563eb);
       color: #fff;
     }
-    .scratch-prize.tier-1000 .big { color: #fff; }
+    .scratch-prize .big {
+      font-size: 48px; font-weight: 800;
+      color: #fff;
+    }
+    .scratch-prize .label {
+      color: rgba(255,255,255,.6); letter-spacing: .08em; text-transform: uppercase;
+      font-size: 11px; font-weight: 700; margin: 8px 0 0;
+    }
+    .scratch-prize .from { margin-top: 10px; font-size: 14px; color: rgba(255,255,255,.85); font-weight: 600; }
+    .scratch-prize.tier-100 {
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+    }
+    .scratch-prize.tier-400 {
+      background: linear-gradient(135deg, #1e40af, #2563eb);
+    }
+    .scratch-prize.tier-1000 {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    }
     .scratch-prize.tier-1000 .label {
-      color: rgba(255,255,255,.6);
       letter-spacing: .1em;
     }
-    .scratch-prize.tier-1000 .from { color: rgba(255,255,255,.85); }
     #scratchCanvas {
       position: absolute; inset: 0; width: 100%; height: 100%;
       cursor: crosshair; z-index: 2;
