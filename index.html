@@ -3800,8 +3800,9 @@
         const isCollectable = item.status === 'unlocked';
         card.className = 'rl-card' + (item.status === 'expired' ? ' is-expired' : '') + (isCollectable ? ' is-clickable' : '') + (isCollected ? ' is-collected' : '');
         const amtText = item.status === 'locked' ? '' : formatAmount(item.amount);
-        const subtitle = isCollectable ? 'Friend\'s 1st sale reward'
-          : isCollected ? 'Collected to wallet'
+        const firstName = (item.label || 'Friend').split(' ')[0];
+        const subtitle = isCollectable ? firstName + '\'s 1st referral sale'
+          : isCollected ? firstName + '\'s 1st referral sale · Collected'
           : item.status === 'locked' ? 'Unlocks on 1st sale' : 'Reward expired';
         const statusLabel = isCollectable ? 'Collect'
           : isCollected ? 'Collected ✓'
