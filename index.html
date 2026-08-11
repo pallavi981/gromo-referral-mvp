@@ -449,7 +449,7 @@
       border-color: var(--blue); color: var(--blue);
       background: #f0f5ff;
     }
-    .rl-body {
+    .reward-list-panel .rl-body {
       flex: 1; overflow-y: auto;
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -457,43 +457,44 @@
       padding: 8px 12px 24px;
       align-content: start;
     }
-    .rl-card {
-      display: flex; flex-direction: column; align-items: center;
+    .reward-list-panel .rl-card {
+      display: flex !important; flex-direction: column !important; align-items: center !important;
       text-align: center;
-      background: #f7faff; border: 1px solid #edf1f7;
-      border-radius: 14px; padding: 14px 8px 12px;
+      background: #f7faff !important; border: 1px solid #edf1f7 !important;
+      border-radius: 14px !important; padding: 14px 8px 12px !important;
+      gap: 0 !important;
       transition: transform .15s;
     }
-    .rl-card-amount {
+    .reward-list-panel .rl-card-amount {
       font-size: 22px; font-weight: 800; color: var(--blue);
       line-height: 1.1;
     }
-    .rl-card-info { width: 100%; margin-top: 6px; }
-    .rl-card-name { font-size: 11px; font-weight: 700; color: var(--ink); letter-spacing: .02em; }
-    .rl-card-sub { font-size: 10px; color: var(--muted); margin-top: 2px; line-height: 1.3; }
-    .rl-card-status {
+    .reward-list-panel .rl-card-info { width: 100%; margin-top: 6px; flex: unset; }
+    .reward-list-panel .rl-card-name { font-size: 11px; font-weight: 700; color: var(--ink); letter-spacing: .02em; }
+    .reward-list-panel .rl-card-sub { font-size: 10px; color: var(--muted); margin-top: 2px; line-height: 1.3; }
+    .reward-list-panel .rl-card-status {
       margin-top: 8px; font-size: 10px; font-weight: 700;
       display: inline-block; padding: 3px 10px; border-radius: 999px;
     }
-    .rl-card-status.unlocked {
+    .reward-list-panel .rl-card-status.unlocked {
       background: #e8f0fe; color: var(--blue);
     }
-    .rl-card-status.locked {
+    .reward-list-panel .rl-card-status.locked {
       background: #f1f5f9; color: #64748b;
     }
-    .rl-card-status.expired {
+    .reward-list-panel .rl-card-status.expired {
       background: #f1f5f9; color: #94a3b8;
     }
-    .rl-card-status.scratched {
+    .reward-list-panel .rl-card-status.scratched {
       background: #ecfdf5; color: #059669;
     }
-    .rl-card.is-expired { opacity: .6; }
-    .rl-card.is-collected { opacity: .55; }
-    .rl-card.is-expired .rl-card-amount {
+    .reward-list-panel .rl-card.is-expired { opacity: .6; }
+    .reward-list-panel .rl-card.is-collected { opacity: .55; }
+    .reward-list-panel .rl-card.is-expired .rl-card-amount {
       color: var(--muted); text-decoration: line-through;
     }
-    .rl-card.is-clickable { cursor: pointer; border-color: #bfdbfe; background: #f0f5ff; }
-    .rl-card.is-clickable:active { transform: scale(.95); }
+    .reward-list-panel .rl-card.is-clickable { cursor: pointer; border-color: #bfdbfe !important; background: #f0f5ff !important; }
+    .reward-list-panel .rl-card.is-clickable:active { transform: scale(.95); }
     .rewards-empty-ico { font-size: 28px; line-height: 1; }
     .rewards-empty-text {
       margin: 0;
