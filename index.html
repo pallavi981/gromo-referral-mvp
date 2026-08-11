@@ -3254,7 +3254,7 @@
           </div>
           <p class="scratch-hint" id="scratchHint">Reward ready to collect</p>
           <div class="scratch-actions show" id="scratchActions">
-            <button class="primary" type="button" id="collectRewardBtn">Collect reward</button>
+            <button class="primary" type="button" id="collectRewardBtn">Claim reward</button>
             <button class="primary" type="button" id="scratchNextBtn" hidden>Collect next ›</button>
             <div class="scratch-actions-row">
               <button class="ghost-btn" type="button" data-go="progress" id="scratchSeeBtn">See referrals</button>
@@ -3679,7 +3679,7 @@
           id: p.reward.id,
           amount: p.reward.amount,
           name: p.reward.name,
-          hint: 'Collect reward',
+          hint: 'Claim reward',
         });
       });
       const monthKey = monthEmptyDemo ? null : LATEST_MONTH;
@@ -3732,7 +3732,7 @@
         let fromLine, hintLine;
         if (c.kind === 'ready') {
           fromLine = first + '\'s 1st sale';
-          hintLine = 'Collect reward';
+          hintLine = 'Claim reward';
         } else if (c.kind === 'locked') {
           fromLine = first + ' joined';
           hintLine = 'Awaiting 1st sale';
@@ -3801,16 +3801,16 @@
         card.className = 'rl-card' + (item.status === 'expired' ? ' is-expired' : '') + (isCollectable ? ' is-clickable' : '') + (isCollected ? ' is-collected' : '');
         const amtText = item.status === 'locked' ? '' : formatAmount(item.amount);
         const firstName = (item.label || 'Friend').split(' ')[0];
-        const subtitle = isCollectable ? firstName + '\'s 1st referral sale'
-          : isCollected ? firstName + '\'s 1st referral sale · Collected'
+        const subtitle = isCollectable ? firstName + '\'s 1st sale'
+          : isCollected ? firstName + '\'s 1st sale'
           : item.status === 'locked' ? 'Unlocks on 1st sale' : 'Reward expired';
-        const statusLabel = isCollectable ? 'Collect'
+        const statusLabel = isCollectable ? 'Claim reward'
           : isCollected ? 'Claimed'
           : item.status === 'locked' ? 'Locked' : 'Expired';
         card.innerHTML =
           '<div class="rl-card-amount">' + (amtText || '₹?') + '</div>' +
           '<div class="rl-card-info">' +
-            '<div class="rl-card-name">' + item.label + '</div>' +
+            '<div class="rl-card-name">Referral Reward</div>' +
             '<div class="rl-card-sub">' + subtitle + '</div>' +
             '<span class="rl-card-status ' + (isCollected ? 'scratched' : item.status) + '">' + statusLabel + '</span>' +
           '</div>';
@@ -4498,7 +4498,7 @@
       hint.textContent = 'Tap Collect — cash goes to your wallet';
       if (collectBtn) {
         collectBtn.hidden = false;
-        collectBtn.textContent = 'Collect ' + formatAmount(reward.amount);
+        collectBtn.textContent = 'Claim ' + formatAmount(reward.amount);
       }
       scratchReady = true;
       renderScratchCarousel();
@@ -4680,7 +4680,7 @@
       syncScratchQueue();
       canvas.style.display = 'none';
       document.getElementById('scratchHint').style.display = 'none';
-      document.getElementById('scratchHeading').textContent = 'Collected ' + formatAmount(reward.amount);
+      document.getElementById('scratchHeading').textContent = 'Claimed ' + formatAmount(reward.amount);
       document.getElementById('scratchSub').textContent = 'Added to your wallet';
       const actions = document.getElementById('scratchActions');
       const nextBtn = document.getElementById('scratchNextBtn');
