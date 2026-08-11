@@ -481,6 +481,7 @@
       background: #ecfdf5; color: #059669;
     }
     .rl-card.is-expired { opacity: .7; }
+    .rl-card.is-collected { opacity: .65; }
     .rl-card.is-expired .rl-card-amount {
       color: var(--muted); text-decoration: line-through;
     }
@@ -3184,7 +3185,6 @@
           </div>
           <div class="rl-tabs" id="rewardListTabs">
             <button type="button" class="rl-tab active" data-rl-tab="unlocked">Unlocked(<span>0</span>)</button>
-            <button type="button" class="rl-tab" data-rl-tab="scratched">Scratched(<span>0</span>)</button>
             <button type="button" class="rl-tab" data-rl-tab="locked">Locked(<span>0</span>)</button>
             <button type="button" class="rl-tab" data-rl-tab="expired">Expired(<span>0</span>)</button>
           </div>
@@ -3752,20 +3752,15 @@
     let rlActiveTab = 'unlocked';
 
     function allRewardListItems() {
-      if (zeroMode) return { unlocked: [], scratched: [], locked: [], expired: [] };
+      if (zeroMode) return { unlocked: [], locked: [], expired: [] };
       const unlocked = [];
-      const scratched = [];
       const locked = [];
       const expired = [];
       Object.keys(months).sort().reverse().forEach((key) => {
         if (monthEmptyDemo && key === LATEST_MONTH) return;
         const m = months[key];
         (m.rewards || []).forEach((r) => {
-          if (r.scratched) {
-            scratched.push({ id: r.id, amount: r.amount, name: r.name, status: 'scratched', label: r.name });
-          } else {
-            unlocked.push({ id: r.id, amount: r.amount, name: r.name, status: 'unlocked', label: r.name });
-          }
+          unlocked.push({ id: r.id, amount: r.amount, name: r.name, status: r.scratched ? 'collected' : 'unlocked', label: r.name });
         });
         const refs = monthReferrals(key);
         refs.filter((r) => !r.hasSale).forEach((r) => {
@@ -3779,7 +3774,7 @@
       if (!expired.length && (unlocked.length || locked.length)) {
         expired.push({ id: 'demo-expired', amount: 50, name: 'Expired Friend', status: 'expired', label: 'Expired Friend' });
       }
-      return { unlocked, scratched, locked, expired };
+      return { unlocked, locked, expired };
     }
 
     function renderRewardList() {
@@ -3801,22 +3796,24 @@
       }
       list.forEach((item) => {
         const card = document.createElement('div');
-        card.className = 'rl-card' + (item.status === 'expired' ? ' is-expired' : '') + (item.status === 'unlocked' ? ' is-clickable' : '');
+        const isCollected = item.status === 'collected';
+        const isCollectable = item.status === 'unlocked';
+        card.className = 'rl-card' + (item.status === 'expired' ? ' is-expired' : '') + (isCollectable ? ' is-clickable' : '') + (isCollected ? ' is-collected' : '');
         const amtText = item.status === 'locked' ? '' : formatAmount(item.amount);
-        const subtitle = item.status === 'unlocked' ? 'Friend\'s 1st sale reward'
-          : item.status === 'scratched' ? 'Collected to wallet'
+        const subtitle = isCollectable ? 'Friend\'s 1st sale reward'
+          : isCollected ? 'Collected to wallet'
           : item.status === 'locked' ? 'Unlocks on 1st sale' : 'Reward expired';
-        const statusLabel = item.status === 'unlocked' ? 'Collect'
-          : item.status === 'scratched' ? 'Collected ✓'
+        const statusLabel = isCollectable ? 'Collect'
+          : isCollected ? 'Collected ✓'
           : item.status === 'locked' ? 'Locked' : 'Expired';
         card.innerHTML =
           '<div class="rl-card-amount">' + (amtText || '₹?') + '</div>' +
           '<div class="rl-card-info">' +
             '<div class="rl-card-name">' + item.label + '</div>' +
             '<div class="rl-card-sub">' + subtitle + '</div>' +
-            '<span class="rl-card-status ' + item.status + '">' + statusLabel + '</span>' +
+            '<span class="rl-card-status ' + (isCollected ? 'scratched' : item.status) + '">' + statusLabel + '</span>' +
           '</div>';
-        if (item.status === 'unlocked' && item.id) {
+        if (isCollectable && item.id) {
           card.style.cursor = 'pointer';
           card.addEventListener('click', () => {
             closeRewardList();
