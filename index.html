@@ -345,10 +345,9 @@
     /* Home rewards carousel */
     .rewards-block { margin: 0; }
     .rewards-head {
-      display: flex; align-items: baseline; justify-content: space-between;
-      margin: 0 2px 8px;
+      display: flex; align-items: baseline; justify-content: flex-end;
+      margin: 4px 2px 8px;
     }
-    .rewards-head .label { margin: 0; }
     .rewards-head button {
       border: 0; background: transparent; color: var(--blue);
       font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; padding: 0;
@@ -2137,6 +2136,7 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 8px 0 12px; border-bottom: 1px solid var(--line);
     }
+    .remind-all-row[hidden] { display: none !important; }
     .remind-all-row label {
       display: flex; align-items: center; gap: 8px;
       font-size: 12px; font-weight: 600; color: var(--ink); cursor: pointer;
@@ -2155,7 +2155,7 @@
       width: 16px; height: 16px; accent-color: var(--blue);
       cursor: pointer; flex-shrink: 0;
     }
-    .friend.has-check { grid-template-columns: 16px 40px 1fr auto; }
+    .friend.has-check { grid-template-columns: 16px 28px 1fr auto; }
 
     .scratch-body {
       flex: 1; display: flex; flex-direction: column; align-items: center;
@@ -2715,42 +2715,59 @@
     /* (reward cards removed — reward info is now in the hero) */
 
     .es-block {
-      border-radius: var(--radius);
-      border: 1px solid #e3ecfb;
-      background: linear-gradient(135deg, #f4f8ff 0%, #fff 100%);
-      padding: 16px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      padding: 18px 20px 16px;
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(30,58,138,.3);
+    }
+    .es-block::after {
+      content: ''; position: absolute; top: -30%; right: -10%;
+      width: 140px; height: 140px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,.1) 0%, transparent 70%);
+      pointer-events: none;
     }
     .es-block[hidden] { display: none !important; }
-    .es-earned {
-      display: flex; flex-direction: column; align-items: center;
-      gap: 2px; margin-bottom: 14px;
+    .es-top {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 16px; position: relative; z-index: 1;
     }
+    .es-earned { display: flex; flex-direction: column; gap: 2px; }
     .es-label {
-      font-size: 11px; font-weight: 700; letter-spacing: .04em;
-      text-transform: uppercase; color: var(--muted);
+      font-size: 11px; font-weight: 600;
+      color: rgba(255,255,255,.6);
     }
     .es-value {
-      font-size: 28px; font-weight: 800; color: var(--blue); letter-spacing: -0.02em;
+      font-size: 32px; font-weight: 800; color: #fff; letter-spacing: -0.02em;
     }
-    .es-stats { display: flex; align-items: stretch; gap: 1px; }
-    .es-stat {
-      flex: 1; text-align: center; padding: 10px 0;
-      border-top: 1px solid var(--line);
+    .es-wallet { display: none; }
+    .es-pills {
+      display: flex; gap: 10px;
+      position: relative; z-index: 1;
     }
-    .es-stat:first-child { border-right: 1px solid var(--line); }
-    .es-stat b { display: block; font-size: 18px; font-weight: 800; color: var(--ink); }
-    .es-stat span { font-size: 11px; color: var(--muted); }
+    .es-pill {
+      flex: 1; text-align: center;
+      padding: 0;
+      font-size: 11px; font-weight: 600; color: rgba(255,255,255,.55);
+      border: none; background: transparent;
+    }
+    .es-pill + .es-pill { border-left: none; }
+    .es-pill.sale { background: transparent; color: rgba(255,255,255,.55); }
+    .es-pill-icon { display: none; }
+    .es-pill-num {
+      font-size: 22px; font-weight: 800;
+      color: #fff; line-height: 1.3;
+    }
     .es-details-link {
-      text-align: center; padding: 10px 0 2px;
-      font-size: 12px; font-weight: 600; color: var(--blue);
-      cursor: pointer;
+      display: none;
     }
-    .es-details-link span { font-size: 14px; font-weight: 700; }
+    .es-details-link span { display: none; }
 
     .tm-section-title {
-      display: flex; align-items: center; justify-content: center; gap: 10px;
-      padding: 20px 16px 0;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      padding: 20px 16px 4px;
     }
     .tm-section-title span {
       font-size: 11px; font-weight: 700; letter-spacing: .8px;
@@ -2763,7 +2780,7 @@
       background: linear-gradient(to var(--dir, right), #eed990, transparent);
     }
     .tm-section-title::after { --dir: left; }
-    .tm-block { padding: 4px 4px 4px 8px; }
+    .tm-block { padding: 4px 4px 24px 8px; }
     .tm-step {
       display: flex; align-items: center; gap: 14px;
       position: relative; padding: 8px 0;
@@ -2772,18 +2789,33 @@
       content: '';
       position: absolute; left: 11px; top: calc(50% + 12px);
       height: calc(100% - 4px); width: 2px;
-      background: #dde3ea; z-index: 0;
+      background: repeating-linear-gradient(to bottom, #d0d7e0 0, #d0d7e0 4px, transparent 4px, transparent 8px);
+      z-index: 0;
     }
     .tm-step.tm-done:not(:last-child)::after { background: var(--blue); }
     .tm-step.tm-active:not(:last-child)::after {
       background: linear-gradient(to bottom, var(--blue) var(--progress, 0%), #dde3ea var(--progress, 0%));
     }
+    .tm-step:last-child::after {
+      content: '';
+      position: absolute; left: 11px; top: calc(50% + 12px);
+      height: 32px; width: 2px; z-index: 0;
+      background: repeating-linear-gradient(to bottom, #d0d7e0 0, #d0d7e0 4px, transparent 4px, transparent 8px);
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    }
+    .tm-step:last-child.tm-done::after,
+    .tm-step:last-child.tm-active::after {
+      background: var(--blue);
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    }
     .tm-marker {
       width: 24px; height: 24px; border-radius: 50%;
       flex-shrink: 0; position: relative; z-index: 1;
       display: grid; place-items: center;
-      font-size: 0; color: transparent;
-      background: #eef1f5; border: 2px solid #dde3ea;
+      font-size: 10px; font-weight: 800; color: #9ca8b8;
+      background: #f0f3f7; border: 2px solid #dde3ea;
     }
     .tm-step.tm-active .tm-marker {
       background: var(--blue); border-color: var(--blue);
@@ -2793,6 +2825,15 @@
       background: var(--blue); border-color: var(--blue);
       color: #fff; font-size: 13px;
     }
+    .tm-step[data-tier="100"]:not(.tm-active):not(.tm-done) .tm-marker {
+      background: #e8f0fe; border-color: #c4d7f5; color: #3b7ddd;
+    }
+    .tm-step[data-tier="400"]:not(.tm-active):not(.tm-done) .tm-marker {
+      background: #e8f0fe; border-color: #c4d7f5; color: #3b7ddd;
+    }
+    .tm-step[data-tier="1000"]:not(.tm-active):not(.tm-done) .tm-marker {
+      background: #fef4e0; border-color: #f0d78a; color: #b8860b;
+    }
     .tm-you-tag {
       display: block; width: 100%;
       font-size: 10px; font-weight: 600; color: var(--blue);
@@ -2801,16 +2842,17 @@
     .tm-body {
       display: flex; align-items: center; justify-content: space-between;
       flex: 1; gap: 8px; padding: 14px 16px;
-      border-radius: 12px; border: 1px solid var(--line);
+      border-radius: 14px; border: 1px solid var(--line);
       background: #fff; flex-wrap: wrap;
+      box-shadow: 0 1px 4px rgba(0,0,0,.04);
     }
-    .tm-step.tm-active .tm-body { border-color: var(--blue); background: #f5f8ff; }
-    .tm-step.tm-done .tm-body { background: #fafbfc; }
-    .tm-range { font-size: 14px; font-weight: 600; color: var(--ink); display: block; line-height: 1.2; }
+    .tm-step.tm-active .tm-body { border-color: var(--blue); background: linear-gradient(135deg, #f5f8ff, #eef3ff); box-shadow: 0 2px 8px rgba(37,99,235,.10); }
+    .tm-step.tm-done .tm-body { background: #fafbfc; opacity: .7; }
+    .tm-range { font-size: 13px; font-weight: 600; color: var(--ink); display: block; line-height: 1.2; }
     .tm-range small { font-size: 11px; font-weight: 500; color: var(--muted); }
-    .tm-reward { font-size: 16px; font-weight: 800; color: var(--ink); white-space: nowrap; }
-    .tm-step.tm-done .tm-reward { color: var(--muted); }
-    .tm-reward small { font-size: 12px; font-weight: 600; color: var(--muted); }
+    .tm-reward { font-size: 18px; font-weight: 800; color: var(--blue); white-space: nowrap; }
+    .tm-step.tm-done .tm-reward { color: var(--blue); opacity: .5; }
+    .tm-reward small { font-size: 11px; font-weight: 600; color: var(--muted); }
 
     .how-pill-row { display: flex; justify-content: center; margin: 0; }
     .how-pill {
@@ -2894,10 +2936,13 @@
       color: #b45309;
       text-align: center; margin: 20px 0 4px;
     }
-    .how-divider small {
-      display: block; font-size: 10px; font-weight: 600;
-      color: #dc2626; text-transform: uppercase; letter-spacing: .04em;
-      margin-top: 3px;
+    .how-footer-timer {
+      text-align: center; font-size: 11px; font-weight: 600;
+      color: #dc2626; margin: 14px 0 0;
+      padding: 8px 12px; border-radius: 8px;
+      background: #fef2f2;
+    }
+    .how-divider small { display: none;
     }
 
     .how-popup-tiers {
@@ -3050,13 +3095,16 @@
           </div>
 
           <div class="es-block" id="earnedBlock" data-go="progress" role="button" tabindex="0" hidden>
-            <div class="es-earned">
-              <span class="es-label">Total earned</span>
-              <span class="es-value" id="homeEarned">₹9,200</span>
+            <div class="es-top">
+              <div class="es-earned">
+                <span class="es-label">Total earned</span>
+                <span class="es-value" id="homeEarned">₹9,200</span>
+              </div>
+              <span style="font-size:22px; color:rgba(255,255,255,.35); position:relative; z-index:1;">›</span>
             </div>
-            <div class="es-stats">
-              <div class="es-stat"><b id="homeJoined">62</b><span>friends joined</span></div>
-              <div class="es-stat"><b id="homeCount">29</b><span>made 1st sale</span></div>
+            <div class="es-pills">
+              <div class="es-pill"><span class="es-pill-num" id="homeJoined">62</span>friends joined</div>
+              <div class="es-pill sale"><span class="es-pill-num" id="homeCount">29</span>made sales</div>
             </div>
             <div class="es-details-link" data-go="progress">View details <span aria-hidden="true">›</span></div>
           </div>
@@ -3091,9 +3139,10 @@
           </div>
 
           <div class="rewards-block" id="rewardsBlock">
+            <div class="tm-section-title"><span>Rewards to claim</span></div>
             <div class="rewards-head">
-              <div class="label">Rewards to claim</div>
-              <button type="button" id="seeAllRewards" data-go="scratch">See all</button>
+              <div class="label" style="display:none"></div>
+              <button type="button" id="seeAllRewards" data-go="scratch">See all ›</button>
             </div>
             <div class="rewards-carousel" id="rewardsCarousel"></div>
             <div class="rewards-empty" id="rewardsEmpty" hidden>
@@ -3253,7 +3302,7 @@
                 </div>
               </div>
 
-              <p class="how-divider">Your reward per friend<small>⏳ Valid till 31 Aug 2026</small></p>
+              <p class="how-divider">Your reward per friend</p>
 
               <div class="how-popup-tiers">
                 <div class="hpt-step">
@@ -3283,6 +3332,7 @@
                 <span class="warn-ico" aria-hidden="true">⚠️</span>
                 <p>Self sales or sales to existing GroMo partners don't count.</p>
               </div>
+              <p class="how-footer-timer" id="howFooterTimer">⏳ Offer ends 31 Aug 2026 · 22d left</p>
 
               <p class="how-tnc">Refer &amp; Earn — <a href="#" data-toast="T&amp;Cs (demo)">T&amp;Cs</a></p>
             </div>
@@ -3598,7 +3648,7 @@
             body.insertAdjacentHTML('beforeend', '<span class="tm-you-tag">' + count + ' of 4 done</span>');
           }
           if (count >= 5) { el.classList.add('tm-done'); marker.textContent = '✓'; }
-          else if (count < 1) { marker.textContent = ''; }
+          else if (count < 1) { marker.textContent = '1'; }
         } else if (tier === 400) {
           if (count >= 5 && count < 20) {
             el.classList.add('tm-active');
@@ -3608,7 +3658,7 @@
             body.insertAdjacentHTML('beforeend', '<span class="tm-you-tag">' + count + ' of 19 done</span>');
           }
           if (count >= 20) { el.classList.add('tm-done'); marker.textContent = '✓'; }
-          else if (count < 5) { marker.textContent = ''; }
+          else if (count < 5) { marker.textContent = '2'; }
         } else if (tier === 1000) {
           if (count >= 20) {
             el.classList.add('tm-active');
@@ -3857,14 +3907,14 @@
       return 1000;
     }
 
-    function renderPendingRow(r, opts) {
+    function renderPendingRow(r, num, opts) {
       var row = document.createElement('div');
-      row.className = 'friend disabled' + (opts.withCheck ? ' has-check' : '');
+      row.className = 'friend disabled has-num' + (opts.withCheck ? ' has-check' : '');
       var checkHtml = opts.withCheck
         ? '<input type="checkbox" class="friend-check" data-pend-id="' + r.id + '" data-pend-name="' + r.name + '" checked>'
         : '';
       row.innerHTML = checkHtml +
-        '<div class="avatar ' + (r.avatar || '') + '">' + r.initial + '</div>' +
+        '<div class="friend-num">' + num + '</div>' +
         '<div><div class="name">' + r.name + '</div>' +
         '<div class="detail">' + pendingTimerHtml(r.daysLeft) + '</div></div>' +
         '<div class="friend-actions">' +
@@ -3876,16 +3926,13 @@
       return row;
     }
 
-    function renderCompletedRow(r, opts) {
+    function renderCompletedRow(r, num) {
       var el = document.createElement('button');
       el.type = 'button';
-      el.className = 'friend' + (r.scratched ? ' disabled' : '') + (opts.numbered ? ' has-num' : '');
-      var leftCol = opts.numbered
-        ? '<div class="friend-num">' + opts.num + '</div>'
-        : '<div class="avatar ' + (r.avatar || '') + '">' + r.initial + '</div>';
-      el.innerHTML = leftCol +
-        '<div><div class="name">' + r.name + '</div>' +
-        '<div class="detail">1st sale · reward ready</div></div>' +
+      el.className = 'friend has-num' + (r.scratched ? ' disabled' : '');
+      el.innerHTML =
+        '<div class="friend-num">' + num + '</div>' +
+        '<div><div class="name">' + r.name + '</div></div>' +
         '<div class="earn">' + formatAmount(r.amount) +
         '<span class="st ' + (r.scratched ? 'done' : '') + '">' +
         (r.scratched ? 'Collected' : 'Collect') +
@@ -3919,11 +3966,12 @@
         var allItems = pending.concat(completed);
         emptyEl.style.display = allItems.length ? 'none' : 'block';
         emptyEl.textContent = zeroMode ? 'No referrals yet. Refer your friends to get started.' : 'No referrals for this filter yet.';
+        var n = 1;
         allItems.forEach(function(r) {
           if (!r.hasSale) {
-            listEl.appendChild(renderPendingRow(r, { withCheck: false }));
+            listEl.appendChild(renderPendingRow(r, n++, { withCheck: false }));
           } else {
-            listEl.appendChild(renderCompletedRow(r, { numbered: false }));
+            listEl.appendChild(renderCompletedRow(r, n++));
           }
         });
 
@@ -3943,15 +3991,15 @@
             else hdr.innerHTML = 'Friends 20+ · <span class="th-amt">₹1,000 each</span>';
             listEl.appendChild(hdr);
           }
-          listEl.appendChild(renderCompletedRow(r, { numbered: true, num: idx + 1 }));
+          listEl.appendChild(renderCompletedRow(r, idx + 1));
         });
 
       } else {
         pending.sort(function(a, b) { return (a.daysLeft || 99) - (b.daysLeft || 99); });
         emptyEl.style.display = pending.length ? 'none' : 'block';
         emptyEl.textContent = 'All your friends have made their 1st sale!';
-        pending.forEach(function(r) {
-          listEl.appendChild(renderPendingRow(r, { withCheck: true }));
+        pending.forEach(function(r, idx) {
+          listEl.appendChild(renderPendingRow(r, idx + 1, { withCheck: true }));
         });
         syncSelectAllState();
       }
@@ -5066,6 +5114,12 @@
       howCopy.hi['hero-eyebrow'] = hi;
       const txt = lang === 'hi' ? hi : en;
       document.querySelectorAll('[data-t="hero-eyebrow"]').forEach(function(el) { el.textContent = txt; });
+      var howTimer = document.getElementById('howFooterTimer');
+      if (howTimer) {
+        if (daysLeft <= 0) howTimer.textContent = '⏳ Offer has ended';
+        else if (daysLeft === 1) howTimer.textContent = '⏳ Last day — offer ends 31 Aug 2026';
+        else howTimer.textContent = '⏳ Offer ends 31 Aug 2026 · ' + daysLeft + 'd left';
+      }
     })();
 
     monthSelect.value = currentMonth;
