@@ -3761,12 +3761,22 @@
         btn.className = 'reward-card ' + cls;
         btn.dataset.rewardKind = c.kind;
         if (c.kind === 'ready') btn.dataset.scratchId = c.id;
-        const tagText = c.kind === 'ready' ? 'Ready' : c.kind === 'expired' ? 'Expired' : 'Locked';
+        const first = c.name.split(' ')[0];
+        let fromLine, hintLine;
+        if (c.kind === 'ready') {
+          fromLine = first + '\'s 1st sale';
+          hintLine = 'Collect reward';
+        } else if (c.kind === 'locked') {
+          fromLine = first + ' joined';
+          hintLine = 'Awaiting 1st sale';
+        } else {
+          fromLine = first + ' — no sale';
+          hintLine = 'Expired';
+        }
         btn.innerHTML =
-          '<span class="rc-tag">' + tagText + '</span>' +
           '<span class="rc-amount">' + formatAmount(c.amount) + '</span>' +
-          '<span class="rc-from">' + c.name.split(' ')[0] + '</span>' +
-          '<span class="rc-hint">' + c.hint + '</span>';
+          '<span class="rc-from">' + fromLine + '</span>' +
+          '<span class="rc-hint">' + hintLine + '</span>';
         track.appendChild(btn);
       });
     }
