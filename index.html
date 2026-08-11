@@ -585,39 +585,8 @@
       .refer-now-pulse,
       .sticky-cta .refer-now::after { animation: none; }
     }
-    .wallet-chip {
-      pointer-events: none;
-      position: absolute;
-      top: 36px;
-      right: 12px;
-      z-index: 6;
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      background: #15202b;
-      color: #ffe08a;
-      display: grid;
-      place-items: center;
-      box-shadow: 0 8px 18px rgba(21,32,43,.25);
-      font-size: 16px;
-      opacity: 0;
-      transform: scale(.85);
-      transition: opacity .2s ease, transform .2s ease;
-    }
-    .wallet-chip.show {
-      opacity: 1;
-      transform: scale(1);
-    }
-    .fly-coin {
-      position: absolute;
-      z-index: 25;
-      width: 22px; height: 22px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #fff3c4, #e0b84a 55%, #c98500);
-      box-shadow: 0 2px 6px rgba(0,0,0,.25);
-      pointer-events: none;
-      transition: transform .7s cubic-bezier(.2,.8,.2,1), opacity .7s ease;
-      opacity: 1;
-    }
+    .wallet-chip { display: none !important; }
+    .fly-coin { display: none !important; }
     /* Home stack: shared card chrome — never flex-shrink (overflow:hidden
        cards otherwise crush to a 1–2px sliver inside the fixed phone height) */
     .sheet > * { flex-shrink: 0; }
@@ -4707,34 +4676,6 @@
     }
 
     function flyCoinsToWallet(amount) {
-      const appEl = document.getElementById('app');
-      const wallet = document.getElementById('walletTarget');
-      const stage = document.getElementById('scratchStage') || document.getElementById('rewardsCarousel');
-      if (!appEl || !wallet || !stage) return;
-      wallet.classList.add('show');
-      const appRect = appEl.getBoundingClientRect();
-      const from = stage.getBoundingClientRect();
-      const to = wallet.getBoundingClientRect();
-      const startX = from.left + from.width / 2 - appRect.left;
-      const startY = from.top + from.height / 2 - appRect.top;
-      const endX = to.left + to.width / 2 - appRect.left;
-      const endY = to.top + to.height / 2 - appRect.top;
-      for (let i = 0; i < 6; i++) {
-        const coin = document.createElement('div');
-        coin.className = 'fly-coin';
-        coin.style.left = startX + (Math.random() * 24 - 12) + 'px';
-        coin.style.top = startY + (Math.random() * 18 - 9) + 'px';
-        coin.style.transform = 'translate(0,0) scale(1)';
-        appEl.appendChild(coin);
-        requestAnimationFrame(() => {
-          const dx = endX - startX + (Math.random() * 10 - 5);
-          const dy = endY - startY + (Math.random() * 10 - 5);
-          coin.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(.35)';
-          coin.style.opacity = '0.15';
-        });
-        setTimeout(() => coin.remove(), 780 + i * 40);
-      }
-      setTimeout(() => wallet.classList.remove('show'), 1400);
       toast(formatAmount(amount) + ' added to wallet');
     }
 
@@ -4748,7 +4689,7 @@
       canvas.style.display = 'none';
       document.getElementById('scratchHint').style.display = 'none';
       document.getElementById('scratchHeading').textContent = 'Collected ' + formatAmount(reward.amount);
-      document.getElementById('scratchSub').textContent = 'Flying to your wallet';
+      document.getElementById('scratchSub').textContent = 'Added to your wallet';
       const actions = document.getElementById('scratchActions');
       const nextBtn = document.getElementById('scratchNextBtn');
       const collectBtn = document.getElementById('collectRewardBtn');
