@@ -433,6 +433,7 @@
       position: fixed; z-index: 100;
       background: linear-gradient(180deg, #f8faff 0%, #fff 100%);
       display: none; flex-direction: column;
+      border-radius: 22px; overflow: hidden;
     }
     .reward-list-panel:not([hidden]) { display: flex; }
     .rl-tabs {
@@ -3830,9 +3831,9 @@
     function openRewardList() {
       const panel = document.getElementById('rewardListPanel');
       if (!panel) return;
-      const screenEl = panel.closest('.screen');
-      if (screenEl) {
-        const r = screenEl.getBoundingClientRect();
+      const wrap = document.querySelector('.screen-wrap');
+      if (wrap) {
+        const r = wrap.getBoundingClientRect();
         panel.style.top = r.top + 'px';
         panel.style.left = r.left + 'px';
         panel.style.width = r.width + 'px';
