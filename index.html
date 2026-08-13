@@ -591,6 +591,38 @@
       .refer-now-pulse,
       .sticky-cta .refer-now::after { animation: none; }
     }
+
+    /* Short phones (SE, older Androids ~680-720px) */
+    @media (max-height: 720px) {
+      .screen[data-screen="home"] .hero { padding: 8px 16px 0; }
+      .hero-bar { margin-bottom: 0; }
+      .hero-big { font-size: 22px; margin-bottom: 1px; }
+      .hero-earn { font-size: 13px; }
+      .hero-earn em { font-size: 16px; }
+      .hero-illus img { width: 75%; }
+      .hero-illus { margin: 0 -16px; }
+      .tm-section-title { padding: 2px 16px 0; }
+      .tm-section-title span { font-size: 9px; }
+      .tm-block { padding: 0 4px 2px 8px; }
+      .tm-step { padding: 2px 0; }
+      .tm-range { font-size: 12px; }
+      .tm-reward { font-size: 16px; }
+      .how-pill { padding: 6px 12px; font-size: 11px; }
+      .action-pill { padding: 6px 12px; font-size: 11px; }
+      .screen[data-screen="home"] .sheet { gap: 6px; }
+      .countdown-pill { font-size: 10px; padding: 3px 8px; }
+    }
+
+    /* Medium phones (~720-800px) */
+    @media (min-height: 721px) and (max-height: 800px) {
+      .hero-big { font-size: 24px; }
+      .hero-earn em { font-size: 17px; }
+      .hero-illus img { width: 85%; }
+      .tm-section-title { padding: 4px 16px 1px; }
+      .tm-step { padding: 3px 0; }
+      .screen[data-screen="home"] .sheet { gap: 8px; }
+    }
+
     .wallet-chip { display: none !important; }
     .fly-coin { display: none !important; }
     /* Home stack: shared card chrome — never flex-shrink (overflow:hidden
@@ -2759,22 +2791,38 @@
 
     .es-block {
       border-radius: 16px;
-      background: linear-gradient(135deg, #0A56A3, #0070E0 70%);
+      background: linear-gradient(135deg, #e8f0fe 0%, #dce8fb 100%);
       padding: 18px 20px 16px;
       cursor: pointer;
       position: relative;
-      border: 2px solid rgba(255,255,255,.25);
-      box-shadow: 0 4px 20px rgba(30,58,138,.35);
+      border: 1px solid rgba(0,112,224,.15);
+      box-shadow: 0 4px 16px rgba(0,112,224,.1);
       overflow: hidden;
-      box-shadow: 0 6px 20px rgba(30,58,138,.3);
     }
     .es-block::after {
       content: ''; position: absolute; top: -30%; right: -10%;
       width: 140px; height: 140px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,.1) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(0,112,224,.06) 0%, transparent 70%);
       pointer-events: none;
     }
     .es-block[hidden] { display: none !important; }
+    .es-block.dark-card {
+      background: linear-gradient(135deg, #0A56A3, #0070E0 70%);
+      border: 2px solid rgba(255,255,255,.25);
+      box-shadow: 0 6px 20px rgba(30,58,138,.3);
+    }
+    .es-block.dark-card::after {
+      background: radial-gradient(circle, rgba(255,255,255,.1) 0%, transparent 70%);
+    }
+    .es-block.dark-card .es-label { color: rgba(255,255,255,.6); }
+    .es-block.dark-card .es-value { color: #fff; }
+    .es-block.dark-card .es-pills { background: rgba(255,255,255,.1); }
+    .es-block.dark-card .es-pill { color: rgba(255,255,255,.6); }
+    .es-block.dark-card .es-pill + .es-pill { border-left-color: rgba(255,255,255,.12); }
+    .es-block.dark-card .es-pill.sale { color: rgba(255,255,255,.6); }
+    .es-block.dark-card .es-pill-num { color: #fff; }
+    .es-block.dark-card .es-details-link { color: rgba(255,255,255,.7); }
+    .es-block.dark-card .es-top > span { color: rgba(255,255,255,.35) !important; }
     .es-top {
       display: flex; align-items: flex-start; justify-content: space-between;
       margin-bottom: 16px; position: relative; z-index: 1;
@@ -2782,36 +2830,36 @@
     .es-earned { display: flex; flex-direction: column; gap: 2px; }
     .es-label {
       font-size: 11px; font-weight: 600;
-      color: rgba(255,255,255,.6);
+      color: var(--muted);
     }
     .es-value {
-      font-size: 32px; font-weight: 800; color: #fff; letter-spacing: -0.02em;
+      font-size: 32px; font-weight: 800; color: var(--blue); letter-spacing: -0.02em;
     }
     .es-wallet { display: none; }
     .es-pills {
       display: flex; gap: 0;
       position: relative; z-index: 1;
-      background: rgba(255,255,255,.1);
+      background: rgba(0,112,224,.06);
       border-radius: 10px;
       overflow: hidden;
     }
     .es-pill {
       flex: 1; display: flex; flex-direction: column; align-items: center;
       padding: 10px 8px;
-      font-size: 10px; font-weight: 600; color: rgba(255,255,255,.6);
+      font-size: 10px; font-weight: 600; color: var(--muted);
       border: none; background: transparent;
       text-transform: uppercase; letter-spacing: .04em;
     }
-    .es-pill + .es-pill { border-left: 1px solid rgba(255,255,255,.12); }
-    .es-pill.sale { background: transparent; color: rgba(255,255,255,.6); }
+    .es-pill + .es-pill { border-left: 1px solid rgba(0,112,224,.1); }
+    .es-pill.sale { background: transparent; color: var(--muted); }
     .es-pill-icon { display: none; }
     .es-pill-num {
       display: block; font-size: 20px; font-weight: 800;
-      color: #fff; line-height: 1.3; margin-bottom: 1px;
+      color: var(--ink); line-height: 1.3; margin-bottom: 1px;
     }
     .es-details-link {
       text-align: center; padding: 8px 0 0;
-      font-size: 11px; font-weight: 600; color: rgba(255,255,255,.7);
+      font-size: 11px; font-weight: 600; color: var(--blue);
       cursor: pointer; position: relative; z-index: 1;
     }
     .es-details-link span { font-size: 12px; font-weight: 700; }
@@ -3070,6 +3118,11 @@
         <button type="button" id="zeroToggle" data-toggle-zero>Never referred</button>
       </div>
       <div class="tab-group">
+        <div class="tab-label">Earned card style</div>
+        <button type="button" id="cardLightBtn" class="active" data-card-style="light">Light blue</button>
+        <button type="button" id="cardDarkBtn" data-card-style="dark">Dark navy</button>
+      </div>
+      <div class="tab-group">
         <div class="tab-label">Foil demos</div>
         <button type="button" data-foil-demo="100">Foil: ₹100 silver</button>
         <button type="button" data-foil-demo="400">Foil: ₹400 gold</button>
@@ -3151,7 +3204,7 @@
                 <span class="es-label">Total earned</span>
                 <span class="es-value" id="homeEarned">₹9,200</span>
               </div>
-              <span style="font-size:22px; color:rgba(255,255,255,.35); position:relative; z-index:1;">›</span>
+              <span style="font-size:22px; color:rgba(0,112,224,.3); position:relative; z-index:1;">›</span>
             </div>
             <div class="es-pills">
               <div class="es-pill"><span class="es-pill-num" id="homeJoined">62</span>friends joined</div>
@@ -5209,6 +5262,22 @@
       document.getElementById('fontFigtreeBtn').classList.add('active');
       document.getElementById('fontDmBtn').classList.remove('active');
     }
+
+    // Earned card style toggle
+    const CARD_STYLE_KEY = 'referralMvpCardStyle';
+    function setCardStyle(style) {
+      const block = document.getElementById('earnedBlock');
+      if (block) {
+        block.classList.toggle('dark-card', style === 'dark');
+      }
+      document.getElementById('cardLightBtn').classList.toggle('active', style === 'light');
+      document.getElementById('cardDarkBtn').classList.toggle('active', style === 'dark');
+      localStorage.setItem(CARD_STYLE_KEY, style);
+    }
+    document.getElementById('cardLightBtn').addEventListener('click', () => setCardStyle('light'));
+    document.getElementById('cardDarkBtn').addEventListener('click', () => setCardStyle('dark'));
+    const savedCardStyle = localStorage.getItem(CARD_STYLE_KEY);
+    if (savedCardStyle === 'dark') setCardStyle('dark');
 
     // How it works — EN / Hinglish copy
     const HOW_LANG_KEY = 'referralMvpHowLang';
