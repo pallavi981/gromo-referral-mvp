@@ -378,24 +378,58 @@
       box-shadow: 0 2px 8px rgba(21,32,43,.04);
     }
     .reward-card.locked {
-      background: linear-gradient(160deg, #f3f5f8, #e8edf3);
-      color: var(--muted);
+      background: #f7faff;
+      border: 1px solid #edf1f7;
+      color: var(--ink);
       cursor: default;
+      align-items: center;
+      text-align: center;
+      padding: 14px 8px 12px;
+      gap: 0;
     }
+    .reward-card.locked .rc-gift { line-height: 1; margin-bottom: 6px; }
+    .reward-card.locked .rc-title { font-size: 11px; font-weight: 700; color: var(--ink); letter-spacing: .02em; }
+    .reward-card.locked .rc-sub { font-size: 10px; color: var(--muted); margin-top: 2px; line-height: 1.3; }
+    .reward-card.locked .rc-remind {
+      margin-top: 8px;
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #25D366; color: #fff;
+      border: none; border-radius: 8px;
+      padding: 6px 14px; font-size: 11px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      box-shadow: 0 2px 8px rgba(37,211,102,.3);
+    }
+    /* Same centered icon/title/sub/button layout as .locked (matches the rest of the
+       app's card set) — just blue-tinted to signal "ready to scratch" instead of the
+       old full solid-blue takeover, and amount stays hidden until actually scratched. */
     .reward-card.ready {
-      border-color: #bfdbfe;
-      background: linear-gradient(160deg, #f0f5ff, #e8f0fe);
+      background: #eef4ff;
+      border: 1px solid #dbe7fb;
+      color: var(--ink);
+      align-items: center;
+      text-align: center;
+      padding: 14px 8px 12px;
+      gap: 0;
+    }
+    .reward-card.ready .rc-gift { line-height: 1; margin-bottom: 6px; }
+    .reward-card.ready .rc-title { font-size: 11px; font-weight: 700; color: var(--blue); letter-spacing: .02em; }
+    .reward-card.ready .rc-sub { font-size: 10px; color: var(--muted); margin-top: 2px; line-height: 1.3; }
+    .reward-card.ready .rc-scratch-cta {
+      margin-top: 8px;
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--blue); color: #fff;
+      border-radius: 8px;
+      padding: 6px 14px; font-size: 11px; font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0,112,224,.3);
     }
     .reward-card .rc-tag {
       font-size: 10px; font-weight: 700; letter-spacing: .04em;
       text-transform: uppercase;
     }
     .reward-card.locked .rc-tag { color: #7b8794; }
-    .reward-card.ready .rc-tag { color: var(--blue); }
     .reward-card .rc-amount {
       font-size: 18px; font-weight: 800; letter-spacing: -0.02em; line-height: 1;
     }
-    .reward-card.ready .rc-amount { color: var(--blue); }
     .reward-card.locked .rc-amount { filter: blur(5px); user-select: none; }
     .reward-card .rc-from {
       font-size: 12px; font-weight: 600; color: var(--ink);
@@ -405,7 +439,6 @@
       margin-top: auto;
       font-size: 11px; font-weight: 600; color: var(--muted); line-height: 1.3;
     }
-    .reward-card.ready .rc-hint { color: var(--blue); }
     .rewards-empty {
       display: flex;
       flex-direction: column;
@@ -477,11 +510,21 @@
       display: inline-block; padding: 3px 10px; border-radius: 999px;
     }
     #rewardListBody .rl-card-status.unlocked {
-      background: #e8f0fe; color: var(--blue);
+      background: var(--blue); color: #fff;
+      padding: 6px 16px; border-radius: 8px; font-size: 11px !important;
+      box-shadow: 0 2px 8px rgba(0,112,224,.25);
     }
     #rewardListBody .rl-card-status.locked {
       background: #f1f5f9; color: #64748b;
     }
+    #rewardListBody .rl-card-status.remind {
+      background: #25D366; color: #fff;
+      padding: 6px 16px; border-radius: 8px; font-size: 11px !important;
+      border: none; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(37,211,102,.3);
+      display: inline-flex; align-items: center;
+    }
+    #rewardListBody .rl-card-status.remind svg { fill: #fff; }
     #rewardListBody .rl-card-status.expired {
       background: #f1f5f9; color: #94a3b8;
     }
@@ -493,8 +536,15 @@
     #rewardListBody .rl-card.is-expired .rl-card-amount {
       color: var(--muted); text-decoration: line-through;
     }
-    #rewardListBody .rl-card.is-clickable { cursor: pointer; border-color: #bfdbfe !important; background: #f0f5ff !important; }
+    #rewardListBody .rl-card.is-collected .rl-card-amount { color: var(--ok); }
+    #rewardListBody .rl-card.is-clickable { cursor: pointer; border: 2px solid var(--blue) !important; background: #fff !important; box-shadow: 0 4px 14px rgba(0,112,224,.12) !important; }
     #rewardListBody .rl-card.is-clickable:active { transform: scale(.95); }
+    /* Ready-to-scratch: same light-card family as locked/expired/claimed (icon on top,
+       name + subtitle, status pill below) — just blue-tinted to read as "ready", instead
+       of the old full solid-blue takeover. Amount stays hidden until actually scratched. */
+    #rewardListBody .rl-card.is-ready { border: 1px solid #dbe7fb !important; background: #eef4ff !important; box-shadow: 0 4px 14px rgba(0,112,224,.12) !important; }
+    #rewardListBody .rl-card.is-ready .rl-card-amount { line-height: 1; }
+    #rewardListBody .rl-card.is-ready .rl-card-name { color: var(--blue); }
     .rewards-empty-ico { font-size: 28px; line-height: 1; }
     .rewards-empty-text {
       margin: 0;
@@ -1935,6 +1985,73 @@
     .action-pill svg { flex-shrink: 0; color: var(--blue); }
     .action-pill:active { background: #f0f5ff; }
 
+    .code-share {
+      display: flex; flex-direction: column; gap: 12px;
+      padding-bottom: 4px;
+      margin-top: 8px;
+      animation: mvpFadeUp .4s ease .6s both;
+    }
+    .code-share .tm-section-title { padding: 2px 0 4px; }
+    .code-ticket {
+      display: flex; align-items: stretch;
+      position: relative;
+      width: 100%;
+      border: 1.5px dashed #7eb6f5;
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 0 50%, transparent 6px, #fff 6.5px),
+        repeating-linear-gradient(
+          -12deg,
+          transparent,
+          transparent 8px,
+          rgba(0,112,224,.03) 8px,
+          rgba(0,112,224,.03) 9px
+        ),
+        #fff;
+      box-shadow: 0 2px 6px rgba(0,112,224,.06);
+      padding: 0;
+      font: inherit;
+      cursor: pointer;
+      text-align: left;
+      overflow: hidden;
+    }
+    .code-ticket:active { filter: brightness(.98); }
+    .code-ticket-main {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column; justify-content: center;
+      gap: 4px; padding: 10px 16px;
+    }
+    .code-ticket-hint {
+      font-size: 9px; font-weight: 700; letter-spacing: .7px;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .code-ticket-value {
+      font-size: 17px; font-weight: 800; letter-spacing: 3.5px;
+      color: var(--blue); line-height: 1.2;
+      font-variant-numeric: tabular-nums;
+    }
+    .code-ticket-copy {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2px; width: 58px; flex-shrink: 0;
+      border-left: 1.5px dashed #7eb6f5;
+      color: var(--blue);
+      font-size: 10px; font-weight: 700; letter-spacing: .4px;
+      text-transform: uppercase;
+      background: #f3f8ff;
+    }
+    .invite-full {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 8px 14px;
+      border: 1.5px solid var(--line); border-radius: 10px;
+      background: #fff; color: var(--blue);
+      font: inherit; font-size: 12px; font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,.04);
+    }
+    .invite-full svg { color: var(--blue); flex-shrink: 0; }
+    .invite-full:active { background: #f0f5ff; }
+
+
     /* Invite-from-contacts — mirrors the app's refer-home phonebook section */
     /* Pre-permission prompt (shown until contacts access is granted) */
     .ph-prompt {
@@ -2089,7 +2206,7 @@
       color: var(--muted);
     }
     .month-sep:first-child { margin-top: 4px; }
-    .tc { text-align: center; margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+    .tc { text-align: center; margin: 8px 0 0; font-size: 12px; color: var(--muted); }
     .screen[data-screen="contacts"] {
       background: var(--bg);
     }
@@ -2390,11 +2507,15 @@
       font-size: 48px; font-weight: 800;
       color: #fff;
     }
+    .scratch-prize .congrats {
+      font-size: 12px; font-weight: 600; color: rgba(255,255,255,.7);
+      letter-spacing: .02em; margin-bottom: 4px;
+    }
     .scratch-prize .label {
       color: rgba(255,255,255,.6); letter-spacing: .08em; text-transform: uppercase;
-      font-size: 11px; font-weight: 700; margin: 8px 0 0;
+      font-size: 11px; font-weight: 700; margin: 4px 0 0;
     }
-    .scratch-prize .from { margin-top: 10px; font-size: 14px; color: rgba(255,255,255,.85); font-weight: 600; }
+    .scratch-prize .from { margin-top: 8px; font-size: 13px; color: rgba(255,255,255,.75); font-weight: 500; }
     .scratch-prize.tier-100 {
       background: linear-gradient(135deg, #0070E0, #61AEFA);
     }
@@ -2705,27 +2826,37 @@
     }
     .hero-big {
       margin: 0 0 2px;
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
-      color: var(--ink);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      color: var(--muted);
     }
     .hero-earn {
       margin: 0;
       font-size: 14px;
       font-weight: 600;
-      color: var(--blue);
+      color: var(--ink);
     }
     .hero-earn em {
       font-style: normal;
-      font-size: 18px;
+      font-size: 32px;
       font-weight: 800;
+      letter-spacing: -0.03em;
       background: linear-gradient(90deg, var(--blue), #61AEFA, var(--blue));
       background-size: 200% auto;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: mvpShimmer 3s linear infinite;
+      display: block;
+      line-height: 1.15;
+    }
+    .hero-earn span {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-top: 2px;
     }
     .hero-illus {
       margin: 0 -16px;
@@ -2734,6 +2865,11 @@
       flex-shrink: 1;
       min-height: 0;
       overflow: hidden;
+    }
+    .hero-illus.compact img {
+      width: 100%;
+      height: auto;
+      display: block;
     }
     .hero-illus::before {
       content: '';
@@ -2748,6 +2884,30 @@
       pointer-events: none; z-index: 1;
     }
     .hero-illus img { width: 100%; height: auto; display: block; }
+
+    /* Never-referred: tighter section gaps so How it works stays on-screen */
+    .screen[data-screen="home"].home-zero .sheet {
+      gap: 4px;
+      padding-bottom: 72px;
+    }
+    .screen[data-screen="home"].home-zero .tm-section-title {
+      padding: 4px 16px 2px;
+    }
+    .screen[data-screen="home"].home-zero .tm-block {
+      padding: 0 4px 0 8px;
+    }
+    .screen[data-screen="home"].home-zero .tm-step {
+      padding: 5px 0;
+    }
+    .screen[data-screen="home"].home-zero .how-pill-row {
+      margin: 4px 0 2px;
+    }
+    .screen[data-screen="home"].home-zero .code-share {
+      gap: 14px;
+    }
+    .screen[data-screen="home"].home-zero .tc {
+      margin: 2px 0 0;
+    }
 
     .countdown-pill {
       display: flex; align-items: center;
@@ -2766,13 +2926,13 @@
     /* (reward cards removed — reward info is now in the hero) */
 
     .es-block {
-      border-radius: 16px;
+      border-radius: 14px;
       background: linear-gradient(135deg, #e8f0fe 0%, #dce8fb 100%);
-      padding: 18px 20px 16px;
+      padding: 12px 14px 10px;
       cursor: pointer;
       position: relative;
       border: 1px solid rgba(0,112,224,.15);
-      box-shadow: 0 4px 16px rgba(0,112,224,.1);
+      box-shadow: 0 3px 10px rgba(0,112,224,.08);
       overflow: hidden;
     }
     .es-block::after {
@@ -2801,15 +2961,15 @@
     .es-block.dark-card .es-top > span { color: rgba(255,255,255,.35) !important; }
     .es-top {
       display: flex; align-items: flex-start; justify-content: space-between;
-      margin-bottom: 16px; position: relative; z-index: 1;
+      margin-bottom: 8px; position: relative; z-index: 1;
     }
-    .es-earned { display: flex; flex-direction: column; gap: 2px; }
+    .es-earned { display: flex; flex-direction: column; gap: 1px; }
     .es-label {
-      font-size: 11px; font-weight: 600;
+      font-size: 10px; font-weight: 600;
       color: var(--muted);
     }
     .es-value {
-      font-size: 32px; font-weight: 800; color: var(--blue); letter-spacing: -0.02em;
+      font-size: 24px; font-weight: 800; color: var(--blue); letter-spacing: -0.02em;
     }
     .es-wallet { display: none; }
     .es-pills {
@@ -2821,8 +2981,8 @@
     }
     .es-pill {
       flex: 1; display: flex; flex-direction: column; align-items: center;
-      padding: 10px 8px;
-      font-size: 10px; font-weight: 600; color: var(--muted);
+      padding: 6px 8px;
+      font-size: 9px; font-weight: 600; color: var(--muted);
       border: none; background: transparent;
       text-transform: uppercase; letter-spacing: .04em;
     }
@@ -2830,19 +2990,82 @@
     .es-pill.sale { background: transparent; color: var(--muted); }
     .es-pill-icon { display: none; }
     .es-pill-num {
-      display: block; font-size: 20px; font-weight: 800;
-      color: var(--ink); line-height: 1.3; margin-bottom: 1px;
+      display: block; font-size: 16px; font-weight: 800;
+      color: var(--ink); line-height: 1.25; margin-bottom: 1px;
     }
     .es-details-link {
-      text-align: center; padding: 8px 0 0;
-      font-size: 11px; font-weight: 600; color: var(--blue);
+      text-align: center; padding: 6px 0 0;
+      font-size: 10px; font-weight: 600; color: var(--blue);
       cursor: pointer; position: relative; z-index: 1;
     }
     .es-details-link span { font-size: 12px; font-weight: 700; }
 
+    .hero-illus[hidden] { display: none !important; }
+    .screen[data-screen="home"].home-referred .hero {
+      margin-bottom: -6px;
+      padding-bottom: 0;
+    }
+    .stats-card {
+      display: flex;
+      align-items: stretch;
+      padding: 10px 4px;
+      margin: 0 0 8px;
+      border-radius: 14px;
+    }
+    .stats-card::after { display: none; }
+    .sc-cell {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      min-width: 0;
+      padding: 6px 6px;
+      border: none;
+      background: transparent;
+      font: inherit;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+    .sc-cell:active { background: rgba(0,112,224,.08); }
+    .sc-cell + .sc-cell {
+      border-left: 1px solid rgba(0,112,224,.12);
+    }
+    .sc-cell b {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.15;
+    }
+    .sc-cell span {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .sc-cell.earn {
+      flex: 1.25;
+      background: rgba(0,112,224,.08);
+      margin: 0 2px;
+    }
+    .sc-cell.earn b {
+      color: var(--blue);
+      font-size: 22px;
+      letter-spacing: -0.02em;
+    }
+    .sc-cell.earn span { color: var(--blue); }
+    .stats-card.dark-card .sc-cell span { color: rgba(255,255,255,.65); }
+    .stats-card.dark-card .sc-cell b,
+    .stats-card.dark-card .sc-cell.earn b { color: #fff; }
+    .stats-card.dark-card .sc-cell + .sc-cell {
+      border-left-color: rgba(255,255,255,.16);
+    }
+
     .tm-section-title {
       display: flex; align-items: center; justify-content: center; gap: 12px;
-      padding: 4px 16px 2px;
+      padding: 12px 16px 6px;
     }
     .tm-section-title span {
       font-size: 11px; font-weight: 700; letter-spacing: .8px;
@@ -2855,10 +3078,10 @@
       background: linear-gradient(to var(--dir, right), #eed990, transparent);
     }
     .tm-section-title::after { --dir: left; }
-    .tm-block { padding: 2px 4px 4px 8px; }
+    .tm-block { padding: 4px 4px 0 8px; }
     .tm-step {
       display: flex; align-items: center; gap: 14px;
-      position: relative; padding: 4px 0;
+      position: relative; padding: 8px 0;
     }
     .tm-step:not(:last-child)::after {
       content: '';
@@ -2874,7 +3097,7 @@
     .tm-step:last-child::after {
       content: '';
       position: absolute; left: 11px; top: calc(50% + 12px);
-      height: 32px; width: 2px; z-index: 0;
+      height: 14px; width: 2px; z-index: 0;
       background: repeating-linear-gradient(to bottom, #d0d7e0 0, #d0d7e0 4px, transparent 4px, transparent 8px);
       mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
       -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
@@ -2895,6 +3118,7 @@
     .tm-step.tm-active .tm-marker {
       background: var(--blue); border-color: var(--blue);
       color: #fff; font-size: 10px; font-weight: 800;
+      box-shadow: 0 0 0 2px rgba(0,112,224,.12);
     }
     .tm-step.tm-done .tm-marker {
       background: var(--blue); border-color: var(--blue);
@@ -2907,7 +3131,16 @@
       background: #e8f0fe; border-color: #c4d7f5; color: #3b7ddd;
     }
     .tm-step[data-tier="1000"]:not(.tm-active):not(.tm-done) .tm-marker {
-      background: #fef4e0; border-color: #f0d78a; color: #b8860b;
+      background: #f0f3f7; border-color: #dde3ea; color: #b0b8c4;
+    }
+    .screen[data-screen="home"]:not(.home-zero) .tm-step[data-tier="1000"]:not(.tm-active):not(.tm-done) .tm-range,
+    .screen[data-screen="home"]:not(.home-zero) .tm-step[data-tier="1000"]:not(.tm-active):not(.tm-done) .tm-reward {
+      color: #9aa3b0;
+    }
+    .screen[data-screen="home"]:not(.home-zero) .tm-step[data-tier="1000"]:not(.tm-active):not(.tm-done) .tm-body {
+      background: #f7f8fa;
+      border-color: #e8ebf0;
+      box-shadow: none;
     }
     .tm-you-tag {
       display: block; width: 100%;
@@ -2921,15 +3154,24 @@
       background: #fff; flex-wrap: wrap;
       box-shadow: 0 1px 4px rgba(0,0,0,.04);
     }
-    .tm-step.tm-active .tm-body { border-color: var(--blue); background: linear-gradient(135deg, #f5f8ff, #eef3ff); box-shadow: 0 2px 8px rgba(37,99,235,.10); }
-    .tm-step.tm-done .tm-body { background: #fafbfc; opacity: .7; }
+    .tm-step.tm-active .tm-body {
+      border: 1.5px solid #93c5fd;
+      background: #f5f9ff;
+      box-shadow: 0 1px 4px rgba(0,112,224,.08);
+      transform: none;
+    }
+    .tm-step.tm-done .tm-body {
+      background: linear-gradient(135deg, #eef4ff, #dbeafe);
+      border-color: #93c5fd; opacity: 1;
+    }
     .tm-range { font-size: 13px; font-weight: 600; color: var(--ink); display: block; line-height: 1.2; }
-    .tm-range small { display: block; font-size: 10px; font-weight: 500; color: var(--muted); margin-top: 1px; }
-    .tm-reward { font-size: 18px; font-weight: 800; color: var(--blue); white-space: nowrap; }
-    .tm-step.tm-done .tm-reward { color: var(--blue); opacity: .5; }
-    .tm-reward small { font-size: 11px; font-weight: 600; color: var(--muted); }
+    .tm-step.tm-active .tm-range { color: var(--blue); }
+    .tm-reward { font-size: 22px; font-weight: 800; color: var(--blue); white-space: nowrap; text-align: right; }
+    .tm-step.tm-done .tm-reward { color: var(--blue); opacity: 1; }
+    .tm-step.tm-active .tm-reward { color: var(--blue); }
+    .tm-reward small { display: block; font-size: 10px; font-weight: 500; color: var(--muted); margin-top: 1px; }
 
-    .how-pill-row { display: flex; justify-content: center; margin: 4px 0 0; }
+    .how-pill-row { display: flex; justify-content: center; margin: 2px 0 4px; }
     .how-pill {
       display: inline-flex; align-items: center; gap: 6px;
       border: 1.5px solid var(--line); border-radius: 10px;
@@ -2940,7 +3182,7 @@
       text-decoration: none;
     }
     .how-pill:active { background: #f0f5ff; }
-    .how-pill .how-chevron { font-size: 13px; font-weight: 700; }
+    .how-pill .how-chevron { font-size: 13px; font-weight: 700; color: var(--blue); }
     .how-pill-row[hidden] { display: none !important; }
 
     /* Inline steps (never-referred only) */
@@ -2970,7 +3212,7 @@
 
     /* Redesigned How-it-works popup */
     .how-popup-hero {
-      text-align: center; padding: 10px 0 16px;
+      text-align: center; padding: 10px 0 4px;
     }
     .how-popup-hero .how-emoji { font-size: 40px; margin-bottom: 6px; }
     .how-popup-hero .how-tagline {
@@ -2982,7 +3224,7 @@
     }
     .hp-step {
       display: flex; align-items: center; gap: 14px;
-      padding: 14px 0; position: relative;
+      padding: 10px 0; position: relative;
     }
     .hp-step:not(:last-child) { padding-bottom: 18px; }
     .hp-ico {
@@ -3031,7 +3273,7 @@
     }
     .hpt-step {
       display: flex; align-items: center; gap: 14px;
-      padding: 12px 0; position: relative;
+      padding: 6px 0; position: relative;
     }
     .hpt-marker {
       width: 22px; height: 22px; border-radius: 50%;
@@ -3041,17 +3283,20 @@
       flex-shrink: 0; z-index: 1;
     }
     .hpt-step:last-child .hpt-marker {
-      border-color: #b45309; color: #b45309;
-      background: #fffdf5;
+      border-color: #16a34a; color: #16a34a;
+      background: #f0fdf4;
     }
     .hpt-right {
       display: flex; align-items: center; justify-content: space-between;
       flex: 1; gap: 8px;
+      background: #fff; border-radius: 12px; padding: 10px 14px;
+      border: 1px solid var(--line);
     }
     .hpt-range { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.2; }
     .hpt-sub { font-size: 10px; color: var(--muted); }
-    .hpt-amt { font-size: 17px; font-weight: 800; color: var(--blue); white-space: nowrap; }
-    .hpt-step:last-child .hpt-amt { color: #b45309; }
+    .hpt-amt { font-size: 17px; font-weight: 800; color: var(--blue); white-space: nowrap; text-align: right; }
+    .hpt-amt small { display: block; font-size: 10px; font-weight: 500; color: var(--muted); margin-top: 1px; }
+    .hpt-step:last-child .hpt-amt { color: #16a34a; }
   </style>
 </head>
 <body>
@@ -3136,8 +3381,8 @@
             <button class="icon-btn" type="button" data-open-how aria-label="How it works">?</button>
           </div>
           <p class="hero-invite">Invite your friends to get rewards</p>
-          <h2 class="hero-big">Refer &amp; Earn</h2>
-          <p class="hero-earn">Earn up to <em>₹1,000</em> per friend</p>
+          <p class="hero-big">Refer &amp; Earn</p>
+          <p class="hero-earn"><em>₹1,000</em><span>per friend on their 1st sale</span></p>
           <div class="hero-illus">
             <img src="assets/referral-hero-giftbox.png" alt="Refer friends and earn rewards" />
           </div>
@@ -3174,19 +3419,19 @@
             </div>
           </div>
 
-          <div class="es-block" id="earnedBlock" data-go="progress" role="button" tabindex="0" hidden>
-            <div class="es-top">
-              <div class="es-earned">
-                <span class="es-label">Total earned</span>
-                <span class="es-value" id="homeEarned">₹9,200</span>
-              </div>
-              <span style="font-size:22px; color:rgba(0,112,224,.3); position:relative; z-index:1;">›</span>
-            </div>
-            <div class="es-pills">
-              <div class="es-pill"><span class="es-pill-num" id="homeJoined">62</span>friends joined</div>
-              <div class="es-pill sale"><span class="es-pill-num" id="homeCount">29</span>1st sales</div>
-            </div>
-            <div class="es-details-link" data-go="progress">View details <span aria-hidden="true">›</span></div>
+          <div class="es-block stats-card" id="earnedBlock" hidden>
+            <button class="sc-cell earn" type="button" data-open-progress="all">
+              <b id="homeEarned">₹3,400</b>
+              <span>Total earned ›</span>
+            </button>
+            <button class="sc-cell" type="button" data-open-progress="all">
+              <b id="homeJoined">12</b>
+              <span>Friends joined ›</span>
+            </button>
+            <button class="sc-cell" type="button" data-open-progress="completed">
+              <b id="homeCount">10</b>
+              <span>1st sales ›</span>
+            </button>
           </div>
 
           <div class="tm-section-title"><span id="tmSectionLabel">Your Rewards</span></div>
@@ -3194,22 +3439,22 @@
             <div class="tm-step" data-tier="100">
               <div class="tm-marker"></div>
               <div class="tm-body">
-                <span class="tm-range">1–4 friends<small>per friend's sale</small></span>
-                <span class="tm-reward">₹100</span>
+                <span class="tm-range">1–4 friends</span>
+                <span class="tm-reward">₹100<small>per friend's sale</small></span>
               </div>
             </div>
             <div class="tm-step" data-tier="400">
               <div class="tm-marker"></div>
               <div class="tm-body">
-                <span class="tm-range">5–19 friends<small>per friend's sale</small></span>
-                <span class="tm-reward">₹400</span>
+                <span class="tm-range">5–19 friends</span>
+                <span class="tm-reward">₹400<small>per friend's sale</small></span>
               </div>
             </div>
             <div class="tm-step tm-top" data-tier="1000">
               <div class="tm-marker">★</div>
               <div class="tm-body">
-                <span class="tm-range">20+ friends<small>per friend's sale</small></span>
-                <span class="tm-reward">₹1,000</span>
+                <span class="tm-range">20+ friends</span>
+                <span class="tm-reward">₹1,000<small>per friend's sale</small></span>
               </div>
             </div>
           </div>
@@ -3239,13 +3484,19 @@
           <span id="stripSub" hidden></span>
           <div id="howAnchorBottom" hidden></div>
 
-          <div class="action-pills" id="codeBlock">
-            <button class="action-pill" type="button" data-toast="Code copied">
-              <span id="homeCodePill">SOCD7434</span>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-              Copy
+          <div class="code-share" id="codeBlock">
+            <div class="tm-section-title"><span>Share &amp; invite</span></div>
+            <button class="code-ticket" type="button" data-toast="Code copied">
+              <span class="code-ticket-main">
+                <span class="code-ticket-hint">Your referral code</span>
+                <span class="code-ticket-value" id="homeCodePill">SOCD7434</span>
+              </span>
+              <span class="code-ticket-copy">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                Copy
+              </span>
             </button>
-            <button class="action-pill" type="button" id="phInviteBtn">
+            <button class="invite-full" type="button" id="phInviteBtn">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3Zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3Zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z" fill="currentColor"/></svg>
               Invite from contacts
             </button>
@@ -3261,7 +3512,6 @@
             </div>
           </div>
 
-          <div style="height:40px" aria-hidden="true"></div>
           <div class="tc">Refer &amp; Earn — T&amp;Cs</div>
           <div style="height:56px" aria-hidden="true"></div>
 
@@ -3337,9 +3587,10 @@
           <div class="scratch-deck" id="scratchCarouselWrap">
             <div class="scratch-stage" id="scratchStage">
               <div class="scratch-prize tier-400" id="scratchPrize">
+                <div class="congrats" id="prizeCongrats">Congratulations on earning</div>
                 <div class="big" id="prizeAmount">₹400</div>
                 <div class="label">Reward</div>
-                <div class="from" id="prizeFrom">Gaurav’s 1st sale</div>
+                <div class="from" id="prizeFrom">on Gaurav’s 1st sale</div>
               </div>
               <canvas id="scratchCanvas"></canvas>
               <div class="scratch-stage-frame" aria-hidden="true"></div>
@@ -3405,31 +3656,31 @@
                 <div class="hpt-step">
                   <div class="hpt-marker">1</div>
                   <div class="hpt-right">
-                    <div><span class="hpt-range">1–4 friends</span><br><span class="hpt-sub">Per friend's 1st sale</span></div>
-                    <span class="hpt-amt">₹100</span>
+                    <div><span class="hpt-range">1–4 friends</span></div>
+                    <span class="hpt-amt">₹100<small>per friend's sale</small></span>
                   </div>
                 </div>
                 <div class="hpt-step">
                   <div class="hpt-marker">2</div>
                   <div class="hpt-right">
-                    <div><span class="hpt-range">5–19 friends</span><br><span class="hpt-sub">Per friend's 1st sale</span></div>
-                    <span class="hpt-amt">₹400</span>
+                    <div><span class="hpt-range">5–19 friends</span></div>
+                    <span class="hpt-amt">₹400<small>per friend's sale</small></span>
                   </div>
                 </div>
                 <div class="hpt-step">
                   <div class="hpt-marker">★</div>
                   <div class="hpt-right">
-                    <div><span class="hpt-range">20+ friends</span><br><span class="hpt-sub">Max reward per friend</span></div>
-                    <span class="hpt-amt">₹1,000</span>
+                    <div><span class="hpt-range">20+ friends</span></div>
+                    <span class="hpt-amt">₹1,000<small>per friend's sale</small></span>
                   </div>
                 </div>
               </div>
 
+              <p class="how-footer-timer" id="howFooterTimer">⏳ Offer ends 31 Aug 2026 · 22d left</p>
               <div class="warn-card" style="margin-top:12px">
                 <span class="warn-ico" aria-hidden="true">⚠️</span>
                 <p>Self sales or sales to existing GroMo partners don't count.</p>
               </div>
-              <p class="how-footer-timer" id="howFooterTimer">⏳ Offer ends 31 Aug 2026 · 22d left</p>
 
               <p class="how-tnc">Refer &amp; Earn — <a href="#" data-toast="T&amp;Cs (demo)">T&amp;Cs</a></p>
             </div>
@@ -3742,7 +3993,7 @@
             marker.textContent = count;
             var pct = Math.round(((count - 1) / (5 - 1)) * 100);
             el.style.setProperty('--progress', pct + '%');
-            body.insertAdjacentHTML('beforeend', '<span class="tm-you-tag">' + count + ' of 4 done</span>');
+            body.insertAdjacentHTML('beforeend', '<span class="tm-you-tag">' + (4 - count) + ' more to unlock ₹400</span>');
           }
           if (count >= 5) { el.classList.add('tm-done'); marker.textContent = '✓'; }
           else if (count < 1) { marker.textContent = '1'; }
@@ -3752,7 +4003,7 @@
             marker.textContent = count;
             var pct = Math.round(((count - 5) / (20 - 5)) * 100);
             el.style.setProperty('--progress', pct + '%');
-            body.insertAdjacentHTML('beforeend', '<span class="tm-you-tag">' + count + ' of 19 done</span>');
+            body.insertAdjacentHTML('beforeend', '<span class="tm-you-tag">' + (19 - count) + ' more to unlock ₹1,000</span>');
           }
           if (count >= 20) { el.classList.add('tm-done'); marker.textContent = '✓'; }
           else if (count < 5) { marker.textContent = '2'; }
@@ -3777,7 +4028,7 @@
           id: p.reward.id,
           amount: p.reward.amount,
           name: p.reward.name,
-          hint: 'Claim reward',
+          hint: 'Collect reward',
         });
       });
       const monthKey = monthEmptyDemo ? null : LATEST_MONTH;
@@ -3827,24 +4078,31 @@
         btn.dataset.rewardKind = c.kind;
         if (c.kind === 'ready') btn.dataset.scratchId = c.id;
         const first = c.name.split(' ')[0];
-        let fromLine, hintLine, amtText;
-        if (c.kind === 'ready') {
-          amtText = formatAmount(c.amount);
-          fromLine = first + '\'s 1st sale';
-          hintLine = 'Claim reward';
-        } else if (c.kind === 'locked') {
-          amtText = '₹?';
-          fromLine = first + ' joined';
-          hintLine = 'Awaiting 1st sale';
+
+        const waSvg = '<svg width="13" height="13" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.11.546 4.095 1.504 5.82L0 24l6.335-1.458A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75c-1.89 0-3.682-.508-5.236-1.453l-.375-.225-3.897.897.966-3.527-.247-.393A9.708 9.708 0 012.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75z"/></svg>';
+        const giftSvg = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="10" rx="2" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/><rect x="1" y="8" width="22" height="4" rx="1.5" fill="#3b82f6"/><rect x="10.5" y="8" width="3" height="13" fill="#fff"/><path d="M12 8C12 8 9 3 7 4s1 4 5 4" fill="#fff" stroke="#3b82f6" stroke-width="1.2"/><path d="M12 8C12 8 15 3 17 4s-1 4-5 4" fill="#fff" stroke="#3b82f6" stroke-width="1.2"/></svg>';
+        const scratchSvg = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="3" fill="#dbeafe" stroke="#0070E0" stroke-width="1.5"/><path d="M2 11h20" stroke="#0070E0" stroke-width="1.5"/><circle cx="12" cy="15.5" r="2.4" fill="#0070E0"/><path d="M12 2.5v2.2M8.6 3.6l1.1 1.7M15.4 3.6l-1.1 1.7" stroke="#0070E0" stroke-width="1.3" stroke-linecap="round"/></svg>';
+
+        if (c.kind === 'locked') {
+          btn.innerHTML =
+            '<span class="rc-gift">' + giftSvg + '</span>' +
+            '<span class="rc-title">Referral Reward</span>' +
+            '<span class="rc-sub">' + first + '\'s 1st sale pending</span>' +
+            '<button class="rc-remind" data-remind-name="' + c.name + '">' + waSvg + 'Remind</button>';
+        } else if (c.kind === 'ready') {
+          // Same icon/title/sub/button layout as the locked card, just blue-tinted for
+          // "ready to scratch". Amount stays hidden until the card is actually scratched.
+          btn.innerHTML =
+            '<span class="rc-gift">' + scratchSvg + '</span>' +
+            '<span class="rc-title">Reward Ready!</span>' +
+            '<span class="rc-sub">' + first + '\'s 1st sale</span>' +
+            '<span class="rc-scratch-cta">Scratch to reveal →</span>';
         } else {
-          amtText = formatAmount(c.amount);
-          fromLine = first + ' — no sale';
-          hintLine = 'Expired';
+          btn.innerHTML =
+            '<span class="rc-amount">' + formatAmount(c.amount) + '</span>' +
+            '<span class="rc-from">' + first + ' — no sale</span>' +
+            '<span class="rc-hint">Expired</span>';
         }
-        btn.innerHTML =
-          '<span class="rc-amount">' + amtText + '</span>' +
-          '<span class="rc-from">' + fromLine + '</span>' +
-          '<span class="rc-hint">' + hintLine + '</span>';
         track.appendChild(btn);
       });
     }
@@ -3895,32 +4153,40 @@
         if (a.status !== 'unlocked' && b.status === 'unlocked') return 1;
         return 0;
       });
+      prependViewAllStrip(body);
       if (!list.length) {
-        body.innerHTML = '<p style="text-align:center;color:var(--muted);padding:32px 0;font-size:14px">No ' + rlActiveTab + ' rewards</p>';
+        body.insertAdjacentHTML('beforeend', '<p style="text-align:center;color:var(--muted);padding:32px 0;font-size:14px;grid-column:1/-1">No ' + rlActiveTab + ' rewards</p>');
         return;
       }
       list.forEach((item) => {
         const card = document.createElement('div');
         const isCollected = item.status === 'collected';
         const isCollectable = item.status === 'unlocked';
-        card.className = 'rl-card' + (item.status === 'expired' ? ' is-expired' : '') + (isCollectable ? ' is-clickable' : '') + (isCollected ? ' is-collected' : '');
+        card.className = 'rl-card' + (item.status === 'expired' ? ' is-expired' : '') + (isCollectable ? ' is-clickable is-ready' : '') + (isCollected ? ' is-collected' : '');
         const firstName = (item.label || 'Friend').split(' ')[0];
         const isLocked = item.status === 'locked';
-        const amtText = isLocked ? '₹?' : formatAmount(item.amount);
+        const giftSvg = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="10" rx="2" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/><rect x="1" y="8" width="22" height="4" rx="1.5" fill="#3b82f6"/><rect x="10.5" y="8" width="3" height="13" fill="#fff"/><path d="M12 8C12 8 9 3 7 4s1 4 5 4" fill="#fff" stroke="#3b82f6" stroke-width="1.2"/><path d="M12 8C12 8 15 3 17 4s-1 4-5 4" fill="#fff" stroke="#3b82f6" stroke-width="1.2"/></svg>';
+        const scratchSvg = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="3" fill="#dbeafe" stroke="#0070E0" stroke-width="1.5"/><path d="M2 11h20" stroke="#0070E0" stroke-width="1.5"/><circle cx="12" cy="15.5" r="2.4" fill="#0070E0"/><path d="M12 2.5v2.2M8.6 3.6l1.1 1.7M15.4 3.6l-1.1 1.7" stroke="#0070E0" stroke-width="1.3" stroke-linecap="round"/></svg>';
+        // Amount stays hidden until scratched — same light card family as locked/claimed/
+        // expired, with a scratch-card icon standing in for the amount. Locked rows show
+        // the gift icon instead.
+        const amtText = isCollectable ? scratchSvg : isLocked ? giftSvg : formatAmount(item.amount);
+        const name = isCollectable ? 'Reward Ready!' : 'Referral Reward';
         const subtitle = isCollectable ? firstName + '\'s 1st sale'
           : isCollected ? firstName + '\'s 1st sale'
-          : isLocked ? firstName + ' joined · Awaiting 1st sale'
+          : isLocked ? firstName + '\'s 1st sale pending'
           : 'Reward expired';
-        const statusLabel = isCollectable ? 'Claim reward'
+        const waSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366" style="vertical-align:-2px;margin-right:4px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.11.546 4.095 1.504 5.82L0 24l6.335-1.458A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75c-1.89 0-3.682-.508-5.236-1.453l-.375-.225-3.897.897.966-3.527-.247-.393A9.708 9.708 0 012.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75z"/></svg>';
+        const statusLabel = isCollectable ? 'Scratch to reveal'
           : isCollected ? 'Claimed'
-          : isLocked ? '🔒 Locked'
+          : isLocked ? waSvg + 'Remind'
           : 'Expired';
         card.innerHTML =
           '<div class="rl-card-amount">' + amtText + '</div>' +
           '<div class="rl-card-info">' +
-            '<div class="rl-card-name">Referral Reward</div>' +
+            '<div class="rl-card-name">' + name + '</div>' +
             '<div class="rl-card-sub">' + subtitle + '</div>' +
-            '<span class="rl-card-status ' + (isCollected ? 'scratched' : item.status) + '">' + statusLabel + '</span>' +
+            '<span class="rl-card-status ' + (isCollected ? 'scratched' : isLocked ? 'remind' : item.status) + '">' + statusLabel + '</span>' +
           '</div>';
         if (isCollectable && item.id) {
           card.style.cursor = 'pointer';
@@ -3932,8 +4198,31 @@
             if (idx >= 0) { scratchIdx = idx; showScratchCard(); }
           });
         }
+        if (isLocked) {
+          card.style.cursor = 'pointer';
+          card.addEventListener('click', () => {
+            closeRewardList();
+            share.classList.add('open');
+          });
+        }
         body.appendChild(card);
       });
+    }
+
+    function prependViewAllStrip(body) {
+      const strip = document.createElement('div');
+      strip.style.cssText = 'grid-column:1/-1;margin:4px 0;padding:12px 14px;background:linear-gradient(135deg,#eef2ff,#dbeafe);border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;';
+      strip.innerHTML =
+        '<div>' +
+          '<div style="font-size:12px;font-weight:700;color:#1e293b;">See all your scratch cards</div>' +
+          '<div style="font-size:11px;color:#64748b;margin-top:2px;">Education, events & more rewards</div>' +
+        '</div>' +
+        '<button id="viewAllScratchBtn" style="flex-shrink:0;background:#0070E0;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">View all →</button>';
+      strip.querySelector('#viewAllScratchBtn').addEventListener('click', () => {
+        closeRewardList();
+        toast('Opening Scratch Cards section…');
+      });
+      body.prepend(strip);
     }
 
     function openRewardList() {
@@ -4070,7 +4359,7 @@
     function replayEntranceAnimations() {
       var targets = document.querySelectorAll(
         '.hero-big, .hero-invite, .hero-earn, .hero-illus, ' +
-        '.tm-section-title, .tm-step, .how-pill, .action-pill, ' +
+        '.tm-section-title, .tm-step, .how-pill, .action-pill, .code-share, ' +
         '.es-block, .rewards-head, .rewards-carousel'
       );
       targets.forEach(function(el) {
@@ -4105,10 +4394,21 @@
       var earnedBlock = document.getElementById('earnedBlock');
       if (earnedBlock) earnedBlock.hidden = !case1;
 
+      var heroIllus = document.querySelector('.hero-illus');
+      if (heroIllus) {
+        heroIllus.hidden = false;
+        heroIllus.classList.toggle('compact', case1);
+        var heroImg = heroIllus.querySelector('img');
+        if (heroImg) {
+          heroImg.src = case1 ? 'assets/referral-hero-path.png' : 'assets/referral-hero-giftbox.png';
+          heroImg.alt = case1 ? 'Walk the 3-step path to your reward' : 'Refer friends and earn rewards';
+        }
+      }
+
       var tmLabel = document.getElementById('tmSectionLabel');
       if (tmLabel) tmLabel.textContent = case1 ? 'Your Referral Progress' : 'Your Rewards';
 
-      document.querySelectorAll('#tierBlock .tm-range small').forEach(function(el) {
+      document.querySelectorAll('#tierBlock .tm-reward small').forEach(function(el) {
         el.style.display = case1 ? 'none' : '';
       });
 
@@ -4120,6 +4420,12 @@
 
       var howPillRow = document.getElementById('howPillRow');
       if (howPillRow) howPillRow.hidden = false;
+
+      var homeScreen = document.querySelector('.screen[data-screen="home"]');
+      if (homeScreen) {
+        homeScreen.classList.toggle('home-zero', case3);
+        homeScreen.classList.toggle('home-referred', case1);
+      }
 
       updateTierTimeline(t.count);
 
@@ -4196,7 +4502,7 @@
         '<div><div class="name">' + r.name + '</div>' + dateLine + '</div>' +
         '<div class="earn">' + formatAmount(r.amount) +
         '<span class="st ' + (r.scratched ? 'done' : '') + '">' +
-        (r.scratched ? 'Claimed' : 'Claim') +
+        (r.scratched ? 'Claimed' : 'Collect') +
         '</span></div>';
       if (!r.scratched) {
         el.addEventListener('click', function() {
@@ -4281,6 +4587,14 @@
         if (r) return { reward: r, monthKey: key };
       }
       return null;
+    }
+
+    function openProgressDetails(status) {
+      currentStatusFilter = status || 'all';
+      document.querySelectorAll('#statusFilters button').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.status === currentStatusFilter);
+      });
+      go('progress');
     }
 
     function go(id) {
@@ -4573,6 +4887,7 @@
         carouselWrap.style.display = 'none';
         document.getElementById('scratchPager').style.display = 'none';
         document.getElementById('scratchHeading').textContent = 'All collected';
+        document.getElementById('scratchSub').style.display = '';
         document.getElementById('scratchSub').textContent = 'Refer more friends to earn new rewards';
         actions.classList.add('show');
         setScratchUnlockedUi(true);
@@ -4597,7 +4912,7 @@
 
       const reward = found.reward;
       document.getElementById('prizeAmount').textContent = formatAmount(reward.amount);
-      document.getElementById('prizeFrom').textContent = reward.name.split(' ')[0] + '’s 1st sale';
+      document.getElementById('prizeFrom').textContent = 'on ' + reward.name.split(' ')[0] + '’s 1st sale';
       const prize = document.getElementById('scratchPrize');
       prize.classList.remove('tier-100', 'tier-400', 'tier-1000');
       prize.classList.add(
@@ -4613,6 +4928,7 @@
 
       if (reward.scratched) {
         document.getElementById('scratchHeading').textContent = 'Already collected';
+        document.getElementById('scratchSub').style.display = '';
         document.getElementById('scratchSub').textContent = formatAmount(reward.amount) + ' from ' + reward.name.split(' ')[0];
         hint.style.display = 'none';
         if (collectBtn) collectBtn.hidden = true;
@@ -4624,14 +4940,13 @@
         return;
       }
 
-      const monthShort = months[found.monthKey].label.replace(' 2026', '');
       document.getElementById('scratchHeading').textContent = reward.name.split(' ')[0] + '’s reward';
-      document.getElementById('scratchSub').textContent = '1st sale · ' + monthShort;
+      document.getElementById('scratchSub').style.display = 'none';
       hint.style.display = 'block';
-      hint.textContent = 'Tap Collect — cash goes to your wallet';
+      hint.textContent = 'Tap to transfer cash to your wallet';
       if (collectBtn) {
         collectBtn.hidden = false;
-        collectBtn.textContent = 'Claim ' + formatAmount(reward.amount);
+        collectBtn.textContent = 'Transfer to Wallet';
       }
       scratchReady = true;
       renderScratchCarousel();
@@ -4814,6 +5129,7 @@
       canvas.style.display = 'none';
       document.getElementById('scratchHint').style.display = 'none';
       document.getElementById('scratchHeading').textContent = 'Claimed ' + formatAmount(reward.amount);
+      document.getElementById('scratchSub').style.display = '';
       document.getElementById('scratchSub').textContent = 'Added to your wallet';
       const actions = document.getElementById('scratchActions');
       const nextBtn = document.getElementById('scratchNextBtn');
@@ -4940,6 +5256,14 @@
         goToNextPending();
         return;
       }
+      const rcRemindBtn = e.target.closest('.rc-remind');
+      if (rcRemindBtn) {
+        e.stopPropagation();
+        const name = rcRemindBtn.dataset.remindName || 'your friend';
+        const msg = encodeURIComponent('Hey ' + name.split(' ')[0] + '! Complete your first sale on GroMo to unlock my referral reward. Here\'s the app: https://app.gromo.in');
+        window.open('https://wa.me/?text=' + msg, '_blank');
+        return;
+      }
       const readyCard = e.target.closest('.reward-card.ready');
       if (readyCard && readyCard.dataset.scratchId) {
         activeScratchId = readyCard.dataset.scratchId;
@@ -4968,6 +5292,11 @@
             monthSelect.value = currentMonth;
           }
         }
+      }
+      const progressBtn = e.target.closest('[data-open-progress]');
+      if (progressBtn) {
+        openProgressDetails(progressBtn.dataset.openProgress);
+        return;
       }
       const g = e.target.closest('[data-go]');
       if (g) {
